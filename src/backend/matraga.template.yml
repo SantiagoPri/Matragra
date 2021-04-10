@@ -6,11 +6,19 @@ Parameters:
     Description: proxy api stage
   LambdaCodeBucket:
     Type: String
-    Default: casestack-lambda-code
+    Default: matragra-lambda-code
     Description: Globally used bucket for lambda code
     AllowedValues:
-      - casestack-lambda-code-dev #Dev
-      - casestack-lambda-code #Prod
+      - matragra-lambda-code
+  #TODO:crear recursos 
+  LambdaPrivateSubnets:
+    Type: CommaDelimitedList
+    Default: 'subnet-53bc2009,subnet-16e6586f,subnet-8a2ff6c1'
+    Description: VPC Subnets for Lambda to run in (for internal visibility of CSIL api)
+  LambdaSecurityGroup:
+    Type: String
+    Default: 'sg-2d9d5d4b'
+    Description: Security Group for lambda to use for VPC
 
 Resources:
   #IAM resources
@@ -48,13 +56,7 @@ Resources:
                   - 'dynamodb:Scan'
                   - 'dynamodb:Query'
                 Resource:
-                #TODO table's names
-                  - !Sub '${SkuConversionDynamoDB.Arn}'
-                  - !Sub '${SkuConversionDynamoDB.Arn}/index/*'
-                  - !Sub '${ConversionsDynamoDB.Arn}'
-                  - !Sub '${ConversionsDynamoDB.Arn}/index/*'
-                  - !Sub '${RulesDynamoDB.Arn}'
-                  - !Sub '${RulesDynamoDB.Arn}/index/*'
+                  - !Sub '${UsersDynamoDB.Arn}'
               - Effect: Allow
                 Action:
                   - 'sqs:SendMessage'
@@ -227,7 +229,7 @@ Resources:
     Properties:
       FunctionName: !Sub '${AWS::StackName}_api-handler'
       Description: 'Manage the CRUD operations for the dynamoDB by the api'
-      Handler: lambda/App/index.handler
+      Handler: App/index.handler
       Role: !GetAtt StackRole.Arn
       MemorySize: 128
       Timeout: 90
@@ -237,13 +239,7 @@ Resources:
         S3Key: !Sub '${AWS::StackName}.zip'
       Environment:
         Variables:
-          ENVIRONMENT: !Ref Environment
-          SKU_CONVERSION_DYNAMODB: !Ref SkuConversionDynamoDB
-          CONVERSIONS_DYNAMODB: !Ref ConversionsDynamoDB
-          RULE_DYNAMODB: !Ref RulesDynamoDB
-          CSIL_API_URL: !Ref CsilApiUrl
-          CREATE_ORDER_TOPIC_ARN: !Ref CreateOrderTopic
-          SKU_CONVERSION_PREFIX: !Ref SkuConversionPrefix
+          SKU_CONVERSION_DYNAMODB: !Ref UsersDynamoDB
       VpcConfig:
         SubnetIds: !Ref LambdaPrivateSubnets
         SecurityGroupIds:
@@ -253,117 +249,33 @@ Resources:
     Type: 'AWS::Lambda::Permission'
     Properties:
       Action: 'lambda:InvokeFunction'
-      FunctionName: !Ref SkuConversionApiLambda
+      FunctionName: !Ref MatragraAPILambda
       Principal: 'apigateway.amazonaws.com'
       SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ProxyRestAPI}/*'
   ## END OF API RESOURCES
 
-  ## Lambda functions
-  UpdateAlgoliaLambda:
-    Type: 'AWS::Lambda::Function'
-    Properties:
-      FunctionName: !Sub '${AWS::StackName}_stream-update-algolia'
-      Description: 'Update status in algolia'
-      Handler: dist/ProcessEvent/lambda/stream-update-algolia.handler
-      Role: !GetAtt StackRole.Arn
-      MemorySize: 128
-      Timeout: 90
-      Runtime: nodejs12.x
-      Code:
-        S3Bucket: !Ref LambdaCodeBucket
-        S3Key: !Sub '${AWS::StackName}.zip'
-      Environment:
-        Variables:
-          ENVIRONMENT: !Ref Environment
-          CONVERSIONS_DYNAMODB: !Ref ConversionsDynamoDB
-          RULE_DYNAMODB: !Ref RulesDynamoDB
-          ALGOLIA_SKU_CONVERSIONS: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:algolia-integration_sku-conversions"
-          ALGOLIA_SKU_RULES: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:algolia-integration_sku-conversion-rules"
-
-  ConversionsUpdateAlgoliaSourceMapping:
-    Type: 'AWS::Lambda::EventSourceMapping'
-    DependsOn:
-      - ConversionsDynamoDB
-      - UpdateAlgoliaLambda
-    Properties:
-      BatchSize: 1
-      Enabled: true
-      EventSourceArn: !GetAtt ConversionsDynamoDB.StreamArn
-      FunctionName: !Ref UpdateAlgoliaLambda
-      MaximumRetryAttempts: 3
-      StartingPosition: LATEST
-  
-  RulesUpdateAlgoliaSourceMapping:
-    Type: 'AWS::Lambda::EventSourceMapping'
-    DependsOn:
-      - RulesDynamoDB
-      - UpdateAlgoliaLambda
-    Properties:
-      BatchSize: 1
-      Enabled: true
-      EventSourceArn: !GetAtt RulesDynamoDB.StreamArn
-      FunctionName: !Ref UpdateAlgoliaLambda
-      MaximumRetryAttempts: 3
-      StartingPosition: LATEST
-
-  SkuConversionLambda:
-    Type: 'AWS::Lambda::Function'
-    Properties:
-      FunctionName: !Sub '${AWS::StackName}_sku-conversion'
-      Description: 'Create Sku conversion and also update the status of the conversions in Dynamo'
-      Handler: dist/ProcessEvent/lambda/sku-conversion.handler
-      Role: !GetAtt StackRole.Arn
-      MemorySize: 128
-      Timeout: 90
-      Runtime: nodejs12.x
-      Code:
-        S3Bucket: !Ref LambdaCodeBucket
-        S3Key: !Sub '${AWS::StackName}.zip'
-      Environment:
-        Variables:
-          ENVIRONMENT: !Ref Environment
-          SKU_CONVERSION_DYNAMODB: !Ref SkuConversionDynamoDB
-          CONVERSIONS_DYNAMODB: !Ref ConversionsDynamoDB
-          RULE_DYNAMODB: !Ref RulesDynamoDB
-          SKU_CONVERSION_PREFIX: !Ref SkuConversionPrefix
-          CSIL_API_URL: !Ref CsilApiUrl
-          ORDER_CREATION_SERVICE_URL: !ImportValue csil-order-creation::new-api-url
-      VpcConfig:
-        SubnetIds: !Ref LambdaPrivateSubnets
-        SecurityGroupIds:
-          - !Ref LambdaSecurityGroup
-
-  SkuConversionEventSourceMapping:
-    Type: 'AWS::Lambda::EventSourceMapping'
-    Properties:
-      EventSourceArn: !GetAtt
-        - SkuConversionQueue
-        - Arn
-      FunctionName: !Ref SkuConversionLambda
-      BatchSize: 1
-
   ## SQS
-  SkuConversionQueue:
+  MatragraQueue:
     Type: 'AWS::SQS::Queue'
     Properties:
-      QueueName: !Sub '${AWS::StackName}_sku-conversion'
+      QueueName: !Sub '${AWS::StackName}'
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt
-          - DeadSkuConversionQueue
+          - DeadMatragraQueue
           - Arn
         maxReceiveCount: 3
       VisibilityTimeout: 120
 
-  DeadSkuConversionQueue:
+  DeadMatragraQueue:
     Type: 'AWS::SQS::Queue'
     Properties:
-      QueueName: !Sub '${AWS::StackName}_sku-conversion-dead'
+      QueueName: !Sub '${AWS::StackName}-dead'
 
-  SkuConversionQueuePolicy:
+  MatragraQueuePolicy:
     Type: 'AWS::SQS::QueuePolicy'
     Properties:
       Queues:
-        - !Ref SkuConversionQueue
+        - !Ref MatragraQueue
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -380,71 +292,71 @@ Resources:
                   - !Ref CreateOrderTopic
 
   ## SNS
-  ConversionOrderDeliveredSubscription:
-    Type: 'AWS::SNS::Subscription'
-    DependsOn: SkuConversionQueue
-    Properties:
-      Endpoint: !GetAtt
-        - SkuConversionQueue
-        - Arn
-      Protocol: sqs
-      TopicArn: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${DeliveredOrdersTopicName}'
-      FilterPolicy:
-        Po_Number:
-          - prefix: !Ref SkuConversionPrefix
+  # ConversionOrderDeliveredSubscription:
+  #   Type: 'AWS::SNS::Subscription'
+  #   DependsOn: SkuConversionQueue
+  #   Properties:
+  #     Endpoint: !GetAtt
+  #       - SkuConversionQueue
+  #       - Arn
+  #     Protocol: sqs
+  #     TopicArn: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${DeliveredOrdersTopicName}'
+  #     FilterPolicy:
+  #       Po_Number:
+  #         - prefix: !Ref SkuConversionPrefix
 
-  ConversionOrderCancelledSubscription:
-    Type: 'AWS::SNS::Subscription'
-    DependsOn: SkuConversionQueue
-    Properties:
-      Endpoint: !GetAtt
-        - SkuConversionQueue
-        - Arn
-      Protocol: sqs
-      TopicArn: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${CancelledOrdersTopicName}'
-      FilterPolicy:
-        Po_Number:
-          - prefix: !Ref SkuConversionPrefix
+  # ConversionOrderCancelledSubscription:
+  #   Type: 'AWS::SNS::Subscription'
+  #   DependsOn: SkuConversionQueue
+  #   Properties:
+  #     Endpoint: !GetAtt
+  #       - SkuConversionQueue
+  #       - Arn
+  #     Protocol: sqs
+  #     TopicArn: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${CancelledOrdersTopicName}'
+  #     FilterPolicy:
+  #       Po_Number:
+  #         - prefix: !Ref SkuConversionPrefix
 
-  CreateOrderTopic:
-    Type: 'AWS::SNS::Topic'
-    Properties:
-      DisplayName: !Sub '${AWS::StackName}_create-order'
-      TopicName: !Sub '${AWS::StackName}_create-order'
+  # CreateOrderTopic:
+  #   Type: 'AWS::SNS::Topic'
+  #   Properties:
+  #     DisplayName: !Sub '${AWS::StackName}_create-order'
+  #     TopicName: !Sub '${AWS::StackName}_create-order'
 
-  CreateOrderSubscription:
-    Type: 'AWS::SNS::Subscription'
-    DependsOn:
-      - SkuConversionQueue
-      - CreateOrderTopic
-    Properties:
-      Endpoint: !GetAtt
-        - SkuConversionQueue
-        - Arn
-      Protocol: sqs
-      TopicArn: !Ref CreateOrderTopic
+  # CreateOrderSubscription:
+  #   Type: 'AWS::SNS::Subscription'
+  #   DependsOn:
+  #     - SkuConversionQueue
+  #     - CreateOrderTopic
+  #   Properties:
+  #     Endpoint: !GetAtt
+  #       - SkuConversionQueue
+  #       - Arn
+  #     Protocol: sqs
+  #     TopicArn: !Ref CreateOrderTopic
 
-  SnsPolicy:
-    Type: AWS::SNS::TopicPolicy
-    Properties:
-      PolicyDocument:
-        Version: '2008-10-17'
-        Id: __default_policy_ID
-        Statement:
-          - Sid: '1'
-            Effect: Allow
-            Principal:
-              AWS: '*'
-            Action:
-              - SNS:Publish
-              - SNS:Receive
-              - SNS:Subscribe
-            Resource: !Ref CreateOrderTopic
-            Condition:
-              StringEquals:
-                AWS:SourceAccount: !Sub ${AWS::AccountId}
-      Topics:
-        - !Ref CreateOrderTopic
+  # SnsPolicy:
+  #   Type: AWS::SNS::TopicPolicy
+  #   Properties:
+  #     PolicyDocument:
+  #       Version: '2008-10-17'
+  #       Id: __default_policy_ID
+  #       Statement:
+  #         - Sid: '1'
+  #           Effect: Allow
+  #           Principal:
+  #             AWS: '*'
+  #           Action:
+  #             - SNS:Publish
+  #             - SNS:Receive
+  #             - SNS:Subscribe
+  #           Resource: !Ref CreateOrderTopic
+  #           Condition:
+  #             StringEquals:
+  #               AWS:SourceAccount: !Sub ${AWS::AccountId}
+  #     Topics:
+  #       - !Ref CreateOrderTopic
 
 Outputs:
   SkuConversionApiUrl:
