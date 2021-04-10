@@ -15,7 +15,7 @@ Fecha y hora | Temas
 
 - [x] Diagrama HIPO (opcional)
 - [ ] Marco Teorico -> Santiago
-- [ ] Diseño Arquitectura APP(Casos de uso, Diagrama de Secuencia y Diagrama de clases) -> JP
+- [ ] Diseño Arquitectura APP (Casos de uso, Diagrama de Secuencia y Diagrama de clases) -> JP
 - [ ] Diseño Cloud (Diagramas)
 - [ ] Diseño de Interfaces (Pantallas)
 - [ ] Conclusiones

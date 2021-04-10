@@ -1,0 +1,459 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  ApiStage:
+    Type: String
+    Default: api
+    Description: proxy api stage
+  LambdaCodeBucket:
+    Type: String
+    Default: casestack-lambda-code
+    Description: Globally used bucket for lambda code
+    AllowedValues:
+      - casestack-lambda-code-dev #Dev
+      - casestack-lambda-code #Prod
+
+Resources:
+  #IAM resources
+  StackRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: !Sub 'stack_${AWS::StackName}'
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: !Sub 'stack_${AWS::StackName}'
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: 'arn:aws:logs:*:*:*'
+              - Effect: Allow
+                Action:
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:GetItem'
+                  - 'dynamodb:DeleteItem'
+                  - 'dynamodb:UpdateItem'
+                  - 'dynamodb:Scan'
+                  - 'dynamodb:Query'
+                Resource:
+                #TODO table's names
+                  - !Sub '${SkuConversionDynamoDB.Arn}'
+                  - !Sub '${SkuConversionDynamoDB.Arn}/index/*'
+                  - !Sub '${ConversionsDynamoDB.Arn}'
+                  - !Sub '${ConversionsDynamoDB.Arn}/index/*'
+                  - !Sub '${RulesDynamoDB.Arn}'
+                  - !Sub '${RulesDynamoDB.Arn}/index/*'
+              - Effect: Allow
+                Action:
+                  - 'sqs:SendMessage'
+                  - 'sqs:ReceiveMessage'
+                  - 'sqs:DeleteMessage'
+                  - 'sqs:GetQueueAttributes'
+                Resource:
+                  - !GetAtt
+                    - SkuConversionQueue
+                    - Arn
+              - Effect: Allow
+                Action:
+                  - dynamodb:DescribeStream
+                  - dynamodb:GetRecords
+                  - dynamodb:GetShardIterator
+                  - dynamodb:ListStreams
+                  - dynamodb:Scan
+                Resource:
+                  - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ConversionsDynamoDB}/stream/*'
+                  - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${RulesDynamoDB}/stream/*'
+              - Effect: Allow
+                Action:
+                  - 'ec2:CreateNetworkInterface'
+                  - 'ec2:DescribeNetworkInterfaces'
+                  - 'ec2:DetachNetworkInterface'
+                  - 'ec2:DeleteNetworkInterface'
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - 'sns:Publish'
+                Resource: '*'
+              - Effect: Allow
+                Action: 
+                  - 'execute-api:Invoke'
+                Resource: 
+                  - !Sub 'arn:aws:execute-api:*:*:*'
+
+  ApiGatewayIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub 'stack_${AWS::StackName}-api'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: ''
+            Effect: 'Allow'
+            Principal:
+              Service:
+                - 'apigateway.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Path: '/'
+      Policies:
+        - PolicyName: LambdaAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action: 'lambda:*'
+                Resource:
+                  - !GetAtt SkuConversionApiLambda.Arn
+
+  # Dynamodb resources
+  UsersDynamoDB:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: !Sub '${AWS::StackName}_users'
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
+  ## START OF API-PROXY RESOURCES
+  ProxyApiGatewayKey:
+    Type: 'AWS::ApiGateway::ApiKey'
+    Properties:
+      Description: !Sub 'Proxy API Key for ${AWS::StackName}'
+      Enabled: true
+      GenerateDistinctId: false
+      Name: !Sub '${AWS::StackName}-proxy'
+
+  ProxyApiUsagePlan:
+    Type: 'AWS::ApiGateway::UsagePlan'
+    Properties:
+      ApiStages:
+        - ApiId: !Ref ProxyRestAPI
+          Stage: !Ref ApiStage
+      Description: !Sub 'Usage plan for Proxy API ${AWS::StackName}'
+      UsagePlanName: !Sub '${AWS::StackName}-unlimited-plan-proxy-api'
+    DependsOn: ProxyApiDeployment
+
+  ProxyApiUsagePlanKey:
+    Type: 'AWS::ApiGateway::UsagePlanKey'
+    Properties:
+      KeyId: !Ref ProxyApiGatewayKey
+      KeyType: API_KEY
+      UsagePlanId: !Ref ProxyApiUsagePlan
+
+  ProxyApiDeployment:
+    Type: 'AWS::ApiGateway::Deployment'
+    Properties:
+      RestApiId: !Ref ProxyRestAPI
+      StageName: !Ref ApiStage
+
+  ProxyRestAPI:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Description: 'Proxy to Lambda Express API'
+      MinimumCompressionSize: 0
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      Body:
+        openapi: 3.0.0
+        info:
+          version: 0.0.1
+          title: !Sub ${AWS::StackName}_proxy
+        paths:
+          /{proxy+}:
+            x-amazon-apigateway-any-method:
+              description: 'Any HTTP method to App Express Lambda'
+              security:
+                - proxy_api_key: []
+              responses:
+                '200':
+                  description: 'OK'
+                '400':
+                  description: 'Bad request'
+                '401':
+                  description: 'Bad signature'
+                '404':
+                  description: 'Not found'
+                '500':
+                  description: 'Internal server error'
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST
+                credentials: !GetAtt ApiGatewayIAMRole.Arn
+                passthroughBehavior: when_no_match
+                uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SkuConversionApiLambda.Arn}/invocations'
+                responses:
+                  '2\d{2}':
+                    statusCode: '200'
+                  '400':
+                    statusCode: '400'
+                  '401':
+                    statusCode: '401'
+                  '4\d[2-9]':
+                    statusCode: '404'
+                  '5\d{2}':
+                    statusCode: '500'
+        components:
+          securitySchemes:
+            proxy_api_key:
+              type: apiKey
+              name: x-api-key
+              in: header
+  ## END OF API-PROXY RESOURCES
+
+  ## START OF API RESOURCES
+  MatragraAPILambda:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}_api-handler'
+      Description: 'Manage the CRUD operations for the dynamoDB by the api'
+      Handler: lambda/App/index.handler
+      Role: !GetAtt StackRole.Arn
+      MemorySize: 128
+      Timeout: 90
+      Runtime: nodejs12.x
+      Code:
+        S3Bucket: !Ref LambdaCodeBucket
+        S3Key: !Sub '${AWS::StackName}.zip'
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Environment
+          SKU_CONVERSION_DYNAMODB: !Ref SkuConversionDynamoDB
+          CONVERSIONS_DYNAMODB: !Ref ConversionsDynamoDB
+          RULE_DYNAMODB: !Ref RulesDynamoDB
+          CSIL_API_URL: !Ref CsilApiUrl
+          CREATE_ORDER_TOPIC_ARN: !Ref CreateOrderTopic
+          SKU_CONVERSION_PREFIX: !Ref SkuConversionPrefix
+      VpcConfig:
+        SubnetIds: !Ref LambdaPrivateSubnets
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+
+  QueueApiInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref SkuConversionApiLambda
+      Principal: 'apigateway.amazonaws.com'
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ProxyRestAPI}/*'
+  ## END OF API RESOURCES
+
+  ## Lambda functions
+  UpdateAlgoliaLambda:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}_stream-update-algolia'
+      Description: 'Update status in algolia'
+      Handler: dist/ProcessEvent/lambda/stream-update-algolia.handler
+      Role: !GetAtt StackRole.Arn
+      MemorySize: 128
+      Timeout: 90
+      Runtime: nodejs12.x
+      Code:
+        S3Bucket: !Ref LambdaCodeBucket
+        S3Key: !Sub '${AWS::StackName}.zip'
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Environment
+          CONVERSIONS_DYNAMODB: !Ref ConversionsDynamoDB
+          RULE_DYNAMODB: !Ref RulesDynamoDB
+          ALGOLIA_SKU_CONVERSIONS: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:algolia-integration_sku-conversions"
+          ALGOLIA_SKU_RULES: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:algolia-integration_sku-conversion-rules"
+
+  ConversionsUpdateAlgoliaSourceMapping:
+    Type: 'AWS::Lambda::EventSourceMapping'
+    DependsOn:
+      - ConversionsDynamoDB
+      - UpdateAlgoliaLambda
+    Properties:
+      BatchSize: 1
+      Enabled: true
+      EventSourceArn: !GetAtt ConversionsDynamoDB.StreamArn
+      FunctionName: !Ref UpdateAlgoliaLambda
+      MaximumRetryAttempts: 3
+      StartingPosition: LATEST
+  
+  RulesUpdateAlgoliaSourceMapping:
+    Type: 'AWS::Lambda::EventSourceMapping'
+    DependsOn:
+      - RulesDynamoDB
+      - UpdateAlgoliaLambda
+    Properties:
+      BatchSize: 1
+      Enabled: true
+      EventSourceArn: !GetAtt RulesDynamoDB.StreamArn
+      FunctionName: !Ref UpdateAlgoliaLambda
+      MaximumRetryAttempts: 3
+      StartingPosition: LATEST
+
+  SkuConversionLambda:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}_sku-conversion'
+      Description: 'Create Sku conversion and also update the status of the conversions in Dynamo'
+      Handler: dist/ProcessEvent/lambda/sku-conversion.handler
+      Role: !GetAtt StackRole.Arn
+      MemorySize: 128
+      Timeout: 90
+      Runtime: nodejs12.x
+      Code:
+        S3Bucket: !Ref LambdaCodeBucket
+        S3Key: !Sub '${AWS::StackName}.zip'
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Environment
+          SKU_CONVERSION_DYNAMODB: !Ref SkuConversionDynamoDB
+          CONVERSIONS_DYNAMODB: !Ref ConversionsDynamoDB
+          RULE_DYNAMODB: !Ref RulesDynamoDB
+          SKU_CONVERSION_PREFIX: !Ref SkuConversionPrefix
+          CSIL_API_URL: !Ref CsilApiUrl
+          ORDER_CREATION_SERVICE_URL: !ImportValue csil-order-creation::new-api-url
+      VpcConfig:
+        SubnetIds: !Ref LambdaPrivateSubnets
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+
+  SkuConversionEventSourceMapping:
+    Type: 'AWS::Lambda::EventSourceMapping'
+    Properties:
+      EventSourceArn: !GetAtt
+        - SkuConversionQueue
+        - Arn
+      FunctionName: !Ref SkuConversionLambda
+      BatchSize: 1
+
+  ## SQS
+  SkuConversionQueue:
+    Type: 'AWS::SQS::Queue'
+    Properties:
+      QueueName: !Sub '${AWS::StackName}_sku-conversion'
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt
+          - DeadSkuConversionQueue
+          - Arn
+        maxReceiveCount: 3
+      VisibilityTimeout: 120
+
+  DeadSkuConversionQueue:
+    Type: 'AWS::SQS::Queue'
+    Properties:
+      QueueName: !Sub '${AWS::StackName}_sku-conversion-dead'
+
+  SkuConversionQueuePolicy:
+    Type: 'AWS::SQS::QueuePolicy'
+    Properties:
+      Queues:
+        - !Ref SkuConversionQueue
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: '*'
+            Action: 'sqs:SendMessage'
+            Resource: '*'
+            Condition:
+              'ForAnyValue:ArnEquals':
+                'aws:SourceArn':
+                  - !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${DeliveredOrdersTopicName}'
+                  - !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${CancelledOrdersTopicName}'
+                  - !Ref CreateOrderTopic
+
+  ## SNS
+  ConversionOrderDeliveredSubscription:
+    Type: 'AWS::SNS::Subscription'
+    DependsOn: SkuConversionQueue
+    Properties:
+      Endpoint: !GetAtt
+        - SkuConversionQueue
+        - Arn
+      Protocol: sqs
+      TopicArn: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${DeliveredOrdersTopicName}'
+      FilterPolicy:
+        Po_Number:
+          - prefix: !Ref SkuConversionPrefix
+
+  ConversionOrderCancelledSubscription:
+    Type: 'AWS::SNS::Subscription'
+    DependsOn: SkuConversionQueue
+    Properties:
+      Endpoint: !GetAtt
+        - SkuConversionQueue
+        - Arn
+      Protocol: sqs
+      TopicArn: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${CancelledOrdersTopicName}'
+      FilterPolicy:
+        Po_Number:
+          - prefix: !Ref SkuConversionPrefix
+
+  CreateOrderTopic:
+    Type: 'AWS::SNS::Topic'
+    Properties:
+      DisplayName: !Sub '${AWS::StackName}_create-order'
+      TopicName: !Sub '${AWS::StackName}_create-order'
+
+  CreateOrderSubscription:
+    Type: 'AWS::SNS::Subscription'
+    DependsOn:
+      - SkuConversionQueue
+      - CreateOrderTopic
+    Properties:
+      Endpoint: !GetAtt
+        - SkuConversionQueue
+        - Arn
+      Protocol: sqs
+      TopicArn: !Ref CreateOrderTopic
+
+  SnsPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2008-10-17'
+        Id: __default_policy_ID
+        Statement:
+          - Sid: '1'
+            Effect: Allow
+            Principal:
+              AWS: '*'
+            Action:
+              - SNS:Publish
+              - SNS:Receive
+              - SNS:Subscribe
+            Resource: !Ref CreateOrderTopic
+            Condition:
+              StringEquals:
+                AWS:SourceAccount: !Sub ${AWS::AccountId}
+      Topics:
+        - !Ref CreateOrderTopic
+
+Outputs:
+  SkuConversionApiUrl:
+    Description: Sku Conversion API Url.
+    Value: !Sub 'https://${ProxyRestAPI}.execute-api.${AWS::Region}.amazonaws.com/${ApiStage}'
+    Export:
+      Name: !Sub ${AWS::StackName}::api-url
+  SkuConversionApiKey:
+    Description: Sku Conversion API key.
+    Value: !Ref ProxyApiGatewayKey
+    Export:
+      Name: !Sub ${AWS::StackName}::api-key
