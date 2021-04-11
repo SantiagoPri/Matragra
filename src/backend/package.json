@@ -7,5 +7,24 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "aws-api-gateway-client": "^0.3.6",
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "glob": "^7.1.6",
+    "helmet": "^4.3.1",
+    "http": "^0.0.1-security",
+    "module-alias": "^2.2.2",
+    "morgan": "^1.10.0",
+    "node-emoji": "^1.10.0",
+    "serverless-http": "^2.6.0"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.826.0",
+    "lint-staged": "^10.5.3",
+    "nodemon": "^2.0.7"
+  }
 }
