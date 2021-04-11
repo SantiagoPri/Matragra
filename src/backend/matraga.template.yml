@@ -10,15 +10,6 @@ Parameters:
     Description: Globally used bucket for lambda code
     AllowedValues:
       - matragra-lambda-code
-  #TODO:crear recursos 
-  LambdaPrivateSubnets:
-    Type: CommaDelimitedList
-    Default: 'subnet-53bc2009,subnet-16e6586f,subnet-8a2ff6c1'
-    Description: VPC Subnets for Lambda to run in (for internal visibility of CSIL api)
-  LambdaSecurityGroup:
-    Type: String
-    Default: 'sg-2d9d5d4b'
-    Description: Security Group for lambda to use for VPC
 
 Resources:
   #IAM resources
@@ -58,37 +49,6 @@ Resources:
                 Resource:
                   - !Sub '${UsersDynamoDB.Arn}'
               - Effect: Allow
-                Action:
-                  - 'sqs:SendMessage'
-                  - 'sqs:ReceiveMessage'
-                  - 'sqs:DeleteMessage'
-                  - 'sqs:GetQueueAttributes'
-                Resource:
-                  - !GetAtt
-                    - SkuConversionQueue
-                    - Arn
-              - Effect: Allow
-                Action:
-                  - dynamodb:DescribeStream
-                  - dynamodb:GetRecords
-                  - dynamodb:GetShardIterator
-                  - dynamodb:ListStreams
-                  - dynamodb:Scan
-                Resource:
-                  - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ConversionsDynamoDB}/stream/*'
-                  - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${RulesDynamoDB}/stream/*'
-              - Effect: Allow
-                Action:
-                  - 'ec2:CreateNetworkInterface'
-                  - 'ec2:DescribeNetworkInterfaces'
-                  - 'ec2:DetachNetworkInterface'
-                  - 'ec2:DeleteNetworkInterface'
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - 'sns:Publish'
-                Resource: '*'
-              - Effect: Allow
                 Action: 
                   - 'execute-api:Invoke'
                 Resource: 
@@ -117,7 +77,7 @@ Resources:
               - Effect: 'Allow'
                 Action: 'lambda:*'
                 Resource:
-                  - !GetAtt SkuConversionApiLambda.Arn
+                  - !GetAtt MatragraAPILambda.Arn
 
   # Dynamodb resources
   UsersDynamoDB:
@@ -203,7 +163,7 @@ Resources:
                 httpMethod: POST
                 credentials: !GetAtt ApiGatewayIAMRole.Arn
                 passthroughBehavior: when_no_match
-                uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SkuConversionApiLambda.Arn}/invocations'
+                uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatragraAPILambda.Arn}/invocations'
                 responses:
                   '2\d{2}':
                     statusCode: '200'
@@ -239,11 +199,7 @@ Resources:
         S3Key: !Sub '${AWS::StackName}.zip'
       Environment:
         Variables:
-          SKU_CONVERSION_DYNAMODB: !Ref UsersDynamoDB
-      VpcConfig:
-        SubnetIds: !Ref LambdaPrivateSubnets
-        SecurityGroupIds:
-          - !Ref LambdaSecurityGroup
+          USERS_DYNAMODB: !Ref UsersDynamoDB
 
   QueueApiInvokePermission:
     Type: 'AWS::Lambda::Permission'
@@ -255,41 +211,41 @@ Resources:
   ## END OF API RESOURCES
 
   ## SQS
-  MatragraQueue:
-    Type: 'AWS::SQS::Queue'
-    Properties:
-      QueueName: !Sub '${AWS::StackName}'
-      RedrivePolicy:
-        deadLetterTargetArn: !GetAtt
-          - DeadMatragraQueue
-          - Arn
-        maxReceiveCount: 3
-      VisibilityTimeout: 120
+  # MatragraQueue:
+  #   Type: 'AWS::SQS::Queue'
+  #   Properties:
+  #     QueueName: !Sub '${AWS::StackName}'
+  #     RedrivePolicy:
+  #       deadLetterTargetArn: !GetAtt
+  #         - DeadMatragraQueue
+  #         - Arn
+  #       maxReceiveCount: 3
+  #     VisibilityTimeout: 120
 
-  DeadMatragraQueue:
-    Type: 'AWS::SQS::Queue'
-    Properties:
-      QueueName: !Sub '${AWS::StackName}-dead'
+  # DeadMatragraQueue:
+  #   Type: 'AWS::SQS::Queue'
+  #   Properties:
+  #     QueueName: !Sub '${AWS::StackName}-dead'
 
-  MatragraQueuePolicy:
-    Type: 'AWS::SQS::QueuePolicy'
-    Properties:
-      Queues:
-        - !Ref MatragraQueue
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS: '*'
-            Action: 'sqs:SendMessage'
-            Resource: '*'
-            Condition:
-              'ForAnyValue:ArnEquals':
-                'aws:SourceArn':
-                  - !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${DeliveredOrdersTopicName}'
-                  - !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${CancelledOrdersTopicName}'
-                  - !Ref CreateOrderTopic
+  # MatragraQueuePolicy:
+  #   Type: 'AWS::SQS::QueuePolicy'
+  #   Properties:
+  #     Queues:
+  #       - !Ref MatragraQueue
+  #     PolicyDocument:
+  #       Version: 2012-10-17
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             AWS: '*'
+  #           Action: 'sqs:SendMessage'
+  #           Resource: '*'
+  #           Condition:
+  #             'ForAnyValue:ArnEquals':
+  #               'aws:SourceArn':
+  #                 - !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${DeliveredOrdersTopicName}'
+  #                 - !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${CancelledOrdersTopicName}'
+  #                 - !Ref CreateOrderTopic
 
   ## SNS
   # ConversionOrderDeliveredSubscription:
@@ -359,12 +315,12 @@ Resources:
   #       - !Ref CreateOrderTopic
 
 Outputs:
-  SkuConversionApiUrl:
+  MatragraApiUrl:
     Description: Sku Conversion API Url.
     Value: !Sub 'https://${ProxyRestAPI}.execute-api.${AWS::Region}.amazonaws.com/${ApiStage}'
     Export:
       Name: !Sub ${AWS::StackName}::api-url
-  SkuConversionApiKey:
+  MatragraApiKey:
     Description: Sku Conversion API key.
     Value: !Ref ProxyApiGatewayKey
     Export:
