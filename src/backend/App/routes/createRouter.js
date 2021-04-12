@@ -1,5 +1,5 @@
-import glob from "glob";
-import { Router } from "express";
+const glob = require("glob");
+const { Router } = require("express");
 
 const createRouter = () => {
   const routes = glob
