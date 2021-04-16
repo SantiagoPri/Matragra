@@ -216,6 +216,7 @@ Resources:
       Environment:
         Variables:
           MATRAGRA_DYNAMODB: !Ref MatragraDynamoDB
+          API_KEY: !Ref ProxyApiGatewayKey
 
   QueueApiInvokePermission:
     Type: "AWS::Lambda::Permission"
