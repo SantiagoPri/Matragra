@@ -8,12 +8,17 @@ async function createUserService(user) {
   if (!validation.isValid) {
     return validation.message;
   }
-  // Feel free to find a better way to generate the salt, I'm just to tired XD
-  // const salt = await bcrypt.genSalt(84);
-  // const encryptedPassword = await bcrypt.hash(password, salt);
+  const encryptedPassword = await new Promise((resolve, reject) => {
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(password, salt, (err, hash) => {
+        if (err) reject(err);
+        resolve(hash);
+      });
+    });
+  });
+
   await insertNewUser(userName, roleName, {
-    // password: encryptedPassword,
-    password,//TODO: delete this line
+    password: encryptedPassword,
     ...restParams,
   });
   return "User succesfully created";
