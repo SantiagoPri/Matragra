@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 PACKAGE_MANAGER=npm
 ZIP_NAME=matragra.zip
-ZIP_FOLDERS=node_modules\ App
+ZIP_FOLDERS=node_modules\ App\ package.json
 REGION=us-east-2
 PROFILE=personal
 BUCKET_NAME=matragra-lambda-code

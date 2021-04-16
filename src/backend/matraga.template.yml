@@ -47,7 +47,7 @@ Resources:
                   - "dynamodb:Scan"
                   - "dynamodb:Query"
                 Resource:
-                  - !Sub "${UsersDynamoDB.Arn}"
+                  - !Sub "${MatragraDynamoDB.Arn}"
               - Effect: Allow
                 Action:
                   - "execute-api:Invoke"
@@ -80,10 +80,10 @@ Resources:
                   - !GetAtt MatragraAPILambda.Arn
 
   # Dynamodb resources
-  UsersDynamoDB:
+  MatragraDynamoDB:
     Type: "AWS::DynamoDB::Table"
     Properties:
-      TableName: !Sub "${AWS::StackName}_users"
+      TableName: !Sub "${AWS::StackName}"
       AttributeDefinitions:
         - AttributeName: pk
           AttributeType: S
@@ -215,7 +215,7 @@ Resources:
         S3Key: !Sub "${AWS::StackName}.zip"
       Environment:
         Variables:
-          USERS_DYNAMODB: !Ref UsersDynamoDB
+          MATRAGRA_DYNAMODB: !Ref MatragraDynamoDB
 
   QueueApiInvokePermission:
     Type: "AWS::Lambda::Permission"

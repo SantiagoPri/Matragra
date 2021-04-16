@@ -37,7 +37,7 @@ app
   .use(json({ limit: "50mb" }));
 
 // Routes
-app.use("/", Routes);
+app.use("/", Routes.default);
 // Error Handler
 app.use((error, req, res, next) => {
   console.error(error);
