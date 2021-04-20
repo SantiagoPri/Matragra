@@ -253,4 +253,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Enviroment files
+env.*
+
 # End of https://www.toptal.com/developers/gitignore/api/windows,linux,macos,node,react,compressed

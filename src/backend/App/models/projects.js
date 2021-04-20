@@ -2,37 +2,37 @@ const db = require("../helpers/aws/dynamodb");
 
 const { MATRAGRA_DYNAMODB } = process.env;
 
-function insertNewUser(userName, roleName, restParams) {
+function insertNewProject(projectName, areaName, restParams) {
   const Item = {
-    pk: `USER#${userName}`,
-    sk: `ROLE#${roleName}`,
+    pk: `PROJECT#${projectName}`,
+    sk: `AREA#${areaName}`,
     ...restParams,
   };
   const params = {
     TableName: MATRAGRA_DYNAMODB,
     Item,
   };
-  console.log("Creating new User");
+  console.log("Creating new Project");
   return db.put(params).promise();
 }
 
-function getUserbyId(userName) {
+function getProjectbyId(ProjectName) {
   const params = {
     TableName: MATRAGRA_DYNAMODB,
-    KeyConditionExpression: "#pk = :user and begins_with(#sk, :role)",
+    KeyConditionExpression: "#pk = :project and begins_with(#sk, :area)",
     ExpressionAttributeNames: {
       "#pk": "pk",
       "#sk": "sk",
     },
     ExpressionAttributeValues: {
-      ":user": `USER#${userName}`,
-      ":role": `ROLE#`,
+      ":project": `PROJECT#${projectName}`,
+      ":area": `AREA#`,
     },
   };
   return db.query(params).promise();
 }
 
 module.exports = {
-  insertNewUser,
-  getUserbyId,
+  insertNewProject,
+  getProjectbyId,
 };
