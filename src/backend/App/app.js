@@ -5,6 +5,8 @@ const { urlencoded, json } = require("body-parser");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const emoji = require("node-emoji");
+const passport = require("passport");
+
 
 const Routes = require("./routes/createRouter");
 
@@ -35,6 +37,11 @@ app
   )
   .use(urlencoded({ extended: true, limit: "50mb" }))
   .use(json({ limit: "50mb" }));
+
+//passport middleware
+app.use(passport.initialize());
+//Passport Config
+require("@appConfig/passport")(passport);
 
 // Routes
 app.use("/", Routes.default);
