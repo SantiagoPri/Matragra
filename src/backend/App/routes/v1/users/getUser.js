@@ -7,17 +7,16 @@ exports.default = Router({ mergeParams: true }).get(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      console.log(req);
+      console.log(req.body);
       // res.json({
       //     id: req.user.id,
       //     name: req.user.name,
       //     email: req.user.email
       //   });
-      return res.send(req);
+      return res.send(req.body);
     } catch (error) {
-      next(error);
       console.warn(error);
-      return "An error happened";
+      return res.send(error.message);
     }
   }
 );

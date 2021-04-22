@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const validateLoginInput = require("@appValidations/login");
 const { getUserbyId } = require("@appModels/users");
 const cleaner = require("@appHelpers/cleanResponses");
-const { API_KEY } = process.env
+const { API_KEY } = process.env;
 
 async function loginService(inputUser) {
   const { userName, password } = inputUser;
@@ -33,7 +33,7 @@ async function loginService(inputUser) {
   if (!isMatch) {
     return "Password incorrect";
   }
-  const payload = { name: user.name };
+  const payload = { userName: user.pk };
   //Token
   const jwtToken = await new Promise((resolve, reject) => {
     jwt.sign(payload, API_KEY, { expiresIn: 3600 }, (err, token) => {
