@@ -17,7 +17,6 @@ const Registrarme = () => {
 
         <div className="form-group">
           <Label>Tipo de usuario</Label>
-          {/* <Input type="text" className="form-control" placeholder="Last name" /> */}
           <Select className="form-control">
             <option className="form-control" value="" hidden>
               Tipo de usuario

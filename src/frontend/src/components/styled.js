@@ -1,6 +1,13 @@
 import styled from "styled-components";
 import { NavLink as Link } from "react-router-dom";
 
+export const StickyDiv = styled.div`
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index:1000
+`;
+
 export const Nav = styled.nav`
   background: #000;
   height: 80px;

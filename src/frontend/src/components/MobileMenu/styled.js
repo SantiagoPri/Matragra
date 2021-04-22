@@ -4,7 +4,7 @@ import { NavLink as Link } from "react-router-dom";
 
 export const MenuContainer = styled.aside`
   position: fixed;
-  z-index: 999;
+  z-index: 998;
   width: 100%;
   height: 100%;
   background: #000;

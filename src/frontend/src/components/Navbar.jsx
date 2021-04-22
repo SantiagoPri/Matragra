@@ -6,6 +6,7 @@ import {
   NavBtnLink,
   NavLink,
   NavMenu,
+  StickyDiv,
 } from "./styled";
 import { FaBars } from "react-icons/fa";
 import MobileMenu from "./MobileMenu/MobileMenu";
@@ -17,7 +18,7 @@ const Navbar = () => {
   };
 
   return (
-    <div>
+    <StickyDiv>
       <Nav>
         <NavLink to="/">
           <img
@@ -37,7 +38,7 @@ const Navbar = () => {
         {/* <NavBtn>
         </NavBtn> */}
       </Nav>
-    </div>
+    </StickyDiv>
   );
 };
 

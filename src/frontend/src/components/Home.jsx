@@ -6,7 +6,6 @@ const Home = () => {
         className="App-logo"
         alt="logo"
       />
-      <p>Este es el comienzo de Matragra xD</p>
     </header>
   );
 };

@@ -5,16 +5,11 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Registrarme from "./components/sign/Registrarme";
 import Ingresar from "./components/sign/Ingresar";
-import { StickyContainer, Sticky } from "react-sticky";
 
 function App() {
   return (
     <div className="App">
       <Router>
-        {/* <StickyContainer>
-          <Sticky>
-          </Sticky>
-        </StickyContainer> */}
         <Navbar />
         <Switch>
           <Route path="/" exact component={Home} />
