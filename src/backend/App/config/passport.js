@@ -2,23 +2,33 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt; //Se extrae el Payload
 const { getUserbyId } = require("@appModels/users");
 const cleaner = require("@appHelpers/cleanResponses");
-const { API_KEY } = process.env
+const { API_KEY } = process.env;
 
-const opts = {};
-//Clave a la cabecera
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = API_KEY;
-
-module.exports = passport => {
-  console.log("Authenticating");
+module.exports = (passport) => {
+  //Clave a la cabecera
+  const jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+  const opts = {
+    jwtFromRequest,
+    secretOrKey: API_KEY,
+  };
+  console.log("starting authorize");
+  console.log("Options: ", opts);
   passport.use(
-    new JwtStrategy(opts, (jwt_payload, done) => {
-      //console.log(jwt_payload);
-      const user = await getUserbyId(jwt_payload.userName);
-      if (user.Count) {
-        return done(null, user);
-      } 
-      return done(null, false);
+    new JwtStrategy(opts, (payload, done) => {
+      console.log("Payload: ", payload);
+      authenticatingInDynamo(payload.userName, done);
     })
   );
 };
+
+function authenticatingInDynamo(userName, done) {
+  getUserbyId(userName)
+    .then((data) => {
+      if (data.Count) {
+        return done(null, true);
+      } else {
+        return done(null, false);
+      }
+    })
+    .catch((err) => done(err, null));
+}

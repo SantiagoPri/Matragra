@@ -7,9 +7,9 @@ const morgan = require("morgan");
 const emoji = require("node-emoji");
 const passport = require("passport");
 
-
+const strategyJWT = require("@appConfig/passport");
 const Routes = require("./routes/createRouter");
-
+console.log(strategyJWT);
 const app = express();
 
 // Health check
@@ -38,10 +38,14 @@ app
   .use(urlencoded({ extended: true, limit: "50mb" }))
   .use(json({ limit: "50mb" }));
 
-//passport middleware
+//Using Passport and the passport strategy
+strategyJWT(passport);
 app.use(passport.initialize());
-//Passport Config
-require("@appConfig/passport")(passport);
+
+// //passport middleware
+// app.use(passport.initialize());
+// //Passport Config
+// require("@appConfig/passport")(passport);
 
 // Routes
 app.use("/", Routes.default);

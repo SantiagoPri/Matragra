@@ -4,7 +4,7 @@ const Ingresar = () => {
   return (
     <Container>
       <Form>
-        {/* <form > */}
+        {/* <form className="container-sm"> */}
           <H3>Ingresar</H3>
 
           <div className="form-group">

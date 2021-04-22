@@ -1,10 +1,11 @@
 const { Router } = require("express");
-const passport = require("@appConfig/passport");
+const passport = require("passport");
+const { getUserbyId } = require("@appModels/users");
 
 exports.default = Router({ mergeParams: true }).get(
   "/v1/users/current",
   passport.authenticate("jwt", { session: false }),
-  (req, res) => {
+  async (req, res) => {
     try {
       console.log(req);
       // res.json({
