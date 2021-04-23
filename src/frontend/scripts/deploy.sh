@@ -6,7 +6,6 @@ PROFILE=personal
 # FRONTEND_DISTRIBUTION=E10N9TXNDSE5BW
 echo "Prebuild starting..."
 echo 'Removing current build folder'
-rm -rf node_modules
 rm -rf deploy 
 echo 'Installing all dependencies in production mode'
 npm install --production=true
