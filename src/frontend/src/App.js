@@ -5,17 +5,22 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Registrarme from "./components/sign/Registrarme";
 import Ingresar from "./components/sign/Ingresar";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
     <div className="App">
       <Router>
-        <Navbar />
-        <Switch>
-          <Route path="/" exact component={Home} />
-          <Route path="/registrarme" exact component={Registrarme} />
-          <Route path="/ingresar" exact component={Ingresar} />
-        </Switch>
+        <QueryClientProvider client={queryClient}>
+          <Navbar />
+          <Switch>
+            <Route path="/" exact component={Home} />
+            <Route path="/registrarme" component={Registrarme} />
+            <Route path="/ingresar" component={Ingresar} />
+          </Switch>
+        </QueryClientProvider>
       </Router>
     </div>
   );

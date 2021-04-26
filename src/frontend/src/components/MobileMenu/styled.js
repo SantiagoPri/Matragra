@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { FaExternalLinkAlt, FaTimes } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 import { NavLink as Link } from "react-router-dom";
 
 export const MenuContainer = styled.aside`

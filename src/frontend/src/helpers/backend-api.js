@@ -4,17 +4,21 @@ const {
   REACT_APP_BASE_API_URL: BASE_URL,
 } = process.env;
 
-const createUser = (userInfo) => {
-  const params = {
-    headers: { "x-api-key": API_KEY },
-    url: `${BASE_URL}/users/`,
-    method: "post",
-    data: userInfo,
-  };
-  return axios.request(params);
+export const createUser = (userInfo) => {
+  // const params = {
+  //   headers: { "x-api-key": API_KEY },
+  //   url: `${BASE_URL}/users/`,
+  //   method: "post",
+  //   data: userInfo,
+  // };
+  // return axios.request(params);
+  console.log(userInfo);
+  return new Promise((resolve, reject) =>
+    resolve(`did it for ${userInfo.userName}`)
+  );
 };
 
-const login = (credentials) => {
+export const login = (credentials) => {
   const params = {
     headers: { "x-api-key": API_KEY },
     url: `${BASE_URL}/login/`,
@@ -24,4 +28,4 @@ const login = (credentials) => {
   return axios.request(params);
 };
 
-export default { createUser, login };
+// export default { createUser, login };

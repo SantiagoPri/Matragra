@@ -3,7 +3,7 @@ import { Container, H3, Form, Label, Input, Button, Select } from "./styled";
 const Registrarme = () => {
   return (
     <Container>
-      <Form>
+      <Form >
         <H3>Registrarme</H3>
 
         <div className="form-group">
@@ -49,9 +49,9 @@ const Registrarme = () => {
           />
         </div>
 
-        <Button type="submit">Registrarme</Button>
+        <Button type="submit" className="btn btn-primary btn-block">Registrarme</Button>
         <p className="forgot-password text-right">
-          Ya tiene una cuenta? <a href="#">Ingresar</a>
+          Ya tiene una cuenta? <a href="/ingresar">Ingresar</a>
         </p>
       </Form>
     </Container>

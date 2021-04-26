@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   MobileIcon,
   Nav,
-  NavBtn,
   NavBtnLink,
   NavLink,
   NavMenu,
