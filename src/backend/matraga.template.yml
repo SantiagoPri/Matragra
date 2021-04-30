@@ -125,7 +125,7 @@ Resources:
     Type: "AWS::ApiGateway::UsagePlan"
     Properties:
       ApiStages:
-        - ApiId: !Ref ProxyRestAPI
+        - ApiId: !Ref ProxyRestAPIv2
           Stage: !Ref ApiStage
       Description: !Sub "Usage plan for Proxy API ${AWS::StackName}"
       UsagePlanName: !Sub "${AWS::StackName}-unlimited-plan-proxy-api"
@@ -141,10 +141,10 @@ Resources:
   ProxyApiDeployment:
     Type: "AWS::ApiGateway::Deployment"
     Properties:
-      RestApiId: !Ref ProxyRestAPI
+      RestApiId: !Ref ProxyRestAPIv2
       StageName: !Ref ApiStage
 
-  ProxyRestAPI:
+  ProxyRestAPIv2:
     Type: "AWS::ApiGateway::RestApi"
     Properties:
       Description: "Proxy to Lambda Express API"
@@ -161,8 +161,8 @@ Resources:
           /{proxy+}:
             x-amazon-apigateway-any-method:
               description: "Any HTTP method to App Express Lambda"
-              security:
-                - proxy_api_key: []
+              # security:
+              #   - proxy_api_key: []
               responses:
                 "200":
                   description: "OK"
@@ -224,117 +224,14 @@ Resources:
       Action: "lambda:InvokeFunction"
       FunctionName: !Ref MatragraAPILambda
       Principal: "apigateway.amazonaws.com"
-      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ProxyRestAPI}/*"
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ProxyRestAPIv2}/*"
   ## END OF API RESOURCES
 
-  ## SQS
-  # MatragraQueue:
-  #   Type: 'AWS::SQS::Queue'
-  #   Properties:
-  #     QueueName: !Sub '${AWS::StackName}'
-  #     RedrivePolicy:
-  #       deadLetterTargetArn: !GetAtt
-  #         - DeadMatragraQueue
-  #         - Arn
-  #       maxReceiveCount: 3
-  #     VisibilityTimeout: 120
-
-  # DeadMatragraQueue:
-  #   Type: 'AWS::SQS::Queue'
-  #   Properties:
-  #     QueueName: !Sub '${AWS::StackName}-dead'
-
-  # MatragraQueuePolicy:
-  #   Type: 'AWS::SQS::QueuePolicy'
-  #   Properties:
-  #     Queues:
-  #       - !Ref MatragraQueue
-  #     PolicyDocument:
-  #       Version: 2012-10-17
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             AWS: '*'
-  #           Action: 'sqs:SendMessage'
-  #           Resource: '*'
-  #           Condition:
-  #             'ForAnyValue:ArnEquals':
-  #               'aws:SourceArn':
-  #                 - !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${DeliveredOrdersTopicName}'
-  #                 - !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${CancelledOrdersTopicName}'
-  #                 - !Ref CreateOrderTopic
-
-  ## SNS
-  # ConversionOrderDeliveredSubscription:
-  #   Type: 'AWS::SNS::Subscription'
-  #   DependsOn: SkuConversionQueue
-  #   Properties:
-  #     Endpoint: !GetAtt
-  #       - SkuConversionQueue
-  #       - Arn
-  #     Protocol: sqs
-  #     TopicArn: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${DeliveredOrdersTopicName}'
-  #     FilterPolicy:
-  #       Po_Number:
-  #         - prefix: !Ref SkuConversionPrefix
-
-  # ConversionOrderCancelledSubscription:
-  #   Type: 'AWS::SNS::Subscription'
-  #   DependsOn: SkuConversionQueue
-  #   Properties:
-  #     Endpoint: !GetAtt
-  #       - SkuConversionQueue
-  #       - Arn
-  #     Protocol: sqs
-  #     TopicArn: !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${CancelledOrdersTopicName}'
-  #     FilterPolicy:
-  #       Po_Number:
-  #         - prefix: !Ref SkuConversionPrefix
-
-  # CreateOrderTopic:
-  #   Type: 'AWS::SNS::Topic'
-  #   Properties:
-  #     DisplayName: !Sub '${AWS::StackName}_create-order'
-  #     TopicName: !Sub '${AWS::StackName}_create-order'
-
-  # CreateOrderSubscription:
-  #   Type: 'AWS::SNS::Subscription'
-  #   DependsOn:
-  #     - SkuConversionQueue
-  #     - CreateOrderTopic
-  #   Properties:
-  #     Endpoint: !GetAtt
-  #       - SkuConversionQueue
-  #       - Arn
-  #     Protocol: sqs
-  #     TopicArn: !Ref CreateOrderTopic
-
-  # SnsPolicy:
-  #   Type: AWS::SNS::TopicPolicy
-  #   Properties:
-  #     PolicyDocument:
-  #       Version: '2008-10-17'
-  #       Id: __default_policy_ID
-  #       Statement:
-  #         - Sid: '1'
-  #           Effect: Allow
-  #           Principal:
-  #             AWS: '*'
-  #           Action:
-  #             - SNS:Publish
-  #             - SNS:Receive
-  #             - SNS:Subscribe
-  #           Resource: !Ref CreateOrderTopic
-  #           Condition:
-  #             StringEquals:
-  #               AWS:SourceAccount: !Sub ${AWS::AccountId}
-  #     Topics:
-  #       - !Ref CreateOrderTopic
 
 Outputs:
   MatragraApiUrl:
     Description: Sku Conversion API Url.
-    Value: !Sub "https://${ProxyRestAPI}.execute-api.${AWS::Region}.amazonaws.com/${ApiStage}"
+    Value: !Sub "https://${ProxyRestAPIv2}.execute-api.${AWS::Region}.amazonaws.com/${ApiStage}"
     Export:
       Name: !Sub ${AWS::StackName}::api-url
   MatragraApiKey:

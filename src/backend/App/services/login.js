@@ -16,7 +16,7 @@ async function loginService(inputUser) {
   let user = await getUserbyId(userName);
 
   if (!user.Count) {
-    return "User or password are invalid";
+    return { status: "error", message: "User or password are invalid" };
   }
 
   [user] = cleaner(user).Items;
@@ -31,7 +31,7 @@ async function loginService(inputUser) {
   });
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    return "Password incorrect";
+    return { status: "error", message: "Password incorrect" };
   }
   const payload = { userName: user.pk };
   //Token
@@ -43,7 +43,7 @@ async function loginService(inputUser) {
       resolve(`Bearer ${token}`);
     });
   });
-  return jwtToken;
+  return { status: "ok", message: jwtToken };
 }
 
 module.exports = { loginService };

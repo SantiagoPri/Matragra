@@ -4,9 +4,13 @@ const { insertNewUser } = require("@appModels/users");
 
 async function createUserService(user) {
   const { userName, roleName, password, ...restParams } = user;
-  const validation = await validateNewUser(userName, roleName, password);
-  if (!validation.isValid) {
-    return validation.message;
+  const { isValid, message } = await validateNewUser(
+    userName,
+    roleName,
+    password
+  );
+  if (!isValid) {
+    return { status: "error", message };
   }
   const encryptedPassword = await new Promise((resolve, reject) => {
     bcrypt.genSalt(10, (err, salt) => {
@@ -21,7 +25,7 @@ async function createUserService(user) {
     password: encryptedPassword,
     ...restParams,
   });
-  return "User succesfully created";
+  return { status: "ok", message: "User succesfully created" };
 }
 
 module.exports = { createUserService };

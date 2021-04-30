@@ -4,10 +4,8 @@ export const Container = styled.div`
   background: #1a1a1a;
   min-height: 100vh;
   display: flex;
-  text-align: left;  
+  text-align: left;
 `;
-
-
 
 export const Form = styled.form`
   width: 450px;
@@ -96,4 +94,8 @@ export const Select = styled.select`
   }
 `;
 
-  
+export const P = styled.p`
+   font-size: 0.8rem;
+  margin-top: 0.5rem;
+  color: #f00e0e;
+`;

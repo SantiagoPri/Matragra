@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "sh ./scripts/deploy.sh",
-    "local": "node App/index.js"
+    "local": "node App/index.js",
+    "validate-template": "sh ./scripts/validate_template.sh"
   },
   "author": "",
   "license": "ISC",

@@ -20,7 +20,7 @@ app.get("/health", (req, res) =>
 // Middlewares
 app
   .use(helmet())
-  .use(cors())
+  .use(cors({ credentials: true }))
   .use(
     morgan((tokens, req, res) => {
       const morganConfig = [
@@ -41,11 +41,6 @@ app
 //Using Passport and the passport strategy
 strategyJWT(passport);
 app.use(passport.initialize());
-
-// //passport middleware
-// app.use(passport.initialize());
-// //Passport Config
-// require("@appConfig/passport")(passport);
 
 // Routes
 app.use("/", Routes.default);

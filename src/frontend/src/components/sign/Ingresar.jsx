@@ -1,21 +1,9 @@
-import { useState } from "react";
-import { useQuery } from "react-query";
-import { Container, Form, H3, Button, Input, Label } from "./styled";
-import { login } from "../../helpers/backend-api";
+import { Container, Form, H3, Button, Input, Label, P } from "./styled";
+import useIngresar from "./useIngresar";
 
 const Ingresar = () => {
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
-  const { data, refetch } = useQuery(["logIn", userName, password], logIn, {
-    refetchOnWindowFocus: false,
-    enabled: false,
-  });
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("userName: ", userName);
-    console.log("password: ", password);
-    refetch();
-  };
+  const { handleChange, values, errors, handleSubmit } = useIngresar();
+
   return (
     <Container>
       <Form onSubmit={handleSubmit}>
@@ -27,10 +15,12 @@ const Ingresar = () => {
             type="text"
             className="form-control"
             placeholder="Ingrese usuario"
-            onChange={(e) => setUserName(e.target.value)}
-            required
+            name="userName"
+            value={values.userName}
+            onChange={handleChange}
           />
         </div>
+        {errors.userName && <P>{errors.userName}</P>}
 
         <div className="form-group">
           <Label>Contraseña</Label>
@@ -38,10 +28,12 @@ const Ingresar = () => {
             type="password"
             className="form-control"
             placeholder="Ingrese contraseña"
-            onChange={(e) => setPassword(e.target.value)}
-            required
+            name="password"
+            value={values.password}
+            onChange={handleChange}
           />
         </div>
+        {errors.password && <P>{errors.password}</P>}
 
         <div className="form-group">
           <div className="custom-control custom-checkbox">
@@ -68,9 +60,3 @@ const Ingresar = () => {
 };
 
 export default Ingresar;
-
-async function logIn(query) {
-  const [key, userName, password] = query.queryKey;
-  const result = await login({ userName, password });
-  console.log("Resultado: ", result);
-}
