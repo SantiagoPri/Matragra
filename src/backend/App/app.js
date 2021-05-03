@@ -9,7 +9,6 @@ const passport = require("passport");
 
 const strategyJWT = require("@appConfig/passport");
 const Routes = require("./routes/createRouter");
-console.log(strategyJWT);
 const app = express();
 
 // Health check

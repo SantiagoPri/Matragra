@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const validateLoginInput = require("@appValidations/login");
-const { getUserbyId } = require("@appModels/users");
+const { getUserbyId, getUserbyEmail } = require("@appModels/users");
 const cleaner = require("@appHelpers/cleanResponses");
 const { API_KEY } = process.env;
 
@@ -13,10 +13,13 @@ async function loginService(inputUser) {
     return validation.message;
   }
 
-  let user = await getUserbyId(userName);
+  let user = await getUserbyEmail(userName);
 
   if (!user.Count) {
-    return { status: "error", message: "User or password are invalid" };
+    user = await getUserbyId(userName);
+    if (!user.Count) {
+      return { status: "error", message: "User or password are invalid" };
+    }
   }
 
   [user] = cleaner(user).Items;

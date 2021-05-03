@@ -4,11 +4,11 @@ module.exports = function validateLoginInput(user, password) {
   if (!(user && password)){
     return {
         isValid: false,
-        message: "incomplete fields"
+        message: "Campos incompletos"
     }
   }
   return {
     isValid: true,
-    message: "valid fields"
+    message: "Campos validos"
   }
 };

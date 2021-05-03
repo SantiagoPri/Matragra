@@ -12,10 +12,20 @@ function insertNewProjectUser(projectName, userName, restParams) {
     TableName: MATRAGRA_DYNAMODB,
     Item,
   };
-  console.log("Creating new project user");
   return db.put(params).promise();
 }
 
+function deleteProjectUserByProjectUser(projectName, userName) {
+  const params = {
+    TableName: MATRAGRA_DYNAMODB,
+    Key:{
+      pk: `PROJECT#${projectName}`,
+      sk: `USER#${userName}`,
+    },
+  };
+  return db.delete(params).promise();
+}
+
 module.exports = {
-    insertNewProjectUser,
+    insertNewProjectUser, deleteProjectUserByProjectUser
 };

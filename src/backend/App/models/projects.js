@@ -12,11 +12,10 @@ function insertNewProject(projectName, areaName, restParams) {
     TableName: MATRAGRA_DYNAMODB,
     Item,
   };
-  console.log("Creating new Project");
   return db.put(params).promise();
 }
 
-function getProjectbyId(ProjectName) {
+function getProjectbyId(projectName) {
   const params = {
     TableName: MATRAGRA_DYNAMODB,
     KeyConditionExpression: "#pk = :project and begins_with(#sk, :area)",

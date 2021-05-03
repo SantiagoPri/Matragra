@@ -48,6 +48,7 @@ Resources:
                   - "dynamodb:Query"
                 Resource:
                   - !Sub "${MatragraDynamoDB.Arn}"
+                  - !Sub "${MatragraDynamoDB.Arn}/index/*"
               - Effect: Allow
                 Action:
                   - "execute-api:Invoke"
@@ -129,7 +130,7 @@ Resources:
           Stage: !Ref ApiStage
       Description: !Sub "Usage plan for Proxy API ${AWS::StackName}"
       UsagePlanName: !Sub "${AWS::StackName}-unlimited-plan-proxy-api"
-    DependsOn: ProxyApiDeployment
+    DependsOn: ProxyApiDeploymentx
 
   ProxyApiUsagePlanKey:
     Type: "AWS::ApiGateway::UsagePlanKey"
@@ -138,7 +139,7 @@ Resources:
       KeyType: API_KEY
       UsagePlanId: !Ref ProxyApiUsagePlan
 
-  ProxyApiDeployment:
+  ProxyApiDeploymentx:
     Type: "AWS::ApiGateway::Deployment"
     Properties:
       RestApiId: !Ref ProxyRestAPIv2

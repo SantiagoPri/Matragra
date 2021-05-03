@@ -11,11 +11,8 @@ module.exports = (passport) => {
     jwtFromRequest,
     secretOrKey: API_KEY,
   };
-  console.log("starting authorize");
-  console.log("Options: ", opts);
   passport.use(
     new JwtStrategy(opts, (payload, done) => {
-      console.log("Payload: ", payload);
       authenticatingInDynamo(payload.userName, done);
     })
   );
@@ -25,7 +22,8 @@ function authenticatingInDynamo(userName, done) {
   getUserbyId(userName)
     .then((data) => {
       if (data.Count) {
-        return done(null, true);
+        const cData = cleaner(data)
+        return done(null, cData.Items[0]);
       } else {
         return done(null, false);
       }

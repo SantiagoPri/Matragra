@@ -3,9 +3,10 @@ const validateNewUser = require("@appValidations/newUser");
 const { insertNewUser } = require("@appModels/users");
 
 async function createUserService(user) {
-  const { userName, roleName, password, ...restParams } = user;
+  const { userName, email, roleName, password, ...restParams } = user;
   const { isValid, message } = await validateNewUser(
     userName,
+    email,
     roleName,
     password
   );
@@ -21,11 +22,10 @@ async function createUserService(user) {
     });
   });
 
-  await insertNewUser(userName, roleName, {
-    password: encryptedPassword,
+  await insertNewUser(userName, email.toLowerCase(), roleName, encryptedPassword, {
     ...restParams,
   });
-  return { status: "ok", message: "User succesfully created" };
+  return { status: "ok", message: "Usuario creado exitosamente" };
 }
 
 module.exports = { createUserService };
