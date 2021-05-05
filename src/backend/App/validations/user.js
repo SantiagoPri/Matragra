@@ -18,4 +18,17 @@ async function validateNewUser(userName, email, roleName, password) {
   return { isValid: true, message: "Este es un nuevo usuario" };
 }
 
-module.exports = validateNewUser;
+async function existUser(userName) {
+  let user = await getUserbyId(userName);
+  if (user.Count) {
+    return { isValid: true, message: "El usuario existe" };
+  }
+
+  //Add more checks if needed
+  return { isValid: false, message: "El usuario no existe" };
+}
+
+module.exports = {
+  validateNewUser,
+  existUser
+};

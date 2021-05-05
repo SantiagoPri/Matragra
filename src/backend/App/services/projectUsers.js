@@ -1,9 +1,17 @@
-const validateNewProjectUser = require("@appValidations/projectUsers");
-const { insertNewProjectUser, deleteProjectUserByProjectUser } = require("@appModels/projectUsers");
+const { validateNewProjectUser } = require("@appValidations/projectUsers");
+const { existUser } = require("@appValidations/user");
+const {
+  insertNewProjectUser,
+  deleteProjectUserByProjectUser,
+  getProjectPksByUser
+} = require("@appModels/projectUsers");
 const cleaner = require("@appHelpers/cleanResponses");
 
 async function createProjectUserService(projectName, userName) {
-  const { isValid, message } = await validateNewProjectUser(projectName, userName);
+  const { isValid, message } = await validateNewProjectUser(
+    projectName,
+    userName
+  );
   if (!isValid) {
     return { status: "error", message };
   }
@@ -13,7 +21,10 @@ async function createProjectUserService(projectName, userName) {
 }
 
 async function deleteProjectUserServiceByProjectUser(projectName, userName) {
-  const { isValid, message } = await validateNewProjectUser(projectName, userName);
+  const { isValid, message } = await validateNewProjectUser(
+    projectName,
+    userName
+  );
   if (!isValid) {
     return { status: "error", message };
   }
@@ -22,4 +33,19 @@ async function deleteProjectUserServiceByProjectUser(projectName, userName) {
   return { status: "ok", message: "El usuario ya no pertenece al proyecto" };
 }
 
-module.exports = { createProjectUserService, deleteProjectUserServiceByProjectUser };
+async function getProjectPksServiceByUser(userName) {
+  const { isValid, message } = await existUser(userName);
+  if (!isValid) {
+    return { status: "error", message };
+  }
+
+  let projects = await getProjectPksByUser(userName);
+  projects = cleaner(projects);
+  return { status: "ok", projects };
+}
+
+module.exports = {
+  createProjectUserService,
+  deleteProjectUserServiceByProjectUser,
+  getProjectPksServiceByUser,
+};

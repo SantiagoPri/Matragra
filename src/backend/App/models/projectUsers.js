@@ -26,6 +26,25 @@ function deleteProjectUserByProjectUser(projectName, userName) {
   return db.delete(params).promise();
 }
 
+function getProjectPksByUser(userName) {
+  const params = {
+    TableName: MATRAGRA_DYNAMODB,
+    IndexName:'inverted_index',
+    KeyConditionExpression: "#pk = :user and begins_with(#sk, :project)",
+    ExpressionAttributeNames: {
+      "#pk": "sk",
+      "#sk": "pk",
+    },
+    ExpressionAttributeValues: {
+      ":project": `PROJECT#`,
+      ":user": `USER#${userName}`,
+    },
+  };
+  return db.query(params).promise();
+}
+
 module.exports = {
-    insertNewProjectUser, deleteProjectUserByProjectUser
+    insertNewProjectUser, 
+    deleteProjectUserByProjectUser, 
+    getProjectPksByUser
 };

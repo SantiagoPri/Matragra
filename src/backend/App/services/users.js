@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const validateNewUser = require("@appValidations/newUser");
+const { validateNewUser } = require("@appValidations/user");
 const { insertNewUser } = require("@appModels/users");
 
 async function createUserService(user) {
@@ -22,9 +22,15 @@ async function createUserService(user) {
     });
   });
 
-  await insertNewUser(userName, email.toLowerCase(), roleName, encryptedPassword, {
-    ...restParams,
-  });
+  await insertNewUser(
+    userName,
+    email.toLowerCase(),
+    roleName,
+    encryptedPassword,
+    {
+      ...restParams,
+    }
+  );
   return { status: "ok", message: "Usuario creado exitosamente" };
 }
 
