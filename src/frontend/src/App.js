@@ -2,10 +2,14 @@ import "./App.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "./components/Navbar";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import PrivateRoute from "./helpers/specialRoutes/privateRoute";
+import SignRoute from "./helpers/specialRoutes/signRoute";
 import Home from "./components/Home";
 import Registrarme from "./components/sign/Registrarme";
 import Ingresar from "./components/sign/Ingresar";
+import MatragraDoc from "./components/docs/matragradoc";
 import { QueryClient, QueryClientProvider } from "react-query";
+import Main from "./components/main/main";
 
 const queryClient = new QueryClient();
 
@@ -17,8 +21,10 @@ function App() {
           <Navbar />
           <Switch>
             <Route path="/" exact component={Home} />
-            <Route path="/registrarme" component={Registrarme} />
-            <Route path="/ingresar" component={Ingresar} />
+            <SignRoute path="/registrarme" component={Registrarme} />
+            <SignRoute path="/ingresar" component={Ingresar} />
+            <Route path="/documentacion" component={MatragraDoc} />
+            <PrivateRoute path="/main" component={Main} />
           </Switch>
         </QueryClientProvider>
       </Router>

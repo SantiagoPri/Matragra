@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
-import { login } from "../../helpers/backend-api";
+import { useHistory } from "react-router-dom";
+import { login } from "../../helpers/api/backend-api";
 
 const useIngresar = () => {
   const [values, setValues] = useState({
@@ -14,8 +15,18 @@ const useIngresar = () => {
     {
       refetchOnWindowFocus: false,
       enabled: false,
+      onSuccess: (data) => {
+        if (data.status === "error") {
+          setErrors({ userName: data.message, password: data.message });
+        }
+        if (data.status === "ok") {
+          localStorage.setItem("jwt", data.message);
+          historyHook.push("/main");
+        }
+      },
     }
   );
+  const historyHook = useHistory();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,13 +48,6 @@ const useIngresar = () => {
 
   useEffect(() => {
     if (data) {
-      if (data.status === "error") {
-        setErrors({ userName: data.message, password: data.message });
-      }
-      if (data.status === "ok") {
-        console.log(data.message);
-        localStorage.setItem("jwt", data.message);
-      }
     }
   }, [data]);
 
@@ -72,6 +76,5 @@ function validatePreQuery(values) {
 async function logIn(query) {
   const [key, userName, password] = query.queryKey;
   const result = await login({ userName, password });
-  console.log("Resultado: ", result);
   return result.data;
 }

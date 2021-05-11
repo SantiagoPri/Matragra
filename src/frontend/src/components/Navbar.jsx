@@ -25,17 +25,15 @@ const Navbar = () => {
             alt="logo"
           />
         </NavLink>
-        {/* onClick={this.toggle} */}
         <MobileMenu isOpen={isOpen} toggle={toggle} />
         <MobileIcon onClick={toggle}>
           <FaBars />
         </MobileIcon>
         <NavMenu>
+          <NavLink to="/documentacion">Documentación</NavLink>
           <NavLink to="/registrarme">Registrarme</NavLink>
           <NavBtnLink to="/ingresar">Ingresar</NavBtnLink>
         </NavMenu>
-        {/* <NavBtn>
-        </NavBtn> */}
       </Nav>
     </StickyDiv>
   );
