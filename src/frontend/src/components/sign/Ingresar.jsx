@@ -1,8 +1,14 @@
-import { Container, Form, H3, Button, Input, Label, P } from "./styled";
+import { Container, Form, H3, Button, Input, Label, P, Span } from "./styled";
 import useIngresar from "./useIngresar";
 
 const Ingresar = () => {
-  const { handleChange, values, errors, handleSubmit } = useIngresar();
+  const {
+    handleChange,
+    values,
+    errors,
+    handleSubmit,
+    isLoading,
+  } = useIngresar();
 
   return (
     <Container>
@@ -50,9 +56,10 @@ const Ingresar = () => {
 
         <Button type="submit" className="btn btn-primary btn-block">
           Ingresar
+          {isLoading && <Span className="spinner-border spinner-border-sm" />}
         </Button>
         <p className="forgot-password text-right">
-          ¿Olvidó <a href="#">contraseña?</a>
+          ¿Olvidó <a href="/">contraseña?</a>
         </p>
       </Form>
     </Container>

@@ -1,15 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useContext } from "react";
+import { ApiContext } from "./../../contexts/ApiContext";
 import { useQuery } from "react-query";
 import { useHistory } from "react-router-dom";
 import { login } from "../../helpers/api/backend-api";
 
 const useIngresar = () => {
+  const { setIsLogged } = useContext(ApiContext);
   const [values, setValues] = useState({
     userName: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
-  const { data, refetch } = useQuery(
+  const { data, refetch, isLoading } = useQuery(
     ["logIn", values.userName, values.password],
     logIn,
     {
@@ -21,6 +23,7 @@ const useIngresar = () => {
         }
         if (data.status === "ok") {
           localStorage.setItem("jwt", data.message);
+          setIsLogged(true);
           historyHook.push("/main");
         }
       },
@@ -46,12 +49,7 @@ const useIngresar = () => {
     refetch();
   };
 
-  useEffect(() => {
-    if (data) {
-    }
-  }, [data]);
-
-  return { handleChange, handleSubmit, values, errors };
+  return { handleChange, handleSubmit, values, errors, isLoading };
 };
 
 export default useIngresar;

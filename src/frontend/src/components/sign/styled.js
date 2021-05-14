@@ -99,3 +99,7 @@ export const P = styled.p`
   margin-top: 0.5rem;
   color: #f00e0e;
 `;
+
+export const Span = styled.span`
+  margin-left: 10px;
+`

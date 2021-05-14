@@ -9,6 +9,7 @@ import Registrarme from "./components/sign/Registrarme";
 import Ingresar from "./components/sign/Ingresar";
 import MatragraDoc from "./components/docs/matragradoc";
 import { QueryClient, QueryClientProvider } from "react-query";
+import ApiContextProvider from "./contexts/ApiContext";
 import Main from "./components/main/main";
 
 const queryClient = new QueryClient();
@@ -18,14 +19,16 @@ function App() {
     <div className="App">
       <Router>
         <QueryClientProvider client={queryClient}>
-          <Navbar />
-          <Switch>
-            <Route path="/" exact component={Home} />
-            <SignRoute path="/registrarme" component={Registrarme} />
-            <SignRoute path="/ingresar" component={Ingresar} />
-            <Route path="/documentacion" component={MatragraDoc} />
-            <PrivateRoute path="/main" component={Main} />
-          </Switch>
+          <ApiContextProvider>
+            <Navbar />
+            <Switch>
+              <Route path="/" exact component={Home} />
+              <SignRoute path="/registrarme" component={Registrarme} />
+              <SignRoute path="/ingresar" component={Ingresar} />
+              <Route path="/documentacion" component={MatragraDoc} />
+              <PrivateRoute path="/main" component={Main} />
+            </Switch>
+          </ApiContextProvider>
         </QueryClientProvider>
       </Router>
     </div>
