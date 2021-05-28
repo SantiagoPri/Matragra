@@ -36,6 +36,7 @@ export const ProyectWrapper = styled.div`
 `;
 
 export const ProyectsCard = styled.div`
+  max-width: 202px;
   background: #3b3b3c;
   display: flex;
   flex-direction: column;
@@ -87,11 +88,28 @@ export const ProyectsP = styled.p`
   font-family: "Fira Sans", sans-serif;
 `;
 
+export const Details = styled.details`
+  border-radius: 0.4rem;
+  text-align: left;
+  width: 75%;
+  margin-top: 20px;
+`;
+
+export const Summary = styled.summary`
+  font-size: 1rem;
+  color: #fff;
+  font-family: "Fira Sans", sans-serif;
+`;
+
+export const HR = styled.hr`
+  background: #fff;
+`;
+
 // #################### SEARCH BAR ###################
 export const SearchBarContainer = styled.div`
   font-family: sans-serif;
   display: flex;
-  margin-bottom: 64px;
+  margin-bottom: 30px;
 `;
 
 export const SearchBarForm = styled.form`
