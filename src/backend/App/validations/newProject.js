@@ -1,9 +1,10 @@
 const { getProjectbyId } = require("@appModels/projects");
 
-async function validateNewProject(projectName, areaName,) {
-  if (!(projectName && areaName )) {
+async function validateNewProject(projectName, areaName, states, index) {
+  if (!(projectName && areaName && states && index)) {
     return { isValid: false, message: "Información incompleta" };
   }
+  
   let project = await getProjectbyId(projectName);
   if (project.Count) {
     return { isValid: false, message: "Ya existe el nombre de proyecto" };

@@ -3,13 +3,13 @@ const { insertNewProject, getProjectbyId } = require("@appModels/projects");
 const cleaner = require("@appHelpers/cleanResponses");
 
 async function createProjectService(project) {
-  const { projectName, areaName, ...restParams } = project;
-  const { isValid, message } = await validateNewProject(projectName, areaName);
+  const { projectName, areaName, states, index, ...restParams } = project;
+  const { isValid, message } = await validateNewProject(projectName, areaName, states, index);
   if (!isValid) {
     return { status: "error", message };
   }
 
-  await insertNewProject(projectName, areaName, {
+  await insertNewProject(projectName, areaName, states, index, {
     ...restParams,
   });
   return { status: "ok", message: "Proyecto creado exitosamente" };

@@ -1,9 +1,8 @@
 const { getProjectbyId } = require("@appModels/projects");
 const { getUserbyId } = require("@appModels/users");
 
-
-async function validateNewProjectUser(projectName, userName,) {
-  if (!(projectName && userName )) {
+async function validateNewProjectUser(projectName, userName) {
+  if (!(projectName && userName)) {
     return { isValid: false, message: "Información incompleta" };
   }
   let project = await getProjectbyId(projectName);
@@ -20,4 +19,4 @@ async function validateNewProjectUser(projectName, userName,) {
   return { isValid: true, message: "Este es un nuevo proyecto" };
 }
 
-module.exports = validateNewProjectUser;
+module.exports = { validateNewProjectUser };

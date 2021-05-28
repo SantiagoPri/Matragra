@@ -2,7 +2,7 @@ const { Router } = require("express");
 const { loginService } = require("@appServices/login");
 
 exports.default = Router({ mergeParams: true }).post(
-  "/v1/login/",
+  "/v1/login",
   async (req, res, next) => {
     try {
       const jwt = await loginService(req.body);

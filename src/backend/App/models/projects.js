@@ -2,10 +2,12 @@ const db = require("../helpers/aws/dynamodb");
 
 const { MATRAGRA_DYNAMODB } = process.env;
 
-function insertNewProject(projectName, areaName, restParams) {
+function insertNewProject(projectName, areaName, states, index, restParams) {
   const Item = {
     pk: `PROJECT#${projectName}`,
     sk: `AREA#${areaName}`,
+    states: states,
+    index: index,
     ...restParams,
   };
   const params = {
