@@ -17,7 +17,6 @@ exports.default = Router({ mergeParams: true }).post(
       console.log("createProjectUserService")
       return res.send(messageResult2);
     } catch (error) {
-      next(error);
       console.warn(error);
       return res.send("An error happened");
     }

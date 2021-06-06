@@ -13,10 +13,10 @@ async function loginService(inputUser) {
     return validation.message;
   }
 
-  let user = await getUserbyEmail(userName);
+  let user = await getUserbyEmail(userName.toLowerCase());
 
   if (!user.Count) {
-    user = await getUserbyId(userName);
+    user = await getUserbyId(userName.toLowerCase());
     if (!user.Count) {
       return { status: "error", message: "User or password are invalid" };
     }

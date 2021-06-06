@@ -40,8 +40,11 @@ async function getProjectPksServiceByUser(userName) {
   }
 
   let projects = await getProjectPksByUser(userName);
-  projects = cleaner(projects);
-  return { status: "ok", projects };
+  if (projects.Count) {
+    const cProjects = cleaner(projects);
+    return { status: "ok", projects: cProjects.Items };
+  }
+  return { status: "error", projects: null };
 }
 
 module.exports = {

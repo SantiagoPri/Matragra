@@ -5,8 +5,8 @@ const { insertNewUser } = require("@appModels/users");
 async function createUserService(user) {
   const { userName, email, roleName, password, ...restParams } = user;
   const { isValid, message } = await validateNewUser(
-    userName,
-    email,
+    userName.toLowerCase(),
+    email.toLowerCase(),
     roleName,
     password
   );
@@ -23,7 +23,7 @@ async function createUserService(user) {
   });
 
   await insertNewUser(
-    userName,
+    userName.toLowerCase(),
     email.toLowerCase(),
     roleName,
     encryptedPassword,
