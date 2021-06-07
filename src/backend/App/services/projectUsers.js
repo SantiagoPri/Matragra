@@ -3,7 +3,7 @@ const { existUser } = require("@appValidations/user");
 const {
   insertNewProjectUser,
   deleteProjectUserByProjectUser,
-  getProjectPksByUser
+  getProjectPksByUser,
 } = require("@appModels/projectUsers");
 const cleaner = require("@appHelpers/cleanResponses");
 
@@ -34,17 +34,12 @@ async function deleteProjectUserServiceByProjectUser(projectName, userName) {
 }
 
 async function getProjectPksServiceByUser(userName) {
-  const { isValid, message } = await existUser(userName);
-  if (!isValid) {
-    return { status: "error", message };
-  }
-
-  let projects = await getProjectPksByUser(userName);
+  const projects = await getProjectPksByUser(userName);
   if (projects.Count) {
     const cProjects = cleaner(projects);
-    return { status: "ok", projects: cProjects.Items };
+    return cProjects.Items.map((project) => project.pk);
   }
-  return { status: "error", projects: null };
+  return [];
 }
 
 module.exports = {

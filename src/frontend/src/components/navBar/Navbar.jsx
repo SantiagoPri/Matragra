@@ -9,7 +9,7 @@ import {
 } from "./styled";
 import { FaBars } from "react-icons/fa";
 import MobileMenu from "./MobileMenu/MobileMenu";
-import { ApiContext } from "./../contexts/ApiContext";
+import { ApiContext } from "../../contexts/ApiContext";
 
 const Navbar = () => {
   const { isLogged } = useContext(ApiContext);

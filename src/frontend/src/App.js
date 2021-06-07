@@ -1,6 +1,6 @@
 import "./App.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/navBar/Navbar";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import PrivateRoute from "./helpers/specialRoutes/privateRoute";
 import SignRoute from "./helpers/specialRoutes/signRoute";
@@ -11,6 +11,7 @@ import MatragraDoc from "./components/docs/matragradoc";
 import { QueryClient, QueryClientProvider } from "react-query";
 import ApiContextProvider from "./contexts/ApiContext";
 import Main from "./components/main/main";
+import Project from "./components/projects/project";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ function App() {
               <SignRoute path="/ingresar" component={Ingresar} />
               <Route path="/documentacion" component={MatragraDoc} />
               <PrivateRoute path="/main" component={Main} />
+              <Route path="/project" component={Project} />
             </Switch>
           </ApiContextProvider>
         </QueryClientProvider>

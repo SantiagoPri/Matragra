@@ -96,6 +96,7 @@ export const Details = styled.details`
 `;
 
 export const Summary = styled.summary`
+  user-select: none;
   font-size: 1rem;
   color: #fff;
   font-family: "Fira Sans", sans-serif;

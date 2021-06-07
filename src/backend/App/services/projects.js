@@ -43,44 +43,30 @@ async function getActiveProjectsService() {
   return { status: "error", projects: null };
 }
 
-async function getProjectsByUserService(userName) {
-  let projects = [];
-
-  const { isValid, message } = await existUser(userName);
-  if (!isValid) {
-    return { status: "error", message };
+async function getAllProjectsByUser(userName) {
+  const result = {
+    userProjectNames: [],
+    OtherProjects: [],
+  };
+  const projectsUser = await getProjectPksServiceByUser(userName);
+  let projects = await getProjectsByState("active");
+  if (!projects.Count) {
+    return result;
   }
-
-  let projectUsers = await getProjectPksServiceByUser(userName);
-  for (const p of projectUsers.projects) {
-    let aux = await getProjectbyIdService(p.pk);
-    projects.push(aux.project);
-  }
-  return { status: "ok", projects: projects };
-}
-
-async function getActiveProjectsFiteredByUserService(userName) {
-  let projects = await getActiveProjectsService();
-  projects = projects.projects;
-
-  const { isValid, message } = await existUser(userName);
-  if (!isValid) {
-    return { status: "error", message };
-  }
-
-  let projectUsers = await getProjectPksServiceByUser(userName);
-  for (const p of projectUsers.projects) {
-    let aux = await getProjectbyIdService(p.pk);
-    let i = projects.lastIndexOf(aux.project);
-    projects.splice(i, 1);
-  }
-  return { status: "ok", projects: projects };
+  projects = cleaner(projects);
+  projects.Items.forEach((project) => {
+    if (projectsUser.includes(project.pk)) {
+      result.userProjectNames.push(project);
+    } else {
+      result.OtherProjects.push(project);
+    }
+  });
+  return result;
 }
 
 module.exports = {
   createProjectService,
   getProjectbyIdService,
   getActiveProjectsService,
-  getProjectsByUserService,
-  getActiveProjectsFiteredByUserService
+  getAllProjectsByUser,
 };
