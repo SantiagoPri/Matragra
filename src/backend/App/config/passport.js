@@ -1,6 +1,6 @@
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt; //Se extrae el Payload
-const { getUserbyId } = require("@appModels/users");
+const { getUserById } = require("@appModels/users");
 const cleaner = require("@appHelpers/cleanResponses");
 const { API_KEY } = process.env;
 
@@ -19,7 +19,7 @@ module.exports = (passport) => {
 };
 
 function authenticatingInDynamo(userName, done) {
-  getUserbyId(userName)
+  getUserById(userName)
     .then((data) => {
       if (data.Count) {
         const cData = cleaner(data)

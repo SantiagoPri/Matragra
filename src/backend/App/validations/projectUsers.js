@@ -1,16 +1,16 @@
-const { getProjectbyId } = require("@appModels/projects");
-const { getUserbyId } = require("@appModels/users");
+const { getProjectById } = require("@appModels/projects");
+const { getUserById } = require("@appModels/users");
 
 async function validateNewProjectUser(projectName, userName) {
   if (!(projectName && userName)) {
     return { isValid: false, message: "Información incompleta" };
   }
-  let project = await getProjectbyId(projectName);
+  let project = await getProjectById(projectName);
   if (!project.Count) {
     return { isValid: false, message: "No existe el nombre de proyecto" };
   }
 
-  let user = await getUserbyId(userName);
+  let user = await getUserById(userName);
   if (!user.Count) {
     return { isValid: false, message: "No existe el usuario" };
   }

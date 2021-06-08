@@ -1,10 +1,10 @@
-const { getUserbyId, getUserbyEmail } = require("@appModels/users");
+const { getUserById, getUserbyEmail } = require("@appModels/users");
 
 async function validateNewUser(userName, email, roleName, password) {
   if (!(userName && email && roleName && password)) {
     return { isValid: false, message: "Información incompleta" };
   }
-  let user = await getUserbyId(userName);
+  let user = await getUserById(userName);
   if (user.Count) {
     return { isValid: false, message: "Nombre de usuario ya existe" };
   } else {
@@ -19,7 +19,7 @@ async function validateNewUser(userName, email, roleName, password) {
 }
 
 async function existUser(userName) {
-  let user = await getUserbyId(userName);
+  let user = await getUserById(userName);
   if (user.Count) {
     return { isValid: true, message: "El usuario existe" };
   }

@@ -14,7 +14,7 @@ exports.default = Router({ mergeParams: true }).post(
     } catch (error) {
       next(error);
       console.warn(error);
-      return "An error happened";
+      return "Ha ocurrido un error";
     }
   }
 );
