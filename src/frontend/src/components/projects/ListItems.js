@@ -14,12 +14,16 @@ const ListItems = (props) => {
 
   return (
     <Fragment>
-      <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
-        <div class="card" style={{ backgroundColor: "transparent" }}>
-          <div class="card-body">
-            <ul class="list-group ">
+      <div className="col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <div className="card" style={{ backgroundColor: "transparent" }}>
+          <div className="card-body">
+            <ul className="list-group ">
               {items.map((item) => {
-                return <li class="nav-link text-light">{item}</li>;
+                return (
+                  <li key={item} className="nav-link text-light">
+                    {item}
+                  </li>
+                );
               })}
             </ul>
           </div>

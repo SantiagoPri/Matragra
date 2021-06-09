@@ -13,7 +13,7 @@ const useRegistrarme = () => {
   });
   const [errors, setErrors] = useState({});
   const historyHook = useHistory();
-  const { mutate } = useMutation(register, {
+  const { mutate, isLoading } = useMutation(register, {
     onSuccess: (data) => {
       if (data.status === "error") {
         setErrors({ userName: data.message });
@@ -39,10 +39,10 @@ const useRegistrarme = () => {
       setErrors(errors);
       return;
     }
-    mutate(values);
+    mutate(formatRequest(values));
   };
 
-  return { handleChange, handleSubmit, values, errors };
+  return { handleChange, handleSubmit, values, errors, isLoading };
 };
 
 export default useRegistrarme;
@@ -84,8 +84,12 @@ function validatePreQuery(values) {
   return { isThereError, errors };
 }
 
+function formatRequest(query) {
+  const { userName, roleName, password, email } = query;
+  return { userName, roleName, password, email };
+}
+
 async function register(query) {
-  await createUser();
   const result = await createUser(query);
   return result.data;
 }

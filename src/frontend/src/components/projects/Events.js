@@ -33,7 +33,10 @@ const Events = (props) => {
             <ul>
               {events.map((event) => {
                 return (
-                  <li className="bg-primary text-light mt-3 mb-3">
+                  <li
+                    className="bg-primary text-light mt-3 mb-3"
+                    key={event.description}
+                  >
                     <p className="my-0 flex-fw text-sm text-light text-left mx-3">
                       <span className="text-inverse op-8 text-light">
                         {event.hour}
