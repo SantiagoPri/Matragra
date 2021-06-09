@@ -1,5 +1,4 @@
-const { validateNewProjectUser } = require("@appValidations/projectUsers");
-const { existUser } = require("@appValidations/user");
+const { validateNewProjectUser } = require("@appValidations/projectUser");
 const {
   insertNewProjectUser,
   deleteProjectUserByProjectUser,

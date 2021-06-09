@@ -1,32 +1,39 @@
 const {
   insertNewProject,
-  getProjectbyId,
+  getProjectById,
   getProjectsByState,
 } = require("@appModels/projects");
+const {
+  insertNewProjectDetail,
+} = require("@appModels/projectDetails");
 const { getProjectPksServiceByUser } = require("@appServices/projectUsers");
-const { existUser } = require("@appValidations/user");
 const validateNewProject = require("@appValidations/project");
 const cleaner = require("@appHelpers/cleanResponses");
 
 async function createProjectService(project) {
-  const { projectName, states, index, ...restParams } = project;
+  const { projectName, index, fase0, ...restParams } = project;
   const { isValid, message } = await validateNewProject(
     projectName,
-    states,
-    index
+    index,
+    fase0
   );
   if (!isValid) {
     return { status: "error", message };
   }
 
-  await insertNewProject(projectName, "active", states, index, {
-    ...restParams,
-  });
+  await insertNewProject(projectName, "active");
+  fase1 = {};
+  fase2 = {};
+  fase3 = {};
+  registroDeActividades = {};  
+  await insertNewProjectDetail(projectName, "info", index, fase0,
+    fase1, fase2, fase3, registroDeActividades, {
+      ...restParams });
   return { status: "ok", message: "Proyecto creado exitosamente" };
 }
 
-async function getProjectbyIdService(projectName) {
-  const project = await getProjectbyId(projectName);
+async function getProjectByIdService(projectName) {
+  const project = await getProjectById(projectName);
   if (project.Count) {
     const cProject = cleaner(project);
     return { status: "ok", project: cProject.Items[0] };
@@ -66,7 +73,7 @@ async function getAllProjectsByUser(userName) {
 
 module.exports = {
   createProjectService,
-  getProjectbyIdService,
+  getProjectByIdService,
   getActiveProjectsService,
-  getAllProjectsByUser,
+  getAllProjectsByUser
 };

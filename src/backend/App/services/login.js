@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const validateLoginInput = require("@appValidations/login");
-const { getUserbyId, getUserbyEmail } = require("@appModels/users");
+const { getUserById, getUserbyEmail } = require("@appModels/users");
 const cleaner = require("@appHelpers/cleanResponses");
 const { API_KEY } = process.env;
 
@@ -16,9 +16,9 @@ async function loginService(inputUser) {
   let user = await getUserbyEmail(userName.toLowerCase());
 
   if (!user.Count) {
-    user = await getUserbyId(userName.toLowerCase());
+    user = await getUserById(userName.toLowerCase());
     if (!user.Count) {
-      return { status: "error", message: "User or password are invalid" };
+      return { status: "error", message: "Usuario o contraseña invalidos" };
     }
   }
 
@@ -34,7 +34,7 @@ async function loginService(inputUser) {
   });
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    return { status: "error", message: "Password incorrect" };
+    return { status: "error", message: "Contraseña incorrecta" };
   }
   const payload = { userName: user.pk };
   //Token

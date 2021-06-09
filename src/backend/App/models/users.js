@@ -17,7 +17,7 @@ function insertNewUser(userName, email, roleName, password, restParams) {
   return db.put(params).promise();
 }
 
-function getUserbyId(userName) {
+function getUserById(userName) {
   const params = {
     TableName: MATRAGRA_DYNAMODB,
     KeyConditionExpression: "#pk = :user and begins_with(#sk, :email)",
@@ -52,6 +52,6 @@ function getUserbyEmail(email) {
 
 module.exports = {
   insertNewUser,
-  getUserbyId,
+  getUserById,
   getUserbyEmail,
 };
