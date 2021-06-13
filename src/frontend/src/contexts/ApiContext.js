@@ -1,5 +1,9 @@
 import { createContext, useState } from "react";
-import { getProjects, getProject } from "../helpers/api/backend-api";
+import {
+  getProjects,
+  getProject,
+  newProject,
+} from "../helpers/api/backend-api";
 
 export const ApiContext = createContext();
 
@@ -18,7 +22,11 @@ const ApiContextProvider = (props) => {
     return projects.data;
   };
 
-  const apiCalls = { getAllProjects, getProjectDetails };
+  const createProject = async (projectInfo) => {
+    const response = await newProject(jwt, projectInfo);
+    return response.data;
+  };
+  const apiCalls = { getAllProjects, getProjectDetails, createProject };
   return (
     <ApiContext.Provider
       value={{ isLogged, setIsLogged, jwt, setJwt, apiCalls }}
