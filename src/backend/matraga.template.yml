@@ -49,6 +49,8 @@ Resources:
                 Resource:
                   - !Sub "${MatragraDynamoDB.Arn}"
                   - !Sub "${MatragraDynamoDB.Arn}/index/*"
+                  - !Sub "${MatragraProjectsDynamoDB.Arn}"
+                  - !Sub "${MatragraProjectsDynamoDB.Arn}/index/*"
               - Effect: Allow
                 Action:
                   - "execute-api:Invoke"
@@ -85,6 +87,38 @@ Resources:
     Type: "AWS::DynamoDB::Table"
     Properties:
       TableName: !Sub "${AWS::StackName}"
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: inverted_index
+          KeySchema:
+            - AttributeName: sk
+              KeyType: HASH
+            - AttributeName: pk
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
+  MatragraProjectsDynamoDB:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub "${AWS::StackName}_projects"
       AttributeDefinitions:
         - AttributeName: pk
           AttributeType: S
@@ -217,6 +251,7 @@ Resources:
       Environment:
         Variables:
           MATRAGRA_DYNAMODB: !Ref MatragraDynamoDB
+          MATRAGRA_PROJECTS_DYNAMODB: !Ref MatragraProjectsDynamoDB
           API_KEY: !Ref ProxyApiGatewayKey
 
   QueueApiInvokePermission:

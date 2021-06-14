@@ -9,15 +9,15 @@ exports.default = Router({ mergeParams: true }).post(
   async (req, res) => {
     try {
       const messageResult = await createProjectService(req.body);
-      console.log("createProjectService")
       if (messageResult.status != "ok"){
         return res.send(messageResult);
       }
       const messageResult2 = await createProjectUserService(req.body.projectName, req.user.pk)
-      console.log("createProjectUserService")
-      return res.send(messageResult2);
+      if (messageResult2.status != "ok") {
+        return res.send(messageResult2);
+      }
+      return res.send(messageResult);
     } catch (error) {
-      console.warn(error);
       return res.send("Ha ocurrido un error");
     }
   }

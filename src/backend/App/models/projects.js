@@ -1,14 +1,15 @@
 const db = require("../helpers/aws/dynamodb");
 
-const { MATRAGRA_DYNAMODB } = process.env;
+const { MATRAGRA_PROJECTS_DYNAMODB } = process.env;
 
-function insertNewProject(projectName, projectState) {
+function insertNewProject(projectName, projectState, index) {
   const Item = {
     pk: `PROJECT#${projectName}`,
-    sk: `STATE#${projectState}`
+    sk: `STATE#${projectState}`,
+    index
   };
   const params = {
-    TableName: MATRAGRA_DYNAMODB,
+    TableName: MATRAGRA_PROJECTS_DYNAMODB,
     Item,
   };
   return db.put(params).promise();
@@ -16,7 +17,7 @@ function insertNewProject(projectName, projectState) {
 
 function getProjectById(projectName) {
   const params = {
-    TableName: MATRAGRA_DYNAMODB,
+    TableName: MATRAGRA_PROJECTS_DYNAMODB,
     KeyConditionExpression: "#pk = :project and begins_with(#sk, :state)",
     ExpressionAttributeNames: {
       "#pk": "pk",
@@ -32,7 +33,7 @@ function getProjectById(projectName) {
 
 function getProjectsByState(projectState) {
   const params = {
-    TableName: MATRAGRA_DYNAMODB,
+    TableName: MATRAGRA_PROJECTS_DYNAMODB,
     IndexName:'inverted_index',
     KeyConditionExpression: "#pk = :state and begins_with(#sk, :project)",
     ExpressionAttributeNames: {
