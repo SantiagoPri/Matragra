@@ -30,20 +30,26 @@ const Stages = (props) => {
               switch (stage.state) {
                 case 1: // retorna la etapa terminada
                   return (
-                    <div class="text-light bg-success mb-2">
-                      <h5 class="card-title m-1">{stage.name}</h5>
+                    <div
+                      key={stage.name}
+                      className="text-light bg-success mb-2"
+                    >
+                      <h5 className="card-title m-1">{stage.name}</h5>
                     </div>
                   );
                 case 2: // retorna la etapa pendiente
                   return (
-                    <div class="text-light bg-warning mb-2">
-                      <h5 class="card-title m-1">{stage.name}</h5>
+                    <div
+                      key={stage.name}
+                      className="text-light bg-warning mb-2"
+                    >
+                      <h5 className="card-title m-1">{stage.name}</h5>
                     </div>
                   );
                 case 3: // retorna la etapa sin realizar
                   return (
-                    <div class="text-light bg-danger mb-2">
-                      <h5 class="card-title m-1">{stage.name}</h5>
+                    <div key={stage.name} className="text-light bg-danger mb-2">
+                      <h5 className="card-title m-1">{stage.name}</h5>
                     </div>
                   );
 
@@ -54,7 +60,7 @@ const Stages = (props) => {
             <button
               onClick={() => ButtonAdvanceStage()}
               type="button"
-              class="btn btn-rounded btn-secondary mt-3"
+              className="btn btn-rounded btn-secondary mt-3"
               style={{ backgroundColor: "#4f4fc3" }}
             >
               Avanzar Etapa

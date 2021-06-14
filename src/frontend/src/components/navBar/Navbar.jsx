@@ -50,16 +50,16 @@ const SignNavMenu = () => {
 };
 
 const MainNavMenu = () => {
-  const { setIsLogged } = useContext(ApiContext);
+  const { setIsLogged, setJwt } = useContext(ApiContext);
   const signOut = () => {
     localStorage.removeItem("jwt");
     setIsLogged(false);
+    setJwt("");
   };
   return (
     <NavMenu>
       <NavLink to="/documentacion">Documentación</NavLink>
-
-      
+      <NavLink to="/main">Proyectos</NavLink>
       <NavBtnLink to="/" onClick={signOut}>
         Cerrar Sesión
       </NavBtnLink>

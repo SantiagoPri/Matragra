@@ -2,13 +2,8 @@ import { Container, Form, H3, Button, Input, Label, P, Span } from "./styled";
 import useIngresar from "./useIngresar";
 
 const Ingresar = () => {
-  const {
-    handleChange,
-    values,
-    errors,
-    handleSubmit,
-    isLoading,
-  } = useIngresar();
+  const { handleChange, values, errors, handleSubmit, isLoading } =
+    useIngresar();
 
   return (
     <Container>

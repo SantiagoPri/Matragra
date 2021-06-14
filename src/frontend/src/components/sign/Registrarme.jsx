@@ -1,8 +1,19 @@
-import { Container, H3, Form, Label, Input, Button, Select, P } from "./styled";
+import {
+  Container,
+  H3,
+  Form,
+  Label,
+  Input,
+  Button,
+  Select,
+  P,
+  Span,
+} from "./styled";
 import useRegistrarme from "./useRegistrarme";
 
 const Registrarme = () => {
-  const { handleChange, handleSubmit, values, errors } = useRegistrarme();
+  const { handleChange, handleSubmit, values, errors, isLoading } =
+    useRegistrarme();
   return (
     <Container>
       <Form onSubmit={handleSubmit}>
@@ -32,11 +43,11 @@ const Registrarme = () => {
             <option className="form-control" value="" hidden>
               Tipo de usuario
             </option>
-            <option className="form-control" value="1">
-              estudiante
+            <option className="form-control" value="estudiante">
+              Estudiante
             </option>
-            <option className="form-control" value="2">
-              profesor
+            <option className="form-control" value="tutor">
+              Tutor
             </option>
           </Select>
         </div>
@@ -83,6 +94,7 @@ const Registrarme = () => {
 
         <Button type="submit" className="btn btn-primary btn-block">
           Registrarme
+          {isLoading && <Span className="spinner-border spinner-border-sm" />}
         </Button>
         <p className="forgot-password text-right">
           Ya tiene una cuenta? <a href="/ingresar">Ingresar</a>

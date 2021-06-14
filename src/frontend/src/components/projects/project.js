@@ -3,8 +3,12 @@ import Events from "./Events";
 import ListItems from "./ListItems";
 import ProgressBar from "./ProgressBar";
 import Stages from "./Stages";
+import { useContext } from "react";
+import { ProjectContext } from "../../contexts/ProjectContext";
 
-const Project = () => {
+function Project() {
+  const { name, fase0 } = useContext(ProjectContext);
+
   // Lista de las etapas a mostrar.
   const etapas = [
     { name: "Etapa 1", state: 1 },
@@ -37,9 +41,7 @@ const Project = () => {
         style={{ backgroundColor: "#282c34" }}
       >
         <div className="col-12 row">
-          <h1 className="col-sm-10 text-center text-white">
-            Titulo del proyecto
-          </h1>
+          <h1 className="col-sm-10 text-center text-white">{name}</h1>
           <a href="/users/123" className="col-sm-2 text-center text-white">
             Ir al chat
           </a>
@@ -52,7 +54,7 @@ const Project = () => {
           key={1}
           color="#4f4fc3"
           totalEtapas={5}
-          etapaActual={2}
+          etapaActual={3}
         />
 
         <div className="row mt-3">
@@ -60,10 +62,10 @@ const Project = () => {
           <Stages title="Etapas" listStages={etapas}></Stages>
 
           {/* Texto central */}
-          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-            <div class="card" style={{ backgroundColor: "transparent" }}>
-              <div class="card-body">
-                <h4 class="card-title text-light">Heading</h4>
+          <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <div className="card" style={{ backgroundColor: "transparent" }}>
+              <div className="card-body">
+                <h4 className="card-title text-light">Heading</h4>
                 <p className="text-light justify-content-sm-start">
                   Lorem ipsum dolor sit, amet consectetur adipisicing elit.
                   Asperiores repellendus molestiae exercitationem voluptatem
@@ -93,19 +95,19 @@ const Project = () => {
           <ListItems listItems={items}></ListItems>
 
           {/* Botones */}
-          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-            <div class="card" style={{ backgroundColor: "transparent" }}>
-              <div class="card-body">
+          <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <div className="card" style={{ backgroundColor: "transparent" }}>
+              <div className="card-body">
                 <button
                   type="button"
-                  class="col-7 btn btn-rounded btn-secondary mt-3"
+                  className="col-7 btn btn-rounded btn-secondary mt-3"
                   style={{ backgroundColor: "#4f4fc3" }}
                 >
                   Boton 1
                 </button>
                 <button
                   type="button"
-                  class="col-7 btn btn-rounded btn-secondary mt-3"
+                  className="col-7 btn btn-rounded btn-secondary mt-3"
                   style={{ backgroundColor: "#4f4fc3" }}
                 >
                   Boton 2
@@ -117,5 +119,5 @@ const Project = () => {
       </div>
     </Fragment>
   );
-};
+}
 export default Project;

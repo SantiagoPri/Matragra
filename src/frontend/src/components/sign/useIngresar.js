@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { login } from "../../helpers/api/backend-api";
 
 const useIngresar = () => {
-  const { setIsLogged } = useContext(ApiContext);
+  const { setIsLogged, setJwt } = useContext(ApiContext);
   const [values, setValues] = useState({
     userName: "",
     password: "",
@@ -24,6 +24,7 @@ const useIngresar = () => {
         if (data.status === "ok") {
           localStorage.setItem("jwt", data.message);
           setIsLogged(true);
+          setJwt(data.message);
           historyHook.push("/main");
         }
       },

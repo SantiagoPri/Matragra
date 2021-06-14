@@ -1,19 +1,11 @@
 import styled from "styled-components";
 
 export const ProyectContainer = styled.div`
-  height: 800px;
+  min-height: 27vw;
   display: flex;
   flex-direction: column;
   align-items: center;
   background: #282c34;
-
-  @media screen and (max-width: 768px) {
-    height: 1180px;
-  }
-
-  @media screen and (max-width: 480px) {
-    height: 1380px;
-  }
 `;
 
 export const ProyectWrapper = styled.div`
@@ -36,7 +28,7 @@ export const ProyectWrapper = styled.div`
 `;
 
 export const ProyectsCard = styled.div`
-  max-width: 202px;
+  width: 202px;
   background: #3b3b3c;
   display: flex;
   flex-direction: column;
@@ -44,7 +36,7 @@ export const ProyectsCard = styled.div`
   align-items: center;
   border: 6px solid #4c4c4d;
   border-radius: 10px;
-  max-height: 240px;
+  height: 240px;
   padding: 30px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0, 2);
   transition: all 0.2s ease-in-out;
@@ -106,11 +98,18 @@ export const HR = styled.hr`
   background: #fff;
 `;
 
+export const Space = styled.div`
+  width: 200px;
+  display: block;
+`;
 // #################### SEARCH BAR ###################
 export const SearchBarContainer = styled.div`
   font-family: sans-serif;
   display: flex;
   margin-bottom: 30px;
+  width: 50%;
+  min-width: 300px;
+  max-width: 600px;
 `;
 
 export const SearchBarForm = styled.form`
@@ -118,7 +117,7 @@ export const SearchBarForm = styled.form`
   align-items: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   background-color: #37474f;
-  width: 30rem;
+  width: 100%;
   cursor: "auto";
   padding: 2rem;
   height: 2rem;
