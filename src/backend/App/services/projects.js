@@ -2,13 +2,15 @@ const {
   insertNewProject,
   getProjectById,
   getProjectsByState,
+  putProject
 } = require("@appModels/projects");
 const {
   insertNewProjectDetail,
 } = require("@appModels/projectDetails");
-const { getProjectPksServiceByUser } = require("@appServices/projectUsers");
+const { getProjectPksServiceByUser, validateProjectUserAuth } = require("@appServices/projectUsers");
 const validateNewProject = require("@appValidations/project");
 const cleaner = require("@appHelpers/cleanResponses");
+const { authenticate } = require("passport");
 
 async function createProjectService(project) {
   const { projectName, index, fase0, ...restParams } = project;
@@ -76,9 +78,23 @@ async function createFase0(projectName, restParams){
   return { status: "ok", message: "Proyecto creado exitosamente"};
 }
 
+async function putProjectService(projectName, userName, restParams) {
+  const auxAuth = await validateProjectUserAuth(projectName, userName);
+  if (!auxAuth) {
+    return { status: "error", message: "Error el usuario no pertenece al proyecto" };
+  }
+  try {
+    await putProject(projectName, "active", restParams);
+    return { status: "ok", message: "Proyecto actualizado exitosamente"};
+  } catch (error) {
+    return { status: "error", message: "Error actualizando el proyecto" };
+  }
+}
+
 module.exports = {
   createProjectService,
   getProjectByIdService,
   getActiveProjectsService,
-  getAllProjectsByUser
+  getAllProjectsByUser,
+  putProjectService
 };

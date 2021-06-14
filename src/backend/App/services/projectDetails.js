@@ -2,6 +2,7 @@ const {
   insertNewProjectDetail,
   getProjectDetailById,
 } = require("@appModels/projectDetails");
+const { validateProjectUserAuth } = require("@appServices/projectUsers");
 const validateNewProjectDetail = require("@appValidations/projectDetail");
 const cleaner = require("@appHelpers/cleanResponses");
 
@@ -36,7 +37,7 @@ async function getProjectDetailByIdService(projectId, phase) {
       project = await getProjectDetailById(projectId, "3");
       break;
     case "activities":
-      project = await getProjectDetailById(projectId, "ACTIVITIES");
+      project = await getProjectDetailById(projectId, "activities");
       break;
     default:
       return { status: "error", message: "No se especifico ninguna fase" };
@@ -48,8 +49,11 @@ async function getProjectDetailByIdService(projectId, phase) {
   return { status: "error", message: "No se encontro ningun registro" };
 }
 
-async function putProjectDetailService(projectName, phase, restParams) {
-
+async function putProjectDetailService(projectName, userName, phase, restParams) {
+  const auxAuth = await validateProjectUserAuth(projectName, userName);
+  if (!auxAuth) {
+    return { status: "error", message: "Error el usuario no pertenece al proyecto" };
+  }
   switch (phase) {
     case "phase0":
       await insertNewProjectDetail(projectName, "0", {
@@ -72,7 +76,7 @@ async function putProjectDetailService(projectName, phase, restParams) {
       });
             break;
     case "activities":
-      await insertNewProjectDetail(projectName, "ACTIVITIES", {
+      await insertNewProjectDetail(projectName, "activities", {
         ...restParams,
       });
             break;

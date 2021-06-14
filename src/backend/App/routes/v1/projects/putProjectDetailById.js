@@ -7,7 +7,7 @@ exports.default = Router({ mergeParams: true }).put(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const result = await putProjectDetailService(req.params.projectId, req.params.phase, req.body);
+      const result = await putProjectDetailService(req.params.projectId, req.user.pk, req.params.phase, req.body);
       return res.send(result);
     } catch (error) {
       console.warn(error);

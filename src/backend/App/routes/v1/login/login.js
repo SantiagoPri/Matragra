@@ -10,7 +10,7 @@ exports.default = Router({ mergeParams: true }).post(
     } catch (error) {
       next(error);
       console.warn(error);
-      return "Ha ocurrido un error";
+      return res.send("Ha ocurrido un error");
     }
   }
 );

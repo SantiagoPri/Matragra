@@ -11,7 +11,7 @@ exports.default = Router({ mergeParams: true }).get(
       return res.send(result);
     } catch (error) {
       console.warn(error);
-      return res.send(error.message);
+      return res.send("Ha ocurrido un error");
     }
   }
 );

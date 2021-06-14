@@ -15,6 +15,19 @@ function insertNewProject(projectName, projectState, index) {
   return db.put(params).promise();
 }
 
+function putProject(projectName, projectState, restParams) {
+  const Item = {
+    pk: `PROJECT#${projectName}`,
+    sk: `STATE#${projectState}`,
+    ...restParams,
+  };
+  const params = {
+    TableName: MATRAGRA_PROJECTS_DYNAMODB,
+    Item,
+  };
+  return db.put(params).promise();
+}
+
 function getProjectById(projectName) {
   const params = {
     TableName: MATRAGRA_PROJECTS_DYNAMODB,
@@ -52,4 +65,5 @@ module.exports = {
   insertNewProject,
   getProjectById,
   getProjectsByState,
+  putProject
 };

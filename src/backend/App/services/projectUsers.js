@@ -41,8 +41,18 @@ async function getProjectPksServiceByUser(userName) {
   return [];
 }
 
+async function validateProjectUserAuth(projectName, userName) {
+  const projectsUser = await getProjectPksServiceByUser(userName);
+  if (projectsUser.includes(projectName)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 module.exports = {
   createProjectUserService,
   deleteProjectUserServiceByProjectUser,
   getProjectPksServiceByUser,
+  validateProjectUserAuth
 };
