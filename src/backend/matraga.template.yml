@@ -79,6 +79,7 @@ Resources:
                 Action: "lambda:*"
                 Resource:
                   - !GetAtt MatragraAPILambda.Arn
+                  # - !GetAtt WebsocketAPILambda.Arn
 
   # Dynamodb resources
   MatragraDynamoDB:
@@ -200,6 +201,108 @@ Resources:
               in: header
   ## END OF API-PROXY RESOURCES
 
+  # ## START OF API-WEBSOCKET RESOURCES
+  # WebSocketAPI1:
+  #   Type: "AWS::ApiGatewayV2::Api"
+  #   Properties:
+  #     Name: WebSocketAPI
+  #     ProtocolType: WEBSOCKET
+  #     RouteSelectionExpression: $request.body.action
+
+  # WebSocketLambdaIntegration:
+  #   Type: "AWS::ApiGatewayV2::Integration"
+  #   Properties:
+  #     ApiId: !Ref WebSocketAPI1
+  #     Description: Lambda Integration
+  #     IntegrationType: AWS_PROXY
+  #     IntegrationUri: !Join
+  #       - ""
+  #       - - "arn:"
+  #         - !Ref "AWS::Partition"
+  #         - ":apigateway:"
+  #         - !Ref "AWS::Region"
+  #         - ":lambda:path/2015-03-31/functions/"
+  #         - !GetAtt WebsocketAPILambda.Arn
+  #         - /invocations
+  #     CredentialsArn: !GetAtt ApiGatewayIAMRole.Arn
+  #     #IntegrationMethod: POST #FIXME: puede que esto no valla
+  #     PassthroughBehavior: WHEN_NO_MATCH
+
+  # WebSocketLambdaIntegrationResponse:
+  #   Type: "AWS::ApiGatewayV2::IntegrationResponse"
+  #   Properties:
+  #     IntegrationId: !Ref WebSocketLambdaIntegration
+  #     IntegrationResponseKey: /400/
+  #     ApiId: !Ref WebSocketAPI1
+
+  # DefaultRoute:
+  #   Type: "AWS::ApiGatewayV2::Route"
+  #   DependsOn:
+  #     - WebSocketLambdaIntegration
+  #     - WebSocketLambdaIntegrationResponse
+  #   Properties:
+  #     ApiId: !Ref WebSocketAPI1
+  #     RouteKey: $default
+  #     RouteResponseSelectionExpression: $default
+  #     AuthorizationType: NONE #TODO: this can be JWT to be review
+  #     Target: !Join
+  #       - /
+  #       - - integrations
+  #         - !Ref WebSocketLambdaIntegration
+  #         - !Ref WebSocketLambdaIntegrationResponse
+
+  # ConnectRoute:
+  #   Type: "AWS::ApiGatewayV2::Route"
+  #   DependsOn:
+  #     - WebSocketLambdaIntegration
+  #     - WebSocketLambdaIntegrationResponse
+  #   Properties:
+  #     ApiId: !Ref WebSocketAPI1
+  #     RouteKey: $connect 
+  #     RouteResponseSelectionExpression: $default
+  #     AuthorizationType: NONE #TODO: this can be JWT to be review
+  #     Target: !Join
+  #       - /
+  #       - - integrations
+  #         - !Ref WebSocketLambdaIntegration
+  #         - !Ref WebSocketLambdaIntegrationResponse
+
+  # DisconnectRoute:
+  #   Type: "AWS::ApiGatewayV2::Route"
+  #   DependsOn:
+  #     - WebSocketLambdaIntegration
+  #     - WebSocketLambdaIntegrationResponse
+  #   Properties:
+  #     ApiId: !Ref WebSocketAPI1
+  #     RouteKey: $disconnect 
+  #     RouteResponseSelectionExpression: $default
+  #     AuthorizationType: NONE #TODO: this can be JWT to be review
+  #     Target: !Join
+  #       - /
+  #       - - integrations
+  #         - !Ref WebSocketLambdaIntegration
+  #         - !Ref WebSocketLambdaIntegrationResponse
+
+  # ProdStage:
+  #   Type: "AWS::ApiGatewayV2::Stage"
+  #   Properties:
+  #     StageName: Prod
+  #     Description: Prod Stage
+  #     AutoDeploy: true
+  #     ApiId: !Ref WebSocketAPI1
+
+  # WebSocketAPIDeployment1:
+  #   Type: "AWS::ApiGatewayV2::Deployment"
+  #   DependsOn:
+  #     - DefaultRoute
+  #     - ConnectRoute
+  #     - DisconnectRoute
+  #   Properties:
+  #     Description: Deployment for the WebSocket api
+  #     ApiId: !Ref WebSocketAPI1
+  #     StageName: !Ref ProdStage
+  # ## END OF API-WEBSOCKET RESOURCES
+
   ## START OF API RESOURCES
   MatragraAPILambda:
     Type: "AWS::Lambda::Function"
@@ -226,6 +329,32 @@ Resources:
       FunctionName: !Ref MatragraAPILambda
       Principal: "apigateway.amazonaws.com"
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ProxyRestAPIv2}/*"
+
+  # WebsocketAPILambda:
+  #   Type: "AWS::Lambda::Function"
+  #   Properties:
+  #     FunctionName: !Sub "${AWS::StackName}_WebSocket-handler"
+  #     Description: "Manage the notifications and the chat"
+  #     Handler: WebSocket/lambda/default.handler
+  #     Role: !GetAtt StackRole.Arn
+  #     MemorySize: 128
+  #     Timeout: 90
+  #     Runtime: nodejs12.x
+  #     Code:
+  #       S3Bucket: !Ref LambdaCodeBucket
+  #       S3Key: !Sub "${AWS::StackName}.zip"
+  #     Environment:
+  #       Variables:
+  #         MATRAGRA_DYNAMODB: !Ref MatragraDynamoDB
+  #         API_KEY: !Ref ProxyApiGatewayKey
+
+  # WebSocketApiInvokePermission:
+  #   Type: "AWS::Lambda::Permission"
+  #   Properties:
+  #     Action: "lambda:InvokeFunction"
+  #     FunctionName: !Ref WebsocketAPILambda
+  #     Principal: "apigateway.amazonaws.com"
+  #     SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketAPI1}/*"
   ## END OF API RESOURCES
 
 
