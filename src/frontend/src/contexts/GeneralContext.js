@@ -1,6 +1,6 @@
 import { createContext, useState, useContext } from "react";
 import { ApiContext } from "./ApiContext";
-import { useMutation, QueryClient } from "react-query";
+import { useMutation } from "react-query";
 
 export const GeneralContext = createContext();
 
@@ -16,13 +16,6 @@ const GeneralContextProvider = (props) => {
     setAlcance("");
     setNewProjectIsOpen(true);
   };
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: Infinity,
-      },
-    },
-  })
 
   const { apiCalls } = useContext(ApiContext);
   const { mutate, isLoading } = useMutation(apiCalls.createProject, {
@@ -32,7 +25,6 @@ const GeneralContextProvider = (props) => {
       }
       if (data.status === "ok") {
         setNewProjectIsOpen(false);
-        await queryClient.refetchQueries(["getAllProjects"], { active: true });
       }
     },
   });
@@ -67,7 +59,7 @@ export default GeneralContextProvider;
 function formatNewProject(listObjectives, projectName, alcance) {
   return {
     projectName: projectName,
-    index: 1,
+    index: 0,
     fase0: {
       objetivos: listObjectives.map((objective) => objective.name),
       alcance: alcance,

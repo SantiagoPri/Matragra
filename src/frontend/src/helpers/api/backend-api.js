@@ -28,9 +28,9 @@ export const getProjects = (jwt) => {
   return axios.request(params);
 };
 
-export const getProject = (jwt, projectName) => {
+export const getProject = (jwt, projectName, index) => {
   const params = {
-    url: `${BASE_URL}/v1/projectDetail/${projectName}`,
+    url: `${BASE_URL}/v1/projectDetail/${projectName}/phase${index}`,
     headers: { Authorization: jwt },
     method: "get",
   };

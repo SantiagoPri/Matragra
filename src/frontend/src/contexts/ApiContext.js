@@ -17,15 +17,17 @@ const ApiContextProvider = (props) => {
   };
 
   const getProjectDetails = async ({ queryKey }) => {
-    const projectName = queryKey[1];
-    const projects = await getProject(jwt, projectName);
-    return projects.data;
+    const { proyectName, index } = queryKey[1];
+    const projectInfo = await getProject(jwt, proyectName, index);
+    console.log("result", projectInfo);
+    return projectInfo.data;
   };
 
   const createProject = async (projectInfo) => {
     const response = await newProject(jwt, projectInfo);
     return response.data;
   };
+
   const apiCalls = { getAllProjects, getProjectDetails, createProject };
   return (
     <ApiContext.Provider

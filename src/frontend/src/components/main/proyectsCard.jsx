@@ -1,22 +1,26 @@
 import { ProyectsCard, ProyectsH2, ProyectsIcon } from "./styled";
 import { useHistory } from "react-router-dom";
-import { useContext, useState, Fragment } from "react";
+import { useContext, Fragment } from "react";
+import { ProjectContext } from "../../contexts/ProjectContext";
 import { GeneralContext } from "../../contexts/GeneralContext";
 import { NewProject } from "../newProject/NewProject";
 import { Modal } from "../newProject/Modal";
 
 export const ProjectCard = (props) => {
-  const { Title, owned } = props;
+  const { setName, setIndex } = useContext(ProjectContext);
+  const { projectInfo, owned } = props;
   const historyHook = useHistory();
 
   const onClick = () => {
     if (owned) {
-      historyHook.push(`/project/${Title}`);
+      setName(projectInfo.pk);
+      setIndex(projectInfo.index);
+      historyHook.push(`/project/${projectInfo.pk}`);
     }
   };
   return (
     <ProyectsCard onClick={onClick}>
-      <ProyectsH2>{Title}</ProyectsH2>
+      <ProyectsH2>{projectInfo.pk}</ProyectsH2>
     </ProyectsCard>
   );
 };

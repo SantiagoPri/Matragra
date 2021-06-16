@@ -15,6 +15,7 @@ import GeneralContextProvider from "./contexts/GeneralContext";
 import Main from "./components/main/main";
 import ProjectRouter from "./components/ProjectRouter";
 import Footer from "./components/footer/footer";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,7 @@ function App() {
               </ProjectContextProvider>
             </GeneralContextProvider>
           </ApiContextProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </Router>
     </div>

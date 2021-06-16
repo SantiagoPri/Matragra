@@ -12,7 +12,7 @@ const ProjectContextProvider = (props) => {
   const [fase3, setFase3] = useState({ evidencias: [] });
 
   return (
-    <ProjectContext.Provider value={{ name, setName, setFase0, fase0 }}>
+    <ProjectContext.Provider value={{ name, setName, index, setIndex }}>
       {props.children}
     </ProjectContext.Provider>
   );
