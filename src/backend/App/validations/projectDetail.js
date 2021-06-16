@@ -1,9 +1,7 @@
 const { getProjectDetailById } = require("@appModels/projectDetails");
 
-async function validateNewProjectDetail(projectName, type, index, fase0,
-  fase1, fase2, fase3, registroDeActividades) {
-  if (!(projectName && type && index && fase0 &&
-    fase1 && fase2 && fase3 && registroDeActividades)) {
+async function validateNewProjectDetail(projectName, fase) {
+  if (!(projectName && fase)) {
     return { isValid: false, message: "Información incompleta" };
   }
   

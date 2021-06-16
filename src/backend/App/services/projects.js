@@ -2,13 +2,15 @@ const {
   insertNewProject,
   getProjectById,
   getProjectsByState,
+  putProject
 } = require("@appModels/projects");
 const {
   insertNewProjectDetail,
 } = require("@appModels/projectDetails");
-const { getProjectPksServiceByUser } = require("@appServices/projectUsers");
+const { getProjectPksServiceByUser, validateProjectUserAuth } = require("@appServices/projectUsers");
 const validateNewProject = require("@appValidations/project");
 const cleaner = require("@appHelpers/cleanResponses");
+const { authenticate } = require("passport");
 
 async function createProjectService(project) {
   const { projectName, index, fase0, ...restParams } = project;
@@ -21,19 +23,17 @@ async function createProjectService(project) {
     return { status: "error", message };
   }
 
-  await insertNewProject(projectName, "active");
-  fase1 = {};
-  fase2 = {};
-  fase3 = {};
-  registroDeActividades = {};  
-  await insertNewProjectDetail(projectName, "info", index, fase0,
-    fase1, fase2, fase3, registroDeActividades, {
-      ...restParams });
-  return { status: "ok", message: "Proyecto creado exitosamente" };
+  try {
+    await insertNewProject(projectName, "active", index);
+  } catch (error) {
+    return { status: "error", message: "Error guardando el proyecto" };
+  }
+  let params = {fase0, ...restParams}
+  return await createFase0(projectName, params);
 }
 
-async function getProjectByIdService(projectName) {
-  const project = await getProjectById(projectName);
+async function getProjectByIdService(projectId) {
+  const project = await getProjectById(projectId);
   if (project.Count) {
     const cProject = cleaner(project);
     return { status: "ok", project: cProject.Items[0] };
@@ -71,9 +71,30 @@ async function getAllProjectsByUser(userName) {
   return result;
 }
 
+async function createFase0(projectName, restParams){
+  // TODO: validate restParams
+  await insertNewProjectDetail(projectName, "0", {
+    ...restParams });
+  return { status: "ok", message: "Proyecto creado exitosamente"};
+}
+
+async function putProjectService(projectName, userName, restParams) {
+  const auxAuth = await validateProjectUserAuth(projectName, userName);
+  if (!auxAuth) {
+    return { status: "error", message: "Error el usuario no pertenece al proyecto" };
+  }
+  try {
+    await putProject(projectName, "active", restParams);
+    return { status: "ok", message: "Proyecto actualizado exitosamente"};
+  } catch (error) {
+    return { status: "error", message: "Error actualizando el proyecto" };
+  }
+}
+
 module.exports = {
   createProjectService,
   getProjectByIdService,
   getActiveProjectsService,
-  getAllProjectsByUser
+  getAllProjectsByUser,
+  putProjectService
 };

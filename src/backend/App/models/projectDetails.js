@@ -1,38 +1,31 @@
 const db = require("../helpers/aws/dynamodb");
 
-const { MATRAGRA_DYNAMODB } = process.env;
+const { MATRAGRA_PROJECTS_DYNAMODB } = process.env;
 
-function insertNewProjectDetail(projectName, type, index, fase0,
-                                    fase1, fase2, fase3, registroDeActividades, restParams) {
+function insertNewProjectDetail(projectName, phase, restParams) {
   const Item = {
     pk: `PROJECT#${projectName}`,
-    sk: `DETAIL#${type}`,
-    index: index,
-    fase0: fase0,
-    fase1: fase1,
-    fase2: fase2,
-    fase3: fase3,
-    registroDeActividades: registroDeActividades,
+    sk: `PHASE#${phase}`,
     ...restParams,
   };
   const params = {
-    TableName: MATRAGRA_DYNAMODB,
+    TableName: MATRAGRA_PROJECTS_DYNAMODB,
     Item,
   };
   return db.put(params).promise();
 }
 
-function getProjectDetailById(projectName) {
+function getProjectDetailById(projectName, phase) {
   const params = {
-    TableName: MATRAGRA_DYNAMODB,
-    KeyConditionExpression: "#pk = :project and begins_with(#sk, :detail)",
+    TableName: MATRAGRA_PROJECTS_DYNAMODB,
+    KeyConditionExpression: "#pk = :project and begins_with(#sk, :phase)",
     ExpressionAttributeNames: {
       "#pk": "pk",
       "#sk": "sk",
     },
     ExpressionAttributeValues: {
       ":project": `PROJECT#${projectName}`,
-      ":detail": `DETAIL#`,
+      ":phase": `PHASE#${phase}`,
     },
   };
   return db.query(params).promise();
