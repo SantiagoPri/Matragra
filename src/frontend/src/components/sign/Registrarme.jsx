@@ -46,8 +46,8 @@ const Registrarme = () => {
             <option className="form-control" value="estudiante">
               Estudiante
             </option>
-            <option className="form-control" value="tutor">
-              Tutor
+            <option className="form-control" value="director">
+              Director
             </option>
           </Select>
         </div>

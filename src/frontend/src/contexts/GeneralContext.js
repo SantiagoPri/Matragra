@@ -18,16 +18,20 @@ const GeneralContextProvider = (props) => {
   };
 
   const { apiCalls } = useContext(ApiContext);
-  const { mutate, isLoading } = useMutation(apiCalls.createProject, {
-    onSuccess: async (data) => {
-      if (data.status === "error") {
-        //setErrors({ userName: data.message });TODO: que es lo que recibe
-      }
-      if (data.status === "ok") {
-        setNewProjectIsOpen(false);
-      }
-    },
-  });
+  const { mutate, isLoading: isCreatingNewProject } = useMutation(
+    apiCalls.createProject,
+    {
+      onSuccess: async (data) => {
+        console.log("data?", data);
+        if (data.status === "error") {
+          //setErrors({ userName: data.message });TODO: que es lo que recibe
+        }
+        if (data.status === "ok") {
+          setNewProjectIsOpen(false);
+        }
+      },
+    }
+  );
 
   const createProject = () => {
     const newProject = formatNewProject(listObjectives, projectName, alcance);
@@ -47,6 +51,7 @@ const GeneralContextProvider = (props) => {
         alcance,
         setAlcance,
         createProject,
+        isCreatingNewProject,
       }}
     >
       {props.children}

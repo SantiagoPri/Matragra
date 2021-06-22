@@ -37,6 +37,16 @@ export const getProject = (jwt, projectName, index) => {
   return axios.request(params);
 };
 
+export const getProjectPhase = (jwt, projectName, phase, phaseInfo) => {
+  const params = {
+    url: `${BASE_URL}/v1/projectDetail/${projectName}/phase${phase}`,
+    headers: { Authorization: jwt },
+    method: "put",
+    data: phaseInfo,
+  };
+  return axios.request(params);
+};
+
 export const newProject = (jwt, projectInfo) => {
   const params = {
     url: `${BASE_URL}/v1/projects/`,

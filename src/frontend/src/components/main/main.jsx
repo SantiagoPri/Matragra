@@ -35,17 +35,21 @@ const Main = () => {
 
   return (
     <ProyectContainer id="services" className="container-fluid">
-      <ProyectsH1>PROYECTOS</ProyectsH1>
-      <SearchBar />
       {isLoading ? (
         <Waiting />
       ) : (
         <Fragment>
+          <ProyectsH1>PROYECTOS</ProyectsH1>
+          <SearchBar />
           <Collapse Title="Mis proyectos">
             <ProyectWrapper>
               <NewProjectCard />
               {projects.userProjectNames.map((project) => (
-                <ProjectCard key={project.pk} projectInfo={project} owned={true} />
+                <ProjectCard
+                  key={project.pk}
+                  projectInfo={project}
+                  owned={true}
+                />
               ))}
             </ProyectWrapper>
           </Collapse>

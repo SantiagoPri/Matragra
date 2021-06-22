@@ -3,6 +3,7 @@ import {
   getProjects,
   getProject,
   newProject,
+  getProjectPhase,
 } from "../helpers/api/backend-api";
 
 export const ApiContext = createContext();
@@ -19,7 +20,6 @@ const ApiContextProvider = (props) => {
   const getProjectDetails = async ({ queryKey }) => {
     const { proyectName, index } = queryKey[1];
     const projectInfo = await getProject(jwt, proyectName, index);
-    console.log("result", projectInfo);
     return projectInfo.data;
   };
 
@@ -28,7 +28,23 @@ const ApiContextProvider = (props) => {
     return response.data;
   };
 
-  const apiCalls = { getAllProjects, getProjectDetails, createProject };
+  const updatePhase = async (phaseInfo) => {
+    const { projectName, phaseNumber, params } = phaseInfo;
+    const updateResponse = await getProjectPhase(
+      jwt,
+      projectName,
+      phaseNumber,
+      params
+    );
+    return updateResponse.data;
+  };
+
+  const apiCalls = {
+    getAllProjects,
+    getProjectDetails,
+    createProject,
+    updatePhase,
+  };
   return (
     <ApiContext.Provider
       value={{ isLogged, setIsLogged, jwt, setJwt, apiCalls }}

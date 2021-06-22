@@ -1,12 +1,13 @@
 import ReactDOM from "react-dom";
-import { Modal } from "./styled";
+import { Modal, Span } from "./styled";
 import { useContext } from "react";
 import { GeneralContext } from "../../contexts/GeneralContext";
 
 const modalContainer = document.querySelector("#modalContainer");
 
 export const NewProject = ({ title, children }) => {
-  const { setNewProjectIsOpen, createProject } = useContext(GeneralContext);
+  const { setNewProjectIsOpen, createProject, isCreatingNewProject } =
+    useContext(GeneralContext);
   return ReactDOM.createPortal(
     <Modal tabIndex="-1" role="dialog">
       <div className="modal-dialog modal-dialog-centered" role="document">
@@ -34,6 +35,9 @@ export const NewProject = ({ title, children }) => {
               style={{ backgroundColor: "#4f4fc3" }}
             >
               Crear proyecto
+              {isCreatingNewProject && (
+                <Span className="spinner-border spinner-border-sm" />
+              )}
             </button>
           </div>
         </div>

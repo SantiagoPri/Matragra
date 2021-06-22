@@ -14,7 +14,7 @@ import Project from "./projects/Project";
 
 const ProjectRouter = () => {
   const { apiCalls } = useContext(ApiContext);
-  const { name, index } = useContext(ProjectContext);
+  const { name, index, nextPhase } = useContext(ProjectContext);
   const { proyectName } = useParams();
   const { url, path } = useRouteMatch();
   const historyHook = useHistory();
@@ -33,15 +33,14 @@ const ProjectRouter = () => {
     {
       enabled: isTheProject,
       onSuccess: (data) => {
-        if (!data.projectDetail) {
-          historyHook.push("/main");
-          return;
-        }
+        // if (!data.projectDetail) {
+        //   historyHook.push("/main");
+        //   return;
+        // }
         console.log("data", data);
       },
       onError: (error) => {
         historyHook.push("/main");
-        return;
       },
     }
   );

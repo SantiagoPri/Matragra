@@ -23,6 +23,10 @@ export const Boton = styled.button`
   color: #ffffff;
   &:hover {
     background: #000000;
-    color: #ffffff
+    color: #ffffff;
   }
+`;
+
+export const Span = styled.span`
+  margin-left: 10px;
 `;

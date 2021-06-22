@@ -5,6 +5,7 @@ import ProgressBar from "./ProgressBar";
 import Stages from "./Stages";
 import { useContext } from "react";
 import { ProjectContext } from "../../contexts/ProjectContext";
+import { Task } from "./tareas/Task";
 
 function Project() {
   const { name, fase0 } = useContext(ProjectContext);
@@ -63,20 +64,7 @@ function Project() {
 
           {/* Texto central */}
           <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-            <div className="card" style={{ backgroundColor: "transparent" }}>
-              <div className="card-body">
-                <h4 className="card-title text-light">Heading</h4>
-                <p className="text-light justify-content-sm-start">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Asperiores repellendus molestiae exercitationem voluptatem
-                  tempora quo dolore nostrum dolor consequuntur itaque, alias
-                  fugit. Architecto rerum animi velit, beatae corrupti quos nam
-                  saepe asperiores aliquid quae culpa ea reiciendis ipsam
-                  numquam laborum aperiam. Id tempore consequuntur velit vitae
-                  corporis, aspernatur praesentium ratione!
-                </p>
-              </div>
-            </div>
+            <Task />
           </div>
 
           {/* Eventos */}
