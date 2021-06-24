@@ -9,12 +9,9 @@ const ProjectContextProvider = (props) => {
   const [name, setName] = useState("");
   const [index, setIndex] = useState(0);
   const [visibleIndex, setVisibleIndex] = useState(0);
-  const [fase0, setFase0] = useState({ objetivos: [], alcance: "" });
-  const [fase1, setFase1] = useState({ diseño: {}, check: false });
-  const [fase2, setFase2] = useState({});
-  const [fase3, setFase3] = useState({ evidencias: [] });
+  const [visiblePhase, setVisiblePhase] = useState({});
 
-  const { mutate: mutatePhase, isLoading } = useMutation(apiCalls.updatePhase, {
+  const { mutate: mutatePhase, isLoading } = useMutation(apiCalls.nextPhase, {
     onSuccess: async (data, variables) => {
       if (data.status === "error") {
         //setErrors({ userName: data.message });TODO: que es lo que recibe
@@ -27,29 +24,27 @@ const ProjectContextProvider = (props) => {
     },
   });
 
-  const nextPhase = () => {
-    const newPhase = index + 1;
-    if (newPhase > 3 || newPhase < 0) {
+  const nextPhase = (projectName, phase) => {
+    const phaseNumber = phase + 1;
+    if (phaseNumber > 3 || phaseNumber < 0) {
       return;
     }
-    let newArgs;
-    switch (newPhase) {
-      case 1:
-        newArgs = { initialData: "" };
-        break;
-      case 2:
-        newArgs = { initialData: "" };
-        break;
-      case 3:
-        newArgs = { initialData: "" };
-        break;
-    }
-    mutatePhase({ projectName: name, phaseNumber: newPhase, params: newArgs });
+    mutatePhase({ projectName, phaseNumber, params: {} });
   };
 
   return (
     <ProjectContext.Provider
-      value={{ name, setName, index, setIndex, nextPhase }}
+      value={{
+        name,
+        setName,
+        index,
+        setIndex,
+        visibleIndex,
+        setVisibleIndex,
+        nextPhase,
+        visiblePhase,
+        setVisiblePhase,
+      }}
     >
       {props.children}
     </ProjectContext.Provider>

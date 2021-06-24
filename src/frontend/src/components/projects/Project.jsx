@@ -5,19 +5,10 @@ import ProgressBar from "./ProgressBar";
 import Stages from "./Stages";
 import { useContext } from "react";
 import { ProjectContext } from "../../contexts/ProjectContext";
-import { Task } from "./tareas/Task";
+import Phases from "./Phases";
 
 function Project() {
-  const { name, fase0 } = useContext(ProjectContext);
-
-  // Lista de las etapas a mostrar.
-  const etapas = [
-    { name: "Etapa 1", state: 1 },
-    { name: "Etapa 2", state: 1 },
-    { name: "Etapa 3", state: 2 },
-    { name: "Etapa 4", state: 3 },
-    { name: "Etapa 5", state: 3 },
-  ];
+  const { name } = useContext(ProjectContext);
 
   // Lista de eventos.
   const events = [
@@ -60,11 +51,11 @@ function Project() {
 
         <div className="row mt-3">
           {/* Etapas */}
-          <Stages title="Etapas" listStages={etapas}></Stages>
+          <Stages />
 
-          {/* Texto central */}
+          {/* Fase */}
           <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-            <Task />
+            <Phases />
           </div>
 
           {/* Eventos */}

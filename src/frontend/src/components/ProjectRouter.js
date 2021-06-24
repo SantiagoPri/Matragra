@@ -14,7 +14,8 @@ import Project from "./projects/Project";
 
 const ProjectRouter = () => {
   const { apiCalls } = useContext(ApiContext);
-  const { name, index, nextPhase } = useContext(ProjectContext);
+  const { name, visibleIndex, setIndex, setVisiblePhase } =
+    useContext(ProjectContext);
   const { proyectName } = useParams();
   const { url, path } = useRouteMatch();
   const historyHook = useHistory();
@@ -27,17 +28,37 @@ const ProjectRouter = () => {
     }
   }, []);
 
-  const { data, isLoading } = useQuery(
-    ["getProjectDetails", { proyectName, index }],
+  useQuery(
+    ["getProjectByPhase", { proyectName, index: visibleIndex }],
     apiCalls.getProjectDetails,
     {
       enabled: isTheProject,
       onSuccess: (data) => {
-        // if (!data.projectDetail) {
-        //   historyHook.push("/main");
-        //   return;
-        // }
-        console.log("data", data);
+        console.log("phase Details", data);
+        if (!data.projectDetail) {
+          historyHook.push("/main");
+          return;
+        }
+        const { pk, sk, ...phase } = data.projectDetail;
+        setVisiblePhase(phase);
+      },
+      onError: (error) => {
+        historyHook.push("/main");
+      },
+    }
+  );
+  const { data: projectInfo, isLoading: isLoadingProjectInfo } = useQuery(
+    ["getProjectInfo", { proyectName }],
+    apiCalls.getProjectInfo,
+    {
+      enabled: isTheProject,
+      onSuccess: (data) => {
+        console.log("Proyect Info", data);
+        if (data.status !== "ok") {
+          historyHook.push("/main");
+          return;
+        }
+        setIndex(data.project.index);
       },
       onError: (error) => {
         historyHook.push("/main");
@@ -46,7 +67,7 @@ const ProjectRouter = () => {
   );
   return (
     <Fragment>
-      {!data || isLoading ? (
+      {!projectInfo || isLoadingProjectInfo ? (
         <Waiting />
       ) : (
         <Switch>

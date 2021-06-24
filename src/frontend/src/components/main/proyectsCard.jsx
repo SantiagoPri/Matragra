@@ -7,7 +7,8 @@ import { NewProject } from "../newProject/NewProject";
 import { Modal } from "../newProject/Modal";
 
 export const ProjectCard = (props) => {
-  const { setName, setIndex } = useContext(ProjectContext);
+  const { setName, setIndex, setVisibleIndex, nextPhase } =
+    useContext(ProjectContext);
   const { projectInfo, owned } = props;
   const historyHook = useHistory();
 
@@ -15,6 +16,10 @@ export const ProjectCard = (props) => {
     if (owned) {
       setName(projectInfo.pk);
       setIndex(projectInfo.index);
+      setVisibleIndex(projectInfo.index);
+      if (projectInfo.index === 0) {
+        nextPhase(projectInfo.pk, projectInfo.index);
+      }
       historyHook.push(`/project/${projectInfo.pk}`);
     }
   };

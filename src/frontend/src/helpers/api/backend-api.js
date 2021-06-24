@@ -28,7 +28,16 @@ export const getProjects = (jwt) => {
   return axios.request(params);
 };
 
-export const getProject = (jwt, projectName, index) => {
+export const getProjectByName = (jwt, projectName) => {
+  const params = {
+    url: `${BASE_URL}/v1/project/${projectName}`,
+    headers: { Authorization: jwt },
+    method: "get",
+  };
+  return axios.request(params);
+};
+
+export const getProjectByPhase = (jwt, projectName, index) => {
   const params = {
     url: `${BASE_URL}/v1/projectDetail/${projectName}/phase${index}`,
     headers: { Authorization: jwt },
@@ -37,7 +46,7 @@ export const getProject = (jwt, projectName, index) => {
   return axios.request(params);
 };
 
-export const getProjectPhase = (jwt, projectName, phase, phaseInfo) => {
+export const putProjectPhase = (jwt, projectName, phase, phaseInfo) => {
   const params = {
     url: `${BASE_URL}/v1/projectDetail/${projectName}/phase${phase}`,
     headers: { Authorization: jwt },
@@ -53,6 +62,16 @@ export const newProject = (jwt, projectInfo) => {
     headers: { Authorization: jwt },
     method: "post",
     data: projectInfo,
+  };
+  return axios.request(params);
+};
+
+export const putProject = (jwt, projectName, index) => {
+  const params = {
+    url: `${BASE_URL}/v1/projects/${projectName}`,
+    headers: { Authorization: jwt },
+    method: "put",
+    data: { index },
   };
   return axios.request(params);
 };

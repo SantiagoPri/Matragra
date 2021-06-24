@@ -22,7 +22,6 @@ const GeneralContextProvider = (props) => {
     apiCalls.createProject,
     {
       onSuccess: async (data) => {
-        console.log("data?", data);
         if (data.status === "error") {
           //setErrors({ userName: data.message });TODO: que es lo que recibe
         }
@@ -65,7 +64,7 @@ function formatNewProject(listObjectives, projectName, alcance) {
   return {
     projectName: projectName,
     index: 0,
-    fase0: {
+    phase0: {
       objetivos: listObjectives.map((objective) => objective.name),
       alcance: alcance,
     },

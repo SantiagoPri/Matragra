@@ -1,9 +1,11 @@
 import { createContext, useState } from "react";
 import {
   getProjects,
-  getProject,
+  getProjectByName,
+  getProjectByPhase,
   newProject,
-  getProjectPhase,
+  putProject,
+  putProjectPhase,
 } from "../helpers/api/backend-api";
 
 export const ApiContext = createContext();
@@ -19,7 +21,13 @@ const ApiContextProvider = (props) => {
 
   const getProjectDetails = async ({ queryKey }) => {
     const { proyectName, index } = queryKey[1];
-    const projectInfo = await getProject(jwt, proyectName, index);
+    const projectInfo = await getProjectByPhase(jwt, proyectName, index);
+    return projectInfo.data;
+  };
+
+  const getProjectInfo = async ({ queryKey }) => {
+    const { proyectName } = queryKey[1];
+    const projectInfo = await getProjectByName(jwt, proyectName);
     return projectInfo.data;
   };
 
@@ -28,22 +36,24 @@ const ApiContextProvider = (props) => {
     return response.data;
   };
 
-  const updatePhase = async (phaseInfo) => {
+  const nextPhase = async (phaseInfo) => {
     const { projectName, phaseNumber, params } = phaseInfo;
-    const updateResponse = await getProjectPhase(
+    const updateResponse = await putProjectPhase(
       jwt,
       projectName,
       phaseNumber,
       params
     );
+    await putProject(jwt, projectName, phaseNumber);
     return updateResponse.data;
   };
 
   const apiCalls = {
     getAllProjects,
+    getProjectInfo,
     getProjectDetails,
     createProject,
-    updatePhase,
+    nextPhase,
   };
   return (
     <ApiContext.Provider
