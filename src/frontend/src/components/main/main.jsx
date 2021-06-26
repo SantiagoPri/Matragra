@@ -23,7 +23,7 @@ const Main = () => {
     refetch,
   } = useQuery("getAllProjects", apiCalls.getAllProjects, {
     onError: (error) => {
-      Location.reload(false);
+      window.location.reload(true);
       return;
     },
   });

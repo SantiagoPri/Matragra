@@ -1,12 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { ProjectContext } from "../../../contexts/ProjectContext";
 import { Fragment } from "react";
 
-export const NewTask = ({ viewTask }) => {
+export const NewTask = ({ viewTask, onClose }) => {
+  const { visiblePhase, updatePhase } = useContext(ProjectContext);
   const [task, setTask] = useState("");
-  const [desription, setDesription] = useState("");
+  const [description, setDescription] = useState("");
 
   const createTask = () => {
-    //
+    const taskName = `task#${task}`;
+    if (visiblePhase[taskName]) {
+      return; //TODO: what to do if the task name already exists?
+    }
+    updatePhase(`task#${task}`, { name: task, description });
+    onClose();
   };
 
   return viewTask.current === null ? (
@@ -30,8 +37,8 @@ export const NewTask = ({ viewTask }) => {
           className="form-control"
           id="descripcion"
           rows="3"
-          onChange={(text) => setDesription(text.target.value)}
-          value={desription}
+          onChange={(text) => setDescription(text.target.value)}
+          value={description}
         ></textarea>
       </div>
 
@@ -68,7 +75,7 @@ export const NewTask = ({ viewTask }) => {
           className="form-control"
           id="descripcion"
           rows="3"
-          onChange={(text) => setDesription(text.target.value)}
+          onChange={(text) => setDescription(text.target.value)}
           value={viewTask.current.description}
           readOnly
         ></textarea>

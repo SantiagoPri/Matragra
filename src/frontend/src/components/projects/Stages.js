@@ -15,7 +15,7 @@ const Stages = () => {
 
   // Funciones
   const ButtonAdvanceStage = () => {
-    nextPhase(name, index);
+    nextPhase();
   };
 
   const showClickedStage = (stage) => {

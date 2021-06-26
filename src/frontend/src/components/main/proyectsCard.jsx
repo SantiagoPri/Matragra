@@ -18,7 +18,7 @@ export const ProjectCard = (props) => {
       setIndex(projectInfo.index);
       setVisibleIndex(projectInfo.index);
       if (projectInfo.index === 0) {
-        nextPhase(projectInfo.pk, projectInfo.index);
+        nextPhase();
       }
       historyHook.push(`/project/${projectInfo.pk}`);
     }
