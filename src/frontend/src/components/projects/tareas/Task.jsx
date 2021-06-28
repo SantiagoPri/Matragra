@@ -29,7 +29,8 @@ export const Task = () => {
     setTasks(tasks);
   }, [visiblePhase]);
   // lista de sub-tareas a mostrar en el modal.
-  const listaSubTareas = useRef([]);
+  const [stateTitles, setStateTitles] = useState([]);
+  const modalTitle = useRef("");
   const taskView = useRef(null); // tarea a mostrar en el modal.
 
   // Lista de Tareas.
@@ -58,8 +59,9 @@ export const Task = () => {
 
   // cargar las sub-tareas de la tarea seleccionada, para mostrarlas en el modal.
   const CambiarEstado = (id) => {
-    const subTask = visiblePhase[id].subTask ? visiblePhase[id].subTask : [];
-    listaSubTareas.current = subTask;
+    const title = visiblePhase[id].name ? visiblePhase[id].name : "";
+    modalTitle.current = title;
+    setStateTitles(getTitles(visibleIndex));
     openModal();
   };
 
@@ -150,9 +152,9 @@ export const Task = () => {
 
       <ModalContainerTask isOpened={isOpened}>
         <DragDrop
-          title="Titulo del Modal"
+          modalTitle={modalTitle}
           onClose={closeModal}
-          subTasks={listaSubTareas}
+          stateTitles={stateTitles}
         ></DragDrop>
       </ModalContainerTask>
 
@@ -167,7 +169,9 @@ export const Task = () => {
   );
 };
 
-const PhaseName = (props) => {
+export default PhaseName;
+
+function PhaseName(props) {
   switch (props.visibleIndex) {
     case 1:
       return <h5>Fase De Diseño</h5>;
@@ -179,6 +183,31 @@ const PhaseName = (props) => {
       return <Fragment />;
     //return <Redirect to="/main" />;
   }
-};
+}
 
-export default PhaseName;
+function getTitles(id) {
+  switch (id) {
+    case 1:
+      return [
+        { title: "Por hacer", items: [] },
+        { title: "En Diseño", items: [] },
+        { title: "Hecho", items: [] },
+      ];
+    case 2:
+      return [
+        { title: "Por hacer", items: [] },
+        { title: "En progreso", items: [] },
+        { title: "En pruebas", items: [] },
+        { title: "Hecho", items: [] },
+      ];
+    case 3:
+      return [
+        { title: "Por hacer", items: [] },
+        { title: "En Integración", items: [] },
+        { title: "Pruebas De Integración", items: [] },
+        { title: "Integrado", items: [] },
+      ];
+    default:
+      return [];
+  }
+}

@@ -34,7 +34,7 @@ const ProjectRouter = () => {
     {
       enabled: isTheProject,
       onSuccess: (data) => {
-        console.log("phase Details", data);
+        //console.log("phase Details", data);
         if (!data.projectDetail) {
           historyHook.push("/main");
           return;
@@ -53,7 +53,7 @@ const ProjectRouter = () => {
     {
       enabled: isTheProject,
       onSuccess: (data) => {
-        console.log("Proyect Info", data);
+        //console.log("Proyect Info", data);
         if (data.status !== "ok") {
           historyHook.push("/main");
           return;

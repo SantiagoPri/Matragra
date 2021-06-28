@@ -13,17 +13,17 @@ export default Phases;
 
 const Phase0 = () => {
   const { visiblePhase } = useContext(ProjectContext);
-  console.log(visiblePhase);
-  return visiblePhase.objetivos && visiblePhase.alcance ? (
+  //console.log(visiblePhase);
+  return visiblePhase.objectives && visiblePhase.scope ? (
     <Fragment>
       <Titulo>Objetivos</Titulo>
       <Lista>
-        {visiblePhase.objetivos.map((objetivo, index) => {
+        {visiblePhase.objectives.map((objetivo, index) => {
           return <li key={index}>{objetivo}</li>;
         })}
       </Lista>
       <Titulo>Alcance</Titulo>
-      <Text>{visiblePhase.alcance}</Text>
+      <Text>{visiblePhase.scope}</Text>
     </Fragment>
   ) : (
     <Waiting />

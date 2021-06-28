@@ -44,7 +44,9 @@ const ApiContextProvider = (props) => {
       phaseNumber,
       params
     );
-    await putProject(jwt, projectName, phaseNumber);
+    console.log("JP1: ", updateResponse);
+    const response2 = await putProject(jwt, projectName, phaseNumber);
+    console.log("jp2: ", response2);
     return updateResponse.data;
   };
 

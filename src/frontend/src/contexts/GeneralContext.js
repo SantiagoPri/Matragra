@@ -65,8 +65,8 @@ function formatNewProject(listObjectives, projectName, alcance) {
     projectName: projectName,
     index: 0,
     phase0: {
-      objetivos: listObjectives.map((objective) => objective.name),
-      alcance: alcance,
+      objectives: listObjectives.map((objective) => objective.name),
+      scope: alcance,
     },
   };
 }

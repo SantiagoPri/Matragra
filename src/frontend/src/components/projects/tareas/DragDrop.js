@@ -1,70 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { ProjectContext } from "../../../contexts/ProjectContext";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import _ from "lodash";
 import "./Style.css";
-import {
-  FaFileMedical,
-  FaGripHorizontal,
-  FaRegWindowClose,
-  FaTimes,
-} from "react-icons/fa";
+import { FaFileMedical, FaGripHorizontal, FaTimes } from "react-icons/fa";
 
-export const DragDrop = ({ subTasks, title, onClose }) => {
+export const DragDrop = ({ modalTitle, stateTitles, onClose }) => {
+  const { updatePhase, visiblePhase } = useContext(ProjectContext);
   const [text, setText] = useState("");
 
   // los estados a mostrar.
-  const [state, setState] = useState([
-    {
-      // estado 1
-      title: "Por hacer",
-      items: [],
-    },
-    {
-      // estado 2
-      title: "En progreso",
-      items: [],
-    },
-    {
-      // estado 3
-      title: "En pruebas",
-      items: [],
-    },
-    {
-      // estado 4
-      title: "Hecho",
-      items: [],
-    },
-  ]);
+  const [state, setState] = useState([]);
+
+  const [subTareas, setSubtareas] = useState([]);
 
   // cargar las sub-tareas en los estados correspondientes.
   useEffect(() => {
-    if (subTasks) {
-      setState((list) => {
-        list = [...list];
+    const taskId = `task#${modalTitle}`;
+    setSubtareas(
+      visiblePhase[taskId].subTask ? visiblePhase[taskId].subTask : []
+    );
 
-        subTasks.current.forEach((elemento) => {
-          switch (elemento.state) {
-            case 0:
-              list[0].items = [...list[0].items, elemento];
-              break;
-            case 1:
-              list[1].items = [...list[1].items, elemento];
-              break;
-            case 2:
-              list[2].items = [...list[2].items, elemento];
-              break;
-            case 3:
-              list[3].items = [...list[3].items, elemento];
-              break;
-
-            default:
-              break;
-          }
-        });
-        return list;
+    setState(stateTitles);
+    setState((list) => {
+      Object.entries(subTareas).forEach((subTarea) => {
+        const [key, elemento] = subTarea;
+        const { state } = elemento;
+        list[state].items = [...list[state].items, { ...elemento, id: key }];
       });
-    }
-  }, []);
+      return list;
+    });
+  }, [visiblePhase]);
 
   // funcion al arrastrar una sub-tarea.
   const handleDragEnd = ({ destination, source }) => {
@@ -97,6 +63,12 @@ export const DragDrop = ({ subTasks, title, onClose }) => {
       );
       return list;
     });
+    const { id, ...element } = itemCopy;
+    const subTareasCopy = { ...subTareas };
+    subTareasCopy[id] = element;
+    const taskId = `task#${modalTitle}`;
+    const taskToUpdate = { ...visiblePhase[taskId], subTask: subTareas };
+    updatePhase(taskId, taskToUpdate);
   };
 
   //-------
@@ -104,65 +76,14 @@ export const DragDrop = ({ subTasks, title, onClose }) => {
   const [task, setTask] = useState(""); // crear nueva sub-tarea.
 
   const createSubTask = () => {
-    const elemento = { id: subTasks.current.length + 1, name: task, state: 0 };
-
-    if (task !== "") {
-      setState((list) => {
-        // crea la lista de sub tareas, mirando en que estado se encuantran. Agrega la sub-tarea creada.
-        subTasks.current = list[0].items.concat(
-          list[1].items,
-          list[2].items,
-          list[3].items,
-          elemento
-        );
-        list = [
-          {
-            // estado 1
-            title: "Por hacer",
-            items: [],
-          },
-          {
-            // estado 2
-            title: "En progreso",
-            items: [],
-          },
-          {
-            // estado 3
-            title: "En pruebas",
-            items: [],
-          },
-          {
-            // estado 4
-            title: "Hecho",
-            items: [],
-          },
-        ];
-
-        // Coloca las sub-tareas en el estado correspondiente.
-        subTasks.current.forEach((elemento) => {
-          switch (elemento.state) {
-            case 0:
-              list[0].items = [...list[0].items, elemento];
-              break;
-            case 1:
-              list[1].items = [...list[1].items, elemento];
-              break;
-            case 2:
-              list[2].items = [...list[2].items, elemento];
-              break;
-            case 3:
-              list[3].items = [...list[3].items, elemento];
-              break;
-
-            default:
-              break;
-          }
-        });
-        setStateCreate(!stateCreate);
-        setTask("");
-        return list;
-      });
-    }
+    const element = { name: task, state: 0 };
+    const subTareasCopy = { ...subTareas };
+    subTareasCopy[`subTask#${task}`] = element;
+    const taskId = `task#${modalTitle}`;
+    const taskToUpdate = { ...visiblePhase[taskId], subTask: subTareasCopy };
+    updatePhase(taskId, taskToUpdate);
+    setStateCreate(!stateCreate);
+    setTask("");
   };
 
   const agregarSubTask = () => {
@@ -172,7 +93,9 @@ export const DragDrop = ({ subTasks, title, onClose }) => {
   return (
     <div>
       <div className="modal-header">
-        <h5 className="modal-title font-weight-bold text-light">{title}</h5>
+        <h5 className="modal-title font-weight-bold text-light">
+          {modalTitle.current}
+        </h5>
         {stateCreate ? (
           <div
             className="text-center icono-task close"

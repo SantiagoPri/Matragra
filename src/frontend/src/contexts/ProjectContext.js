@@ -14,7 +14,6 @@ const ProjectContextProvider = (props) => {
 
   const { mutate: mutatePhase } = useMutation(apiCalls.nextPhase, {
     onSuccess: async (data, variables) => {
-      console.log("data: ", data);
       if (data.status === "error") {
         //setErrors({ userName: data.message });TODO: que es lo que recibe
       }
