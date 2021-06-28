@@ -13,7 +13,7 @@ import { FaGripHorizontal, FaTrashAlt, FaFileMedical } from "react-icons/fa";
 import { ProjectContext } from "../../../contexts/ProjectContext";
 
 export const Task = () => {
-  const { visibleIndex, visiblePhase, deletePhase } =
+  const { visiblePhase, deletePhase, visibleIndex } =
     useContext(ProjectContext);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export const Task = () => {
     setTasks(tasks);
   }, [visiblePhase]);
   // lista de sub-tareas a mostrar en el modal.
-  const [stateTitles, setStateTitles] = useState([]);
+
   const modalTitle = useRef("");
   const taskView = useRef(null); // tarea a mostrar en el modal.
 
@@ -61,7 +61,6 @@ export const Task = () => {
   const CambiarEstado = (id) => {
     const title = visiblePhase[id].name ? visiblePhase[id].name : "";
     modalTitle.current = title;
-    setStateTitles(getTitles(visibleIndex));
     openModal();
   };
 
@@ -151,11 +150,7 @@ export const Task = () => {
       </div>
 
       <ModalContainerTask isOpened={isOpened}>
-        <DragDrop
-          modalTitle={modalTitle}
-          onClose={closeModal}
-          stateTitles={stateTitles}
-        ></DragDrop>
+        <DragDrop modalTitle={modalTitle} onClose={closeModal}></DragDrop>
       </ModalContainerTask>
 
       <ModalContainerDetails

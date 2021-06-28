@@ -26,6 +26,9 @@ const ProjectContextProvider = (props) => {
         });
       }
     },
+    onError: (errror) => {
+      console.error(errror);
+    },
   });
 
   const nextPhase = () => {

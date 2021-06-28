@@ -5,31 +5,31 @@ import _ from "lodash";
 import "./Style.css";
 import { FaFileMedical, FaGripHorizontal, FaTimes } from "react-icons/fa";
 
-export const DragDrop = ({ modalTitle, stateTitles, onClose }) => {
-  const { updatePhase, visiblePhase } = useContext(ProjectContext);
-  const [text, setText] = useState("");
+export const DragDrop = ({ modalTitle, onClose }) => {
+  const { updatePhase, visiblePhase, visibleIndex } =
+    useContext(ProjectContext);
+  //const [stateTitles, setStateTitles] = useState([]);
 
   // los estados a mostrar.
   const [state, setState] = useState([]);
 
-  const [subTareas, setSubtareas] = useState([]);
-
   // cargar las sub-tareas en los estados correspondientes.
   useEffect(() => {
-    const taskId = `task#${modalTitle}`;
-    setSubtareas(
-      visiblePhase[taskId].subTask ? visiblePhase[taskId].subTask : []
-    );
-
-    setState(stateTitles);
-    setState((list) => {
-      Object.entries(subTareas).forEach((subTarea) => {
-        const [key, elemento] = subTarea;
-        const { state } = elemento;
-        list[state].items = [...list[state].items, { ...elemento, id: key }];
-      });
-      return list;
+    const taskId = `task#${modalTitle.current}`;
+    const subTareas = visiblePhase[taskId].subTask
+      ? visiblePhase[taskId].subTask
+      : [];
+    let completeState = getTitles(visibleIndex);
+    Object.entries(subTareas).forEach((subTarea, index) => {
+      console.log(`tarea ${index}: `, subTarea);
+      const [key, elemento] = subTarea;
+      const { state } = elemento;
+      completeState[state].items = [
+        ...completeState[state].items,
+        { ...elemento, id: key },
+      ];
     });
+    setState(completeState);
   }, [visiblePhase]);
 
   // funcion al arrastrar una sub-tarea.
@@ -50,23 +50,12 @@ export const DragDrop = ({ modalTitle, stateTitles, onClose }) => {
     let itemCopy = { ...state[source.droppableId].items[source.index] };
     itemCopy.state = parseInt(destination.droppableId); // cambia el estado de la sub-tarea.
 
-    setState((list) => {
-      list = [...list];
-      // Elimina la sub-tarea del arreglo del estado anterior.
-      list[source.droppableId].items.splice(source.index, 1);
-
-      // Agrega la sub-tarea al arreglo del nuevo estado.
-      list[destination.droppableId].items.splice(
-        destination.index,
-        0,
-        itemCopy
-      );
-      return list;
-    });
+    const taskId = `task#${modalTitle.current}`;
     const { id, ...element } = itemCopy;
-    const subTareasCopy = { ...subTareas };
-    subTareasCopy[id] = element;
-    const taskId = `task#${modalTitle}`;
+    const subTareas = visiblePhase[taskId].subTask
+      ? visiblePhase[taskId].subTask
+      : [];
+    subTareas[id] = element;
     const taskToUpdate = { ...visiblePhase[taskId], subTask: subTareas };
     updatePhase(taskId, taskToUpdate);
   };
@@ -76,11 +65,13 @@ export const DragDrop = ({ modalTitle, stateTitles, onClose }) => {
   const [task, setTask] = useState(""); // crear nueva sub-tarea.
 
   const createSubTask = () => {
+    const taskId = `task#${modalTitle.current}`;
     const element = { name: task, state: 0 };
-    const subTareasCopy = { ...subTareas };
-    subTareasCopy[`subTask#${task}`] = element;
-    const taskId = `task#${modalTitle}`;
-    const taskToUpdate = { ...visiblePhase[taskId], subTask: subTareasCopy };
+    const subTareas = visiblePhase[taskId].subTask
+      ? visiblePhase[taskId].subTask
+      : [];
+    subTareas[`subTask#${task}`] = element;
+    const taskToUpdate = { ...visiblePhase[taskId], subTask: subTareas };
     updatePhase(taskId, taskToUpdate);
     setStateCreate(!stateCreate);
     setTask("");
@@ -209,3 +200,30 @@ export const DragDrop = ({ modalTitle, stateTitles, onClose }) => {
     </div>
   );
 };
+
+function getTitles(id) {
+  switch (id) {
+    case 1:
+      return [
+        { title: "Por hacer", items: [] },
+        { title: "En Diseño", items: [] },
+        { title: "Hecho", items: [] },
+      ];
+    case 2:
+      return [
+        { title: "Por hacer", items: [] },
+        { title: "En progreso", items: [] },
+        { title: "En pruebas", items: [] },
+        { title: "Hecho", items: [] },
+      ];
+    case 3:
+      return [
+        { title: "Por hacer", items: [] },
+        { title: "En Integración", items: [] },
+        { title: "Pruebas De Integración", items: [] },
+        { title: "Integrado", items: [] },
+      ];
+    default:
+      return [];
+  }
+}
