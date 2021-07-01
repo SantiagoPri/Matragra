@@ -1,7 +1,7 @@
 const { getProjectById } = require("@appModels/projects");
 
-async function validateNewProject(projectName, index, fase0) {
-  if (!(projectName && fase0 && index <= 3 && index >= 0)) {
+async function validateNewProject(projectName, index, phase0) {
+  if (!(projectName && phase0 && index <= 3 && index >= 0)) {
     return { isValid: false, message: "Información incompleta" };
   }
 
@@ -14,4 +14,13 @@ async function validateNewProject(projectName, index, fase0) {
   return { isValid: true, message: "Este es un nuevo proyecto" };
 }
 
-module.exports = validateNewProject;
+async function existProject(projectName) {
+  let project = await getProjectById(projectName);
+  if (project.Count) {
+    return { isValid: true, message: "Existe el proyecto" };
+  }
+  return { isValid: false, message: "No existe el nombre de proyecto" };
+
+}
+
+module.exports = {validateNewProject, existProject};

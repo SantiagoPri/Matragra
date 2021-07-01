@@ -3,6 +3,7 @@ const {
   insertNewProjectUser,
   deleteProjectUserByProjectUser,
   getProjectPksByUser,
+  getProjectUser
 } = require("@appModels/projectUsers");
 const cleaner = require("@appHelpers/cleanResponses");
 
@@ -20,6 +21,10 @@ async function createProjectUserService(projectName, userName) {
 }
 
 async function deleteProjectUserServiceByProjectUser(projectName, userName) {
+  const auxAuth = await validateProjectUserAuthService(projectName, userName);
+  if (!auxAuth.isValid) {
+    return { status: "error", message: "Error, el usuario no pertenece al proyecto" };
+  }
   const { isValid, message } = await validateNewProjectUser(
     projectName,
     userName
@@ -41,18 +46,17 @@ async function getProjectPksServiceByUser(userName) {
   return [];
 }
 
-async function validateProjectUserAuth(projectName, userName) {
-  const projectsUser = await getProjectPksServiceByUser(userName);
-  if (projectsUser.includes(projectName)) {
-    return true;
-  } else {
-    return false;
+async function validateProjectUserAuthService(projectName, userName) {
+  const aux = await getProjectUser(projectName, userName);
+  if (aux.Count) {
+    return { isValid: true};
   }
+  else return { isValid: false};
 }
 
 module.exports = {
   createProjectUserService,
   deleteProjectUserServiceByProjectUser,
   getProjectPksServiceByUser,
-  validateProjectUserAuth
+  validateProjectUserAuthService
 };

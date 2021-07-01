@@ -6,7 +6,7 @@ function insertNewProject(projectName, projectState, index) {
   const Item = {
     pk: `PROJECT#${projectName}`,
     sk: `STATE#${projectState}`,
-    index
+    index: index
   };
   const params = {
     TableName: MATRAGRA_PROJECTS_DYNAMODB,

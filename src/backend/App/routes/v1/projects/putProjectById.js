@@ -10,6 +10,7 @@ exports.default = Router({ mergeParams: true }).put(
       const messageResult = await putProjectService(req.params.projectId, req.user.pk, req.body)
       return res.send(messageResult);
     } catch (error) {
+      console.warn(error);
       return res.send("Ha ocurrido un error");
     }
   }

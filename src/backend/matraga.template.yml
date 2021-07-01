@@ -51,11 +51,25 @@ Resources:
                   - !Sub "${MatragraDynamoDB.Arn}/index/*"
                   - !Sub "${MatragraProjectsDynamoDB.Arn}"
                   - !Sub "${MatragraProjectsDynamoDB.Arn}/index/*"
+                  - !Sub "${MatragraForosDynamoDB.Arn}"
+                  - !Sub "${MatragraForosDynamoDB.Arn}/index/*"
+                  - !Sub "${MatragraEventsDynamoDB.Arn}"
+                  - !Sub "${MatragraEventsDynamoDB.Arn}/index/*"
               - Effect: Allow
                 Action:
                   - "execute-api:Invoke"
                 Resource:
                   - !Sub "arn:aws:execute-api:*:*:*"
+              - Effect: Allow
+                Action:
+                  - dynamodb:DescribeStream
+                  - dynamodb:GetRecords
+                  - dynamodb:GetShardIterator
+                  - dynamodb:ListStreams
+                  - dynamodb:Scan
+                  - dynamodb:ListShards
+                Resource:
+                  - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${MatragraEventsDynamoDB}/stream/*'
 
   ApiGatewayIAMRole:
     Type: AWS::IAM::Role
@@ -147,6 +161,72 @@ Resources:
         WriteCapacityUnits: 5
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
+
+  MatragraForosDynamoDB:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub "${AWS::StackName}_foros"
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: inverted_index
+          KeySchema:
+            - AttributeName: sk
+              KeyType: HASH
+            - AttributeName: pk
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
+  MatragraEventsDynamoDB:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub "${AWS::StackName}_events"
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: inverted_index
+          KeySchema:
+            - AttributeName: sk
+              KeyType: HASH
+            - AttributeName: pk
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
 
   ## START OF API-PROXY RESOURCES
   ProxyApiGatewayKey:
@@ -355,7 +435,43 @@ Resources:
         Variables:
           MATRAGRA_DYNAMODB: !Ref MatragraDynamoDB
           MATRAGRA_PROJECTS_DYNAMODB: !Ref MatragraProjectsDynamoDB
+          MATRAGRA_FOROS_DYNAMODB: !Ref MatragraForosDynamoDB
+          MATRAGRA_EVENTS_DYNAMODB: !Ref MatragraEventsDynamoDB
           API_KEY: !Ref ProxyApiGatewayKey
+
+  MatragraEmailSenderLambda:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}_email-sender"
+      Description: "To send emails service"
+      Handler: lambda/emailSender.handler
+      Role: !GetAtt StackRole.Arn
+      MemorySize: 128
+      Timeout: 90
+      Runtime: nodejs12.x
+      Code:
+        S3Bucket: !Ref LambdaCodeBucket
+        S3Key: !Sub "${AWS::StackName}.zip"
+      Environment:
+        Variables:
+          MATRAGRA_DYNAMODB: !Ref MatragraDynamoDB
+          MATRAGRA_PROJECTS_DYNAMODB: !Ref MatragraProjectsDynamoDB
+          MATRAGRA_FOROS_DYNAMODB: !Ref MatragraForosDynamoDB
+          MATRAGRA_EVENTS_DYNAMODB: !Ref MatragraEventsDynamoDB
+          API_KEY: !Ref ProxyApiGatewayKey
+
+  MatragraEmailSenderSourceMapping:
+    Type: 'AWS::Lambda::EventSourceMapping'
+    DependsOn:
+      - MatragraEventsDynamoDB
+      - MatragraEmailSenderLambda
+    Properties:
+      BatchSize: 1
+      Enabled: true
+      EventSourceArn: !GetAtt MatragraEventsDynamoDB.StreamArn
+      FunctionName: !Ref MatragraEmailSenderLambda
+      MaximumRetryAttempts: 3
+      StartingPosition: LATEST
 
   QueueApiInvokePermission:
     Type: "AWS::Lambda::Permission"

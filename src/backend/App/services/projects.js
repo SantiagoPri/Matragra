@@ -7,17 +7,17 @@ const {
 const {
   insertNewProjectDetail,
 } = require("@appModels/projectDetails");
-const { getProjectPksServiceByUser, validateProjectUserAuth } = require("@appServices/projectUsers");
-const validateNewProject = require("@appValidations/project");
+const { getProjectPksServiceByUser, validateProjectUserAuthService } = require("@appServices/projectUsers");
+const { validateProjectPhase0 } = require("@appValidations/projectDetail");
+const {validateNewProject, existProject} = require("@appValidations/project");
 const cleaner = require("@appHelpers/cleanResponses");
-const { authenticate } = require("passport");
 
 async function createProjectService(project) {
-  const { projectName, index, fase0, ...restParams } = project;
+  const { projectName, index, phase0, ...restParams } = project;
   const { isValid, message } = await validateNewProject(
     projectName,
     index,
-    fase0
+    phase0
   );
   if (!isValid) {
     return { status: "error", message };
@@ -28,8 +28,8 @@ async function createProjectService(project) {
   } catch (error) {
     return { status: "error", message: "Error guardando el proyecto" };
   }
-  let params = {fase0, ...restParams}
-  return await createFase0(projectName, params);
+  let params = {...phase0, ...restParams}
+  return await createPhase0(projectName, params);
 }
 
 async function getProjectByIdService(projectId) {
@@ -71,23 +71,29 @@ async function getAllProjectsByUser(userName) {
   return result;
 }
 
-async function createFase0(projectName, restParams){
-  // TODO: validate restParams
-  await insertNewProjectDetail(projectName, "0", {
-    ...restParams });
+async function createPhase0(projectName, restParams){
+  const phaseIsValid = await validateProjectPhase0(restParams);
+  if (!phaseIsValid.isValid) {
+    return { status: "error", message: phaseIsValid.message };
+  }
+  await insertNewProjectDetail(projectName, "0", restParams);
   return { status: "ok", message: "Proyecto creado exitosamente"};
 }
 
 async function putProjectService(projectName, userName, restParams) {
-  const auxAuth = await validateProjectUserAuth(projectName, userName);
-  if (!auxAuth) {
-    return { status: "error", message: "Error el usuario no pertenece al proyecto" };
+  const auxAuth = await validateProjectUserAuthService(projectName, userName);
+  const exist = await existProject(projectName);
+  if (!exist.isValid) {
+    return { status: "error", message: "Error, el proyecto no existe" };
+  }
+  if (!auxAuth.isValid) {
+    return { status: "error", message: "Error, el usuario no pertenece al proyecto" };
   }
   try {
     await putProject(projectName, "active", restParams);
     return { status: "ok", message: "Proyecto actualizado exitosamente"};
   } catch (error) {
-    return { status: "error", message: "Error actualizando el proyecto" };
+    return { status: "error", message: "Error, actualizando el proyecto" };
   }
 }
 

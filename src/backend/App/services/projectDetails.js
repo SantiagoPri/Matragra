@@ -2,8 +2,9 @@ const {
   insertNewProjectDetail,
   getProjectDetailById,
 } = require("@appModels/projectDetails");
-const { validateProjectUserAuth } = require("@appServices/projectUsers");
-const validateNewProjectDetail = require("@appValidations/projectDetail");
+const { validateProjectUserAuthService } = require("@appServices/projectUsers");
+const { existProject } = require("@appValidations/project");
+const { validateNewProjectDetail, validateProjectPhase, validateProjectPhase0 } = require("@appValidations/projectDetail");
 const cleaner = require("@appHelpers/cleanResponses");
 
 async function createProjectDetailService(projectName, phase, restParams) {
@@ -50,9 +51,22 @@ async function getProjectDetailByIdService(projectId, phase) {
 }
 
 async function putProjectDetailService(projectName, userName, phase, restParams) {
-  const auxAuth = await validateProjectUserAuth(projectName, userName);
-  if (!auxAuth) {
+  const exist = await existProject(projectName);
+  const auxAuth = await validateProjectUserAuthService(projectName, userName);
+  let phaseIsValid=null;
+  if (phase==="phase0") {
+    phaseIsValid = await validateProjectPhase0(restParams);
+  }else {
+    phaseIsValid = await validateProjectPhase(restParams);
+  }
+  if (!exist.isValid) {
+    return { status: "error", message: "Error, el proyecto no existe" };
+  }
+  if (!auxAuth.isValid) {
     return { status: "error", message: "Error el usuario no pertenece al proyecto" };
+  }
+  if (!phaseIsValid.isValid) {
+    return { status: "error", message: "Error la fase no es valida" };
   }
   switch (phase) {
     case "phase0":
