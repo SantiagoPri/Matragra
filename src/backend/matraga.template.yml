@@ -10,6 +10,22 @@ Parameters:
     Description: Globally used bucket for lambda code
     AllowedValues:
       - matragra-lambda-code
+  EmailServerName:
+    Type: String
+    Default: email-smtp.us-east-2.amazonaws.com
+    Description: This is the server Name of the AWS SES
+  EmailUserName:
+    Type: String
+    Default: AKIAYP7TDEV4AEKGVBWU
+    Description: This is the user Name of the email
+  EmailPassword:
+    Type: String
+    Default: BBvPut3YJKsV6J4FvnyoxoANPTo5J908gi04VrS6y4cI
+    Description: This is the password of the email
+  MatragraEmail:
+    Type: String
+    Default: matragra@gmail.com
+    Description: This is the matragra email
 
 Resources:
   #IAM resources
@@ -69,7 +85,7 @@ Resources:
                   - dynamodb:Scan
                   - dynamodb:ListShards
                 Resource:
-                  - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${MatragraEventsDynamoDB}/stream/*'
+                  - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${MatragraEventsDynamoDB}/stream/*"
 
   ApiGatewayIAMRole:
     Type: AWS::IAM::Role
@@ -372,7 +388,7 @@ Resources:
   #     - WebSocketLambdaIntegrationResponse
   #   Properties:
   #     ApiId: !Ref WebSocketAPI1
-  #     RouteKey: $connect 
+  #     RouteKey: $connect
   #     RouteResponseSelectionExpression: $default
   #     AuthorizationType: NONE #TODO: this can be JWT to be review
   #     Target: !Join
@@ -388,7 +404,7 @@ Resources:
   #     - WebSocketLambdaIntegrationResponse
   #   Properties:
   #     ApiId: !Ref WebSocketAPI1
-  #     RouteKey: $disconnect 
+  #     RouteKey: $disconnect
   #     RouteResponseSelectionExpression: $default
   #     AuthorizationType: NONE #TODO: this can be JWT to be review
   #     Target: !Join
@@ -454,6 +470,10 @@ Resources:
         S3Key: !Sub "${AWS::StackName}.zip"
       Environment:
         Variables:
+          MATRAGRA_EMAIL: !Ref MatragraEmail
+          EMAIL_USERNAME: !Ref EmailUserName
+          EMAIL_PASSWORD: !Ref EmailPassword
+          SERVER_NAME: !Ref EmailServerName
           MATRAGRA_DYNAMODB: !Ref MatragraDynamoDB
           MATRAGRA_PROJECTS_DYNAMODB: !Ref MatragraProjectsDynamoDB
           MATRAGRA_FOROS_DYNAMODB: !Ref MatragraForosDynamoDB
@@ -461,7 +481,7 @@ Resources:
           API_KEY: !Ref ProxyApiGatewayKey
 
   MatragraEmailSenderSourceMapping:
-    Type: 'AWS::Lambda::EventSourceMapping'
+    Type: "AWS::Lambda::EventSourceMapping"
     DependsOn:
       - MatragraEventsDynamoDB
       - MatragraEmailSenderLambda
@@ -507,7 +527,6 @@ Resources:
   #     Principal: "apigateway.amazonaws.com"
   #     SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketAPI1}/*"
   ## END OF API RESOURCES
-
 
 Outputs:
   MatragraApiUrl:

@@ -18,10 +18,9 @@ export const DragDrop = ({ modalTitle, onClose }) => {
     const taskId = `task#${modalTitle.current}`;
     const subTareas = visiblePhase[taskId].subTask
       ? visiblePhase[taskId].subTask
-      : [];
+      : {};
     let completeState = getTitles(visibleIndex);
     Object.entries(subTareas).forEach((subTarea, index) => {
-      console.log(`tarea ${index}: `, subTarea);
       const [key, elemento] = subTarea;
       const { state } = elemento;
       completeState[state].items = [
@@ -45,16 +44,31 @@ export const DragDrop = ({ modalTitle, onClose }) => {
     ) {
       return;
     }
-
     // Crea una copia de la sub-tarea antes de eliminarla del estado anterior.
     let itemCopy = { ...state[source.droppableId].items[source.index] };
     itemCopy.state = parseInt(destination.droppableId); // cambia el estado de la sub-tarea.
+
+    //Cambio visual
+    setState((list) => {
+      list = [...list];
+      // Elimina la sub-tarea del arreglo del estado anterior.
+      list[source.droppableId].items.splice(source.index, 1);
+
+      // Agrega la sub-tarea al arreglo del nuevo estado.
+      list[destination.droppableId].items.splice(
+        destination.index,
+        0,
+        itemCopy
+      );
+      return list;
+    });
+    // fin del cambio visual
 
     const taskId = `task#${modalTitle.current}`;
     const { id, ...element } = itemCopy;
     const subTareas = visiblePhase[taskId].subTask
       ? visiblePhase[taskId].subTask
-      : [];
+      : {};
     subTareas[id] = element;
     const taskToUpdate = { ...visiblePhase[taskId], subTask: subTareas };
     updatePhase(taskId, taskToUpdate);
@@ -69,7 +83,7 @@ export const DragDrop = ({ modalTitle, onClose }) => {
     const element = { name: task, state: 0 };
     const subTareas = visiblePhase[taskId].subTask
       ? visiblePhase[taskId].subTask
-      : [];
+      : {};
     subTareas[`subTask#${task}`] = element;
     const taskToUpdate = { ...visiblePhase[taskId], subTask: subTareas };
     updatePhase(taskId, taskToUpdate);
@@ -136,7 +150,7 @@ export const DragDrop = ({ modalTitle, onClose }) => {
         ) : (
           <div className="row">
             <DragDropContext onDragEnd={handleDragEnd}>
-              {_.map(state, (data, key) => {
+              {state.map((data, key) => {
                 return (
                   <div
                     className="col-xs-6 col-sm-6 col-md-6 col-lg-3"

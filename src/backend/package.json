@@ -25,6 +25,7 @@
     "module-alias": "^2.2.2",
     "morgan": "^1.10.0",
     "node-emoji": "^1.10.0",
+    "nodemailer": "^6.6.2",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "serverless-http": "^2.6.0"
