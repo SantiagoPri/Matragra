@@ -18,7 +18,9 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "remark-gfm": "^1.0.0",
-    "styled-components": "^5.2.3"
+    "rich-markdown-editor": "^11.14.0",
+    "styled-components": "^5.2.3",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.10",

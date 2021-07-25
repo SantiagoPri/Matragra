@@ -34,7 +34,10 @@ function Project() {
       >
         <div className="col-12 row">
           <h1 className="col-sm-10 text-center text-white">{name}</h1>
-          <a href="/users/123" className="col-sm-2 text-center text-white">
+          <a
+            href={`${name}/foro`}
+            className="col-sm-2 text-center text-white"
+          >
             Ir al chat
           </a>
         </div>

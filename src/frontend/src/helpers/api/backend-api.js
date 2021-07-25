@@ -75,3 +75,24 @@ export const putProject = (jwt, projectName, index) => {
   };
   return axios.request(params);
 };
+
+export const saveFileInS3Bucket = (
+  jwt,
+  file,
+  contentType,
+  fileName,
+  projectName
+) => {
+  const params = {
+    url: `${BASE_URL}/v1/file/`,
+    headers: { Authorization: jwt },
+    method: "post",
+    data: {
+      file,
+      contentType,
+      fileName,
+      projectName,
+    },
+  };
+  return axios.request(params);
+};

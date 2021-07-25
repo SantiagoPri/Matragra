@@ -7,6 +7,7 @@ import {
   newProject,
   putProject,
   putProjectPhase,
+  saveFileInS3Bucket,
 } from "../helpers/api/backend-api";
 
 export const ApiContext = createContext();
@@ -24,6 +25,8 @@ const ApiContextProvider = (props) => {
       if (error.response.status === 401) {
         handleUnAuthorizedError();
         return error;
+      } else {
+        throw console.error();
       }
     }
   };
@@ -37,6 +40,8 @@ const ApiContextProvider = (props) => {
       if (error.response.status === 401) {
         handleUnAuthorizedError();
         return error;
+      } else {
+        throw console.error();
       }
     }
   };
@@ -50,6 +55,8 @@ const ApiContextProvider = (props) => {
       if (error.response.status === 401) {
         handleUnAuthorizedError();
         return error;
+      } else {
+        throw console.error();
       }
     }
   };
@@ -62,11 +69,13 @@ const ApiContextProvider = (props) => {
       if (error.response.status === 401) {
         handleUnAuthorizedError();
         return error;
+      } else {
+        throw console.error();
       }
     }
   };
 
-  const nextPhase = async (phaseInfo) => {
+  const updatePhase = async (phaseInfo) => {
     try {
       const { projectName, phaseNumber, params } = phaseInfo;
       const updateResponse = await putProjectPhase(
@@ -75,12 +84,53 @@ const ApiContextProvider = (props) => {
         phaseNumber,
         params
       );
-      const response2 = await putProject(jwt, projectName, phaseNumber);
       return updateResponse.data;
     } catch (error) {
       if (error.response.status === 401) {
         handleUnAuthorizedError();
         return error;
+      } else {
+        throw console.error();
+      }
+    }
+  };
+
+  const nextPhase = async (projectName, phaseNumber) => {
+    try {
+      await putProject(jwt, projectName, phaseNumber);
+    } catch (error) {
+      if (error.response.status === 401) {
+        handleUnAuthorizedError();
+      } else {
+        throw console.error();
+      }
+    }
+  };
+
+  const saveFile = async (file, projectName, type) => {
+    try {
+      const fileType = type ? type : file.type;
+      const base64data = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+          resolve(reader.result);
+        };
+        reader.onerror = (error) => reject(error);
+      });
+      const url = await saveFileInS3Bucket(
+        jwt,
+        base64data,
+        fileType,
+        file.name,
+        projectName
+      );
+      return url.data.url;
+    } catch (error) {
+      if (error.response.status === 401) {
+        handleUnAuthorizedError();
+      } else {
+        throw console.error();
       }
     }
   };
@@ -97,7 +147,9 @@ const ApiContextProvider = (props) => {
     getProjectInfo,
     getProjectDetails,
     createProject,
+    updatePhase,
     nextPhase,
+    saveFile,
   };
   return (
     <ApiContext.Provider

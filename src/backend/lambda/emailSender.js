@@ -1,8 +1,9 @@
 const {
   formatDynamoImages,
   getProjectEmails,
-  sendEmail,
 } = require("./helpers/helperFunctions");
+//const { sendEmail } = require("./helpers/sesService");
+const { sendEmail } = require("./helpers/ymlpService");
 
 exports.handler = async (event) => {
   console.log("DynamoStream Event: ", JSON.stringify(event));
