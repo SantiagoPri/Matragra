@@ -27,10 +27,17 @@ rm -rf deploy
 echo 'Deploy package has been generated'
 echo "Updating s3..."
 aws --profile $PROFILE --region $REGION s3 cp $ZIP_NAME  s3://$BUCKET_NAME
+<<<<<<< HEAD
 echo "Updating lambda:" $BACKEND_LAMBDA_NAME
 aws --profile $PROFILE --region $REGION lambda update-function-code --function-name $BACKEND_LAMBDA_NAME --s3-bucket $BUCKET_NAME --s3-key $ZIP_NAME
 #echo "Updating lambda:" $EMAIL_LAMBDA_NAME
 #aws --profile $PROFILE --region $REGION lambda update-function-code --function-name $EMAIL_LAMBDA_NAME --s3-bucket $BUCKET_NAME --s3-key $ZIP_NAME
+=======
+# echo "Updating lambda:" $BACKEND_LAMBDA_NAME
+# aws --profile $PROFILE --region $REGION lambda update-function-code --function-name $BACKEND_LAMBDA_NAME --s3-bucket $BUCKET_NAME --s3-key $ZIP_NAME
+echo "Updating lambda:" $EMAIL_LAMBDA_NAME
+aws --profile $PROFILE --region $REGION lambda update-function-code --function-name $EMAIL_LAMBDA_NAME --s3-bucket $BUCKET_NAME --s3-key $ZIP_NAME
+>>>>>>> 2569a16ec8bd8e95ade093f7f4acdabf90e8c473
 echo "Installing again all Dev Dependencies"
 $PACKAGE_MANAGER install
 echo "ALL DONE"

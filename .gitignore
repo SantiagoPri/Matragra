@@ -2,7 +2,7 @@
 *.tmp
 ~*.*
 # ignore private files
-priv*
+priv/*
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/windows,linux,macos,node,react,compressed
