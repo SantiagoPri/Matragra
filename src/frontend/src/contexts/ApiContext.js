@@ -136,8 +136,9 @@ const ApiContextProvider = (props) => {
     }
   };
 
-  const getMembersByProject = async (projectName) => {
+  const getMembersByProject = async ({ queryKey }) => {
     try {
+      const { projectName } = queryKey[1];
       console.log(projectName);
       let projectMembers = await getProjectMembers(jwt, projectName);
       projectMembers = projectMembers.data;
