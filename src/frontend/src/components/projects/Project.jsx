@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import Events from "./Events";
+import Events from "./evento/Events";
 import ListItems from "./ListItems";
 import ProgressBar from "./ProgressBar";
 import Stages from "./Stages";
@@ -19,13 +19,6 @@ function Project() {
     { hour: "16:00 - 18:00", description: "Trabajo realizado numero 5" },
   ];
 
-  // Lista de items.
-  const items = [
-    "Lorem ipsum dolor sit 1",
-    "Lorem ipsum dolor sit 2",
-    "Lorem ipsum dolor sit 3",
-  ];
-
   return (
     <Fragment>
       <div
@@ -34,10 +27,7 @@ function Project() {
       >
         <div className="col-12 row">
           <h1 className="col-sm-10 text-center text-white">{name}</h1>
-          <a
-            href={`${name}/foro`}
-            className="col-sm-2 text-center text-white"
-          >
+          <a href={`${name}/foro`} className="col-sm-2 text-center text-white">
             Ir al chat
           </a>
         </div>
@@ -62,19 +52,12 @@ function Project() {
           </div>
 
           {/* Eventos */}
-          <Events
-            title="Eventos"
-            day="Lunes 7 junio"
-            eventsList={events}
-          ></Events>
+          <Events title="Eventos" eventsList={events}></Events>
         </div>
 
         <div className="row mt-3">
           {/* Lista 1 */}
-          <ListItems listItems={items}></ListItems>
-
-          {/* Lista 2 */}
-          <ListItems listItems={items}></ListItems>
+          <ListItems projectName={name}></ListItems>
 
           {/* Botones */}
           <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">

@@ -8,6 +8,7 @@ import {
   putProject,
   putProjectPhase,
   saveFileInS3Bucket,
+  getProjectMembers,
 } from "../helpers/api/backend-api";
 
 export const ApiContext = createContext();
@@ -135,6 +136,24 @@ const ApiContextProvider = (props) => {
     }
   };
 
+  const getMembersByProject = async (projectName) => {
+    try {
+      console.log(projectName);
+      let projectMembers = await getProjectMembers(jwt, projectName);
+      projectMembers = projectMembers.data;
+      if (projectMembers.status !== "ok") {
+        throw new Error("hubo un error");
+      }
+      return projectMembers.users.map((user) => user.sk);
+    } catch (error) {
+      if (error.response.status === 401) {
+        handleUnAuthorizedError();
+      } else {
+        throw console.error();
+      }
+    }
+  };
+
   const handleUnAuthorizedError = () => {
     localStorage.removeItem("jwt");
     setIsLogged(false);
@@ -142,6 +161,7 @@ const ApiContextProvider = (props) => {
     historyHook.push("/ingresar");
     return;
   };
+
   const apiCalls = {
     getAllProjects,
     getProjectInfo,
@@ -150,6 +170,7 @@ const ApiContextProvider = (props) => {
     updatePhase,
     nextPhase,
     saveFile,
+    getMembersByProject,
   };
   return (
     <ApiContext.Provider

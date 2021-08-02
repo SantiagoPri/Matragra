@@ -96,3 +96,12 @@ export const saveFileInS3Bucket = (
   };
   return axios.request(params);
 };
+
+export const getProjectMembers = (jwt, projectName) => {
+  const params = {
+    url: `${BASE_URL}/v1/projects/users/${projectName}`,
+    headers: { Authorization: jwt },
+    method: "get",
+  };
+  return axios.request(params);
+};

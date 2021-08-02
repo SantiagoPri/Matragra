@@ -1,16 +1,23 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
+import { useQuery } from "react-query";
+import { ApiContext } from "../../contexts/ApiContext";
 
 const ListItems = (props) => {
-  const { listItems } = props;
+  const { projectName } = props;
+  const { apiCalls } = useContext(ApiContext);
 
   // Lista de items.
   const [items, setItems] = useState([]);
 
-  useEffect(() => {
-    if (listItems !== undefined) {
-      setItems(listItems);
+  useQuery(
+    ["getProjectMemebers", { projectName }],
+    apiCalls.getMembersByProject,
+    {
+      onSuccess: (data) => {
+        setItems(data);
+      },
     }
-  }, []);
+  );
 
   return (
     <Fragment>
