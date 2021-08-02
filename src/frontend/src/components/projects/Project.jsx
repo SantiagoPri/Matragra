@@ -43,9 +43,12 @@ function Project() {
         />
 
         <div className="row mt-3">
-          {/* Etapas */}
           <div className="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            {/* Etapas */}
             <Stages />
+            <br />
+            {/* Integrantes */}
+            <ListItems projectName={name}></ListItems>
           </div>
 
           {/* Fase */}
@@ -55,32 +58,6 @@ function Project() {
 
           {/* Eventos */}
           <Events title="Eventos" eventsList={events}></Events>
-        </div>
-
-        <div className="row mt-3">
-          {/* Lista 1 */}
-          <ListItems projectName={name}></ListItems>
-          {/* Botones */}
-          <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-            <div className="card" style={{ backgroundColor: "transparent" }}>
-              <div className="card-body">
-                <button
-                  type="button"
-                  className="col-7 btn btn-rounded btn-secondary mt-3"
-                  style={{ backgroundColor: "#4f4fc3" }}
-                >
-                  Agregar integrante
-                </button>
-                <button
-                  type="button"
-                  className="col-7 btn btn-rounded btn-secondary mt-3"
-                  style={{ backgroundColor: "#4f4fc3" }}
-                >
-                  Eliminar Integrante
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </Fragment>

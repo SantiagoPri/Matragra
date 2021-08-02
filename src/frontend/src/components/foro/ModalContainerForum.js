@@ -22,7 +22,7 @@ export const ModalContainerForum = ({ title, children, isOpened, onClose}) =>
 
                 <div className="modal-body">
                   <div className="form-group">
-                    <label for="list">Seleccione una etapa</label>
+                    <label htmlFor="list">Seleccione una etapa</label>
                     <select className="form-control" id="list">
                       <option selected>ninguna</option>
                       <option>Etapa 0</option>
@@ -34,7 +34,7 @@ export const ModalContainerForum = ({ title, children, isOpened, onClose}) =>
                   </div>
 
                   <div className="form-group">
-                    <label for="item">Nombre del item</label>
+                    <label htmlFor="item">Nombre del item</label>
                     <input type="email" className="form-control" placeholder="Nombre del nuevo item"></input>
                   </div>
                   

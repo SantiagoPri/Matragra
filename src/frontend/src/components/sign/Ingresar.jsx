@@ -43,9 +43,6 @@ const Ingresar = () => {
               className="custom-control-input"
               id="customCheck1"
             />
-            <Label className="custom-control-label" htmlFor="customCheck1">
-              Recordarme
-            </Label>
           </div>
         </div>
 
@@ -53,9 +50,6 @@ const Ingresar = () => {
           Ingresar
           {isLoading && <Span className="spinner-border spinner-border-sm" />}
         </Button>
-        <p className="forgot-password text-right">
-          ¿Olvidó <a href="/">contraseña?</a>
-        </p>
       </Form>
     </Container>
   );

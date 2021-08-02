@@ -17,6 +17,7 @@ const MobileMenu = ({ isOpen, toggle }) => {
       <MenuWrapper>
         <Menu>
           <MenuLink to="/">Inicio</MenuLink>
+          <MenuLink to="/documentacion">Documentación</MenuLink>
           <MenuLink to="/registrarme">Registrarme</MenuLink>
         </Menu>
         <MenuBtnWrapper>
