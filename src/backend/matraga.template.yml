@@ -10,6 +10,9 @@ Parameters:
     Description: Globally used bucket for lambda code
     AllowedValues:
       - matragra-lambda-code
+  ProjectBucketName:
+    Type: String
+    Description: Globally bucket used for files
   EmailServerName:
     Type: String
     Default: email-smtp.us-east-2.amazonaws.com
@@ -86,6 +89,14 @@ Resources:
                   - dynamodb:ListShards
                 Resource:
                   - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${MatragraEventsDynamoDB}/stream/*"
+              - Effect: Allow
+                Action:
+                  - 's3:PutObject'
+                  - 's3:GetObject'
+                  - 's3:DeleteObject'
+                  - 's3:*'
+                Resource: 
+                  - !Sub 'arn:aws:s3:::${ProjectBucket}/*'
 
   ApiGatewayIAMRole:
     Type: AWS::IAM::Role
@@ -453,6 +464,11 @@ Resources:
           MATRAGRA_PROJECTS_DYNAMODB: !Ref MatragraProjectsDynamoDB
           MATRAGRA_FOROS_DYNAMODB: !Ref MatragraForosDynamoDB
           MATRAGRA_EVENTS_DYNAMODB: !Ref MatragraEventsDynamoDB
+          FILES_BUCKET: !Ref ProjectBucketName
+          USER_ID: !Ref UserAccessKey
+          USER_SECRET: !GetAtt 
+            - UserAccessKey
+            - SecretAccessKey
           API_KEY: !Ref ProxyApiGatewayKey
 
   MatragraEmailSenderLambda:
@@ -500,6 +516,37 @@ Resources:
       FunctionName: !Ref MatragraAPILambda
       Principal: "apigateway.amazonaws.com"
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ProxyRestAPIv2}/*"
+
+# S3 RESOURCES
+  ProjectBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref ProjectBucketName
+      LifecycleConfiguration:
+        Rules:
+          - Id: ShippingLabelArchiveExpiration
+            Status: Enabled
+            Prefix: shipping-labels/
+            ExpirationInDays: 30
+
+  # USERS
+  MainUser:
+    Type: 'AWS::IAM::User'
+    Properties:
+      Policies:
+        - PolicyName: !Sub '${AWS::StackName}_presigned-user-policy'
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:GetObject'
+                Resource: !Sub 'arn:aws:s3:::${ProjectBucket}/*'
+      UserName: !Sub '${AWS::StackName}_user'
+  UserAccessKey:
+    Type: 'AWS::IAM::AccessKey'
+    Properties:
+      UserName: !Ref MainUser
 
   # WebsocketAPILambda:
   #   Type: "AWS::Lambda::Function"

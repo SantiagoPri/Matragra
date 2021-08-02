@@ -1,14 +1,14 @@
 const { Router } = require("express");
 const passport = require("passport");
-const { createEventService } = require("@appServices/events");
+const { putForoService } = require("@appServices/foros");
 
-exports.default = Router({ mergeParams: true }).post(
-  "/v1/events",
+exports.default = Router({ mergeParams: true }).put(
+  "/v1/foros/:projectId/:foroId",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const messageResult = await createEventService(req.body, req.user.pk);
-      if (messageResult.status != "ok"){
+      const messageResult = await putForoService(req.params.projectId, req.params.foroId, req.user.pk, req.body);
+      if (messageResult.status != "ok") {
         return res.send(messageResult);
       }
       return res.send(messageResult);

@@ -29,8 +29,8 @@ echo "Updating s3..."
 aws --profile $PROFILE --region $REGION s3 cp $ZIP_NAME  s3://$BUCKET_NAME
 echo "Updating lambda:" $BACKEND_LAMBDA_NAME
 aws --profile $PROFILE --region $REGION lambda update-function-code --function-name $BACKEND_LAMBDA_NAME --s3-bucket $BUCKET_NAME --s3-key $ZIP_NAME
-echo "Updating lambda:" $EMAIL_LAMBDA_NAME
-aws --profile $PROFILE --region $REGION lambda update-function-code --function-name $EMAIL_LAMBDA_NAME --s3-bucket $BUCKET_NAME --s3-key $ZIP_NAME
+#echo "Updating lambda:" $EMAIL_LAMBDA_NAME
+#aws --profile $PROFILE --region $REGION lambda update-function-code --function-name $EMAIL_LAMBDA_NAME --s3-bucket $BUCKET_NAME --s3-key $ZIP_NAME
 echo "Installing again all Dev Dependencies"
 $PACKAGE_MANAGER install
 echo "ALL DONE"

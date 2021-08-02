@@ -1,16 +1,13 @@
 const { Router } = require("express");
 const passport = require("passport");
-const { createEventService } = require("@appServices/events");
+const { generateFileUrlService } = require("@appServices/files");
 
 exports.default = Router({ mergeParams: true }).post(
-  "/v1/events",
+  "/v1/file",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const messageResult = await createEventService(req.body, req.user.pk);
-      if (messageResult.status != "ok"){
-        return res.send(messageResult);
-      }
+      const messageResult = await generateFileUrlService(req.body, req.user.pk);
       return res.send(messageResult);
     } catch (error) {
       console.warn(error);

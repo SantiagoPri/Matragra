@@ -59,9 +59,26 @@ function getProjectUser(projectName, userName) {
   return db.query(params).promise();
 };
 
+function getUsersByProject(projectName) {
+  const params = {
+    TableName: MATRAGRA_DYNAMODB,
+    KeyConditionExpression: "#pk = :project and begins_with(#sk, :user)",
+    ExpressionAttributeNames: {
+      "#pk": "pk",
+      "#sk": "sk",
+    },
+    ExpressionAttributeValues: {
+      ":project": `PROJECT#${projectName}`,
+      ":user": `USER#`,
+    },
+  };
+  return db.query(params).promise();
+};
+
 module.exports = {
     insertNewProjectUser, 
     deleteProjectUserByProjectUser, 
     getProjectPksByUser,
-    getProjectUser
+    getProjectUser,
+    getUsersByProject
 };

@@ -9,7 +9,7 @@ const { validateNewEvent, existEvent } = require("@appValidations/event");
 const { validateProjectUserAuthService } = require("@appServices/projectUsers");
 const cleaner = require("@appHelpers/cleanResponses");
 
-async function createEventService(event) {
+async function createEventService(event, userName) {
   const { projectName, eventName, date, time, duration, subject, detail } =
     event;
   const { isValid, message } = await validateNewEvent(
@@ -28,7 +28,13 @@ async function createEventService(event) {
   if (!isValid) {
     return { status: "error", message };
   }
-
+  const auxAuth = await validateProjectUserAuthService(projectName, userName);
+  if (!auxAuth.isValid) {
+    return {
+      status: "error",
+      message: "Error, el usuario no pertenece al proyecto",
+    };
+  }
   try {
     await insertNewEvent(
       projectName,
@@ -61,7 +67,7 @@ async function getEventByIdService(projectName, eventName, userName) {
   return { status: "error", project: null };
 }
 
-async function getEventsByProject(projectName, userName) {
+async function getEventsByProjectService(projectName, userName) {
   const auxAuth = await validateProjectUserAuthService(projectName, userName);
   if (!auxAuth.isValid) {
     return {
@@ -100,6 +106,6 @@ async function putEventService(projectName, eventName, userName, restParams) {
 module.exports = {
   createEventService,
   getEventByIdService,
-  getEventsByProject,
+  getEventsByProjectService,
   putEventService,
 };

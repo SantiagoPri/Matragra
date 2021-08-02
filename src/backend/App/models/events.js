@@ -57,20 +57,20 @@ function getEventById(projectName, eventName) {
 }
 
 function getEventsByProject(projectName) {
-    const params = {
-      TableName: MATRAGRA_EVENTS_DYNAMODB,
-      KeyConditionExpression: "#pk = :project and begins_with(#sk, :event)",
-      ExpressionAttributeNames: {
-        "#pk": "pk",
-        "#sk": "sk",
-      },
-      ExpressionAttributeValues: {
-        ":project": `PROJECT#${projectName}`,
-        ":event": `EVENT#`,
-      },
-    };
-    return db.query(params).promise();
-  }
+  const params = {
+    TableName: MATRAGRA_EVENTS_DYNAMODB,
+    KeyConditionExpression: "#pk = :project and begins_with(#sk, :event)",
+    ExpressionAttributeNames: {
+      "#pk": "pk",
+      "#sk": "sk",
+    },
+    ExpressionAttributeValues: {
+      ":project": `PROJECT#${projectName}`,
+      ":event": `EVENT#`,
+    },
+  };
+  return db.query(params).promise();
+}
 
 module.exports = {
   insertNewEvent,
