@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   padding: 60px 60px;
-  background: radial-gradient(closest-corner, #3b3b3c 0%, #000000 100%);
+  background: #000;
   @media (max-width: 1000px) {
     padding: 70px 30px;
   }
@@ -41,6 +41,13 @@ export const Link = styled.a`
     color: #6666ff;
     transition: 200ms ease-in;
   }
+`;
+
+export const Text = styled.p`
+  color: #fff;
+  margin-bottom: 20px;
+  font-size: 18px;
+  text-decoration: none;
 `;
 
 export const Title = styled.p`

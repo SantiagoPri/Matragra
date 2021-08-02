@@ -1,52 +1,40 @@
 import React from "react";
-import { Container, Wrapper, Row, Column, Link, Title, Icon} from "./styled";
+import { Container, Text, Link } from "./styled";
+import { AiFillGithub } from "react-icons/ai";
 
 const Footer = () => {
   return (
     <Container>
-      <Wrapper>
-        <Row>
-          <Column>
-            <Title>About Us</Title>
-            <Link href="#">Story</Link>
-            <Link href="#">Clients</Link>
-            <Link href="#">Testimonials</Link>
-          </Column>
-          <Column>
-            <Title>Services</Title>
-            <Link href="#">Marketing</Link>
-            <Link href="#">Consulting</Link>
-            <Link href="#">Development</Link>
-            <Link href="#">Design</Link>
-          </Column>
-          <Column>
-            <Title>Contact Us</Title>
-            <Link href="#">United States</Link>
-            <Link href="#">United Kingdom</Link>
-            <Link href="#">Australia</Link>
-            <Link href="#">Support</Link>
-          </Column>
-          <Column>
-            <Title>Social</Title>
-            <Link href="#">
-              <Icon className="fab fa-facebook-f" />
-              Facebook
+      <footer className="footer">
+        <Link href="https://github.com/SantiagoPri/Matragra/" target="_blank">
+          <AiFillGithub />
+        </Link>
+        <p>
+          {" "}
+          <Link href="http://www.fuac.edu.co/" target="_blank">
+            &copy; {new Date().getFullYear()} Copyright: fuac.edu.co{" "}
+          </Link>
+        </p>
+        <p>
+          <Text>
+            {"Creditos: "}
+            <Link
+              href="https://www.linkedin.com/in/s-prieto/"
+              target="_blank"
+            >
+              Santiago Prieto
             </Link>
-            <Link href="#">
-              <Icon className="fab fa-instagram" />
-              Instagram
+            {" & "}
+            <Link
+              href="https://www.linkedin.com/in/jpmosquerac/"
+              target="_blank"
+            >
+              Juan Pablo Mosquera
             </Link>
-            <Link href="#">
-              <Icon className="fab fa-youtube" />
-              Youtube
-            </Link>
-            <Link href="#">
-              <Icon className="fab fa-twitter" />
-              Twitter
-            </Link>
-          </Column>
-        </Row>
-      </Wrapper>
+            {" | Asesor: Gustavo Rivera"}
+          </Text>
+        </p>
+      </footer>
     </Container>
   );
 };
