@@ -1,0 +1,61 @@
+.container-editor
+{
+    color: turquoise;
+    text-align: left;
+}
+
+.container-editor > div
+{
+    background: transparent;
+}
+
+.container-editor > div > div > h1, h2, h3, h4, h5, h6
+{
+    color: white;
+}
+
+.container-editor > div > div > p
+{
+    color: white;
+    /* background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem; */
+}
+
+
+.container-editor > div > div > ul > li, div > p
+{
+    color: white;
+}
+
+.eZBDrM ul.checkbox_list li.checked > div > p {
+    color: #e8e5e8 !important;
+}
+
+
+.container-editor > div > div > ol > li, div > p
+{
+    color: white;
+}
+
+.container-editor > div > div > div > div > table > tbody > tr > th
+{
+    color: white;
+    font-weight: bold;
+}
+
+.container-editor > div > div > div > div > table > tbody > tr > td
+{
+    color: white;
+}
+
+.container-editor > div > div > blockquote > p
+{
+    color: white;
+}
+
+
+.container-editor > div > div > div > pre
+{
+    background: #e6f3fffa;
+}

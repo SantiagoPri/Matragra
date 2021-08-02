@@ -16,6 +16,7 @@ import Main from "./components/main/main";
 import ProjectRouter from "./components/ProjectRouter";
 import Footer from "./components/footer/footer";
 import { ReactQueryDevtools } from "react-query/devtools";
+import { CreateForum } from "./components/foro/CreateForum";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ function App() {
                     path="/project/:proyectName"
                     component={ProjectRouter}
                   />
+                  <Route path="/foro" component={CreateForum} />
                 </Switch>
                 <Footer />
               </ProjectContextProvider>
