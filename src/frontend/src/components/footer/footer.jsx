@@ -15,7 +15,6 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} Copyright: fuac.edu.co{" "}
           </Link>
         </p>
-        <p>
           <Text>
             {"Creditos: "}
             <Link
@@ -33,7 +32,6 @@ const Footer = () => {
             </Link>
             {" | Asesor: Gustavo Rivera"}
           </Text>
-        </p>
       </footer>
     </Container>
   );
