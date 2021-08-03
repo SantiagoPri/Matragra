@@ -77,7 +77,7 @@ async function getForoByIdService(projectName, foroName, userName) {
   }
 }
 
-async function putForoService(projectName, foroName, userName, restParams) {
+async function putForoService(projectName, foroName, userName, answer) {
   const exist = await existProject(projectName);
   if (!exist.isValid) {
     return { status: "error", message: "Error, el proyecto no existe" };
@@ -93,8 +93,10 @@ async function putForoService(projectName, foroName, userName, restParams) {
   try {
     foro = await getForoById(projectName, foroName);
     foro = cleaner(foro);
-    const { pk, sk, ...foroParams } = foro.Items[0];
-    await putForo(projectName, foroName, {...foroParams, ...restParams});
+    const { pk, sk, answers, ...foroParams } = foro.Items[0];
+    const newAnswers = answers ? answers : [];
+    newAnswers.push({...answer, author: userName});
+    await putForo(projectName, foroName, {...foroParams, answers: newAnswers});
   } catch(error) {
     console.log(error);
     return {
