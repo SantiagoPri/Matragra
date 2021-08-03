@@ -9,6 +9,7 @@ import {
   putProjectPhase,
   saveFileInS3Bucket,
   getProjectMembers,
+  foroList,
 } from "../helpers/api/backend-api";
 
 export const ApiContext = createContext();
@@ -139,13 +140,34 @@ const ApiContextProvider = (props) => {
   const getMembersByProject = async ({ queryKey }) => {
     try {
       const { projectName } = queryKey[1];
-      console.log(projectName);
       let projectMembers = await getProjectMembers(jwt, projectName);
       projectMembers = projectMembers.data;
       if (projectMembers.status !== "ok") {
         throw new Error("hubo un error");
       }
       return projectMembers.users.map((user) => user.sk);
+    } catch (error) {
+      if (error.response.status === 401) {
+        handleUnAuthorizedError();
+      } else {
+        throw console.error();
+      }
+    }
+  };
+
+  const getForoList = async ({ queryKey }) => {
+    try {
+      const { projectName } = queryKey[1];
+      let list = await foroList(jwt, projectName);
+      list = list.data;
+      if (list.status !== "ok") {
+        throw new Error("hubo un error");
+      }
+      const { pk, sk, ...phasesList } = list;
+      return Object.entries(phasesList).map((phase) => {
+        const [title, items] = phase;
+        return { title, items };
+      });
     } catch (error) {
       if (error.response.status === 401) {
         handleUnAuthorizedError();
@@ -172,6 +194,7 @@ const ApiContextProvider = (props) => {
     nextPhase,
     saveFile,
     getMembersByProject,
+    getForoList,
   };
   return (
     <ApiContext.Provider

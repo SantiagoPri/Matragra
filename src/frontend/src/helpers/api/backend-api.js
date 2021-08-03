@@ -105,3 +105,12 @@ export const getProjectMembers = (jwt, projectName) => {
   };
   return axios.request(params);
 };
+
+export const foroList = (jwt, projectName) => {
+  const params = {
+    url: `${BASE_URL}/v1/foros/${projectName}`,
+    headers: { Authorization: jwt },
+    method: "get",
+  };
+  return axios.request(params);
+};

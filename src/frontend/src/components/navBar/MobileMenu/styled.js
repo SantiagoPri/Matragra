@@ -37,9 +37,7 @@ export const MenuWrapper = styled.div`
 
 export const Menu = styled.ul`
   display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: repeat(6, 80px);
-  text-align: center;
+  grid-template-rows: repeat(6, 60px);
 
   @media screen and (max-width: 480px) {
     grid-template-rows: repeat(6, 60px);

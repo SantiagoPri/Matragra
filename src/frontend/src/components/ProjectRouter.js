@@ -28,12 +28,6 @@ const ProjectRouter = () => {
     console.log("name", name);
     setName(proyectName);
     setIsTheProject(true);
-
-    // if (proyectName === name) {
-    // } else {
-    //   console.log("here");
-    //   historyHook.push("/main");
-    // }
   }, []);
 
   useQuery(
@@ -42,7 +36,6 @@ const ProjectRouter = () => {
     {
       enabled: isTheProject,
       onSuccess: (data) => {
-        //console.log("phase Details", data);
         if (!data.projectDetail) {
           historyHook.push("/main");
           return;
@@ -61,7 +54,6 @@ const ProjectRouter = () => {
     {
       enabled: isTheProject,
       onSuccess: (data) => {
-        //console.log("Proyect Info", data);
         if (data.status !== "ok") {
           historyHook.push("/main");
           return;

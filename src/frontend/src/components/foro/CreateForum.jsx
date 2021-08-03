@@ -10,10 +10,19 @@ import Editor from "rich-markdown-editor";
 import { ModalContainerForum } from "./ModalContainerForum";
 import { ApiContext } from "../../contexts/ApiContext";
 import { ProjectContext } from "../../contexts/ProjectContext";
+import { useQuery } from "react-query";
 
 export const CreateForum = () => {
   const { apiCalls } = useContext(ApiContext);
   const { name } = useContext(ProjectContext);
+
+  const [topics, setTopics] = useState([]);
+
+  useQuery(["getForumList", { name }], apiCalls.getForoList, {
+    onSuccess: (data) => {
+      setTopics(data);
+    },
+  });
 
   const saveFile = async (fileList) => {
     const urlList = await Promise.all(
@@ -23,17 +32,6 @@ export const CreateForum = () => {
     );
     // TODO: update urls
   };
-
-  const [topics, setTopics] = useState([
-    {
-      title: "Etapa 0",
-      items: ["Texto 0", "Texto 1", "Texto 2", "Texto 3", "Texto 4"],
-    },
-    {
-      title: "Etapa 1",
-      items: ["Texto 0", "Texto 1", "Texto 2", "Texto 3", "Texto 4", "Texto 5"],
-    },
-  ]);
 
   const [answers, setAnswers] = useState([
     {
