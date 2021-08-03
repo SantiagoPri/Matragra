@@ -45,37 +45,37 @@ async function insertForoInListService(projectName, phase, foroName) {
   switch (phase) {
     case "phase0":
       if (forosList.phase0) {
-        restParams = { phase0: [...forosList.phase0, foroName] };
+        restParams = { ...forosList, phase0: [...forosList.phase0, foroName] };
       } else {
-        restParams = { phase0: [foroName] };
+        restParams = { ...forosList, phase0: [foroName] };
       }
       break;
     case "phase1":
       if (forosList.phase1) {
-        restParams = { phase1: [...forosList.phase1, foroName]};
+        restParams = { ...forosList, phase1: [...forosList.phase1, foroName]};
       } else {
-        restParams = { phase1: [foroName] };
+        restParams = { ...forosList, phase1: [foroName] };
       }
       break;
     case "phase2":
       if (forosList.phase2) {
-        restParams = { phase2: [...forosList.phase2, foroName]};
+        restParams = { ...forosList, phase2: [...forosList.phase2, foroName]};
       } else {
-        restParams = { phase2: [foroName] };
+        restParams = { ...forosList, phase2: [foroName] };
       }
       break;
     case "phase3":
       if (forosList.phase3) {
-        restParams = { phase3: [...forosList.phase3, foroName]};
+        restParams = { ...forosList, phase3: [...forosList.phase3, foroName]};
       } else {
-        restParams = { phase3: [foroName] };
+        restParams = { ...forosList, phase3: [foroName] };
       }
       break;
     case "general":
       if (forosList.general) {
-        restParams = { general: [...forosList.general, foroName]};
+        restParams = { ...forosList, general: [...forosList.general, foroName]};
       } else {
-        restParams = { general: [foroName] };
+        restParams = { ...forosList, general: [foroName] };
       }
       break;
     default:
