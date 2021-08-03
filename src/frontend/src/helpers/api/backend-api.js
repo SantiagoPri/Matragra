@@ -114,3 +114,33 @@ export const foroList = (jwt, projectName) => {
   };
   return axios.request(params);
 };
+
+export const postCreateForum = (jwt, forum) => {
+  const params = {
+    url: `${BASE_URL}/v1/foros`,
+    headers: { Authorization: jwt },
+    method: "post",
+    data: forum,
+  };
+  return axios.request(params);
+};
+
+export const getTopic = (jwt, projectName, foroName) => {
+  const params = {
+    url: `${BASE_URL}/v1/foros/${projectName}/${foroName}`,
+    headers: { Authorization: jwt },
+    method: "get",
+  };
+  return axios.request(params);
+};
+
+export const putForo = (jwt, projectName, foroName, answer) => {
+  const params = {
+    url: `${BASE_URL}/v1/foros/${projectName}/${foroName}`,
+    headers: { Authorization: jwt },
+    method: "put",
+    data: answer,
+  };
+  console.log(params);
+  return axios.request(params);
+};

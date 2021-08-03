@@ -1,16 +1,20 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useContext } from "react";
+import { ForumContext } from "../../contexts/ForoContext";
 import { FaPlus, FaList } from "react-icons/fa";
 import "./Style.css";
+import { queryClient } from "../../App";
 
-export const Topics = ({ listTopics, isOpened }) => {
-  // Lista de Topicos.
-  const [topics, setTopics] = useState([]);
+export const Topics = ({ isOpened }) => {
+  const { topics, setCurrentForoName, setIsCreating } =
+    useContext(ForumContext);
 
-  useEffect(() => {
-    if (listTopics !== undefined) {
-      setTopics(listTopics);
-    }
-  }, []);
+  const handleClick = async (foroName) => {
+    setCurrentForoName(foroName);
+    setIsCreating(false);
+    await queryClient.refetchQueries(["getForum"], {
+      active: true,
+    });
+  };
 
   return (
     <Fragment>
@@ -22,9 +26,7 @@ export const Topics = ({ listTopics, isOpened }) => {
         <div className="nk-sidebar">
           <div className="row">
             <div className="col">
-              <h5 className="text-center text-white font-weight-bold">
-                Topicos
-              </h5>
+              <h5 className="text-center text-white font-weight-bold">Temas</h5>
             </div>
             <div className="col-2" onClick={() => isOpened()}>
               <FaPlus className="icono-topics"></FaPlus>
@@ -41,10 +43,13 @@ export const Topics = ({ listTopics, isOpened }) => {
                     <ul>
                       {topic.items.map((item, index) => {
                         return (
-                          <li key={index} className="nk-sidebar-li-item">
+                          <li
+                            key={`${item}${index}`}
+                            className="nk-sidebar-li-item"
+                          >
                             <a
                               className="nk-sidebar-item"
-                              href="./layout-blank.html"
+                              onClick={() => handleClick(item)}
                             >
                               {item}
                             </a>

@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Fragment } from "react";
 import Editor from "rich-markdown-editor";
+import { ForumContext } from "../../contexts/ForoContext";
+import { ProjectContext } from "../../contexts/ProjectContext";
 import "./Style.css";
 
-export const Answer = ({ title, listAnswers }) => {
-  // Lista de respuestas.
-  const [answers, setAnswers] = useState([]);
+export const Answer = ({ title }) => {
+  const { answers, createAnswer, currentForoName } = useContext(ForumContext);
+  const { name } = useContext(ProjectContext);
 
-  useEffect(() => {
-    if (listAnswers !== undefined) {
-      setAnswers(listAnswers);
+  const [text, setText] = useState("Escribe un respuesta");
+
+  const handleClick = () => {
+    if (text !== "Escribe un respuesta") {
+      createAnswer({name, currentForoName, answer:{ description: text }});
     }
-  }, []);
-
-  const [text, setText] = useState(`#### Respuesta`);
-  const [isEdit, setIsEdit] = useState(false);
+  };
 
   return (
     <Fragment>
@@ -28,22 +29,12 @@ export const Answer = ({ title, listAnswers }) => {
             <div key={index} className="card-body text-white">
               <Editor
                 className="container-editor"
-                defaultValue={text}
-                onChange={(value) => setText(value)}
-                readOnly={isEdit}
+                defaultValue={answer.description}
+                readOnly={true}
               />
               <div className="row">
                 <div className="col">
                   <span className="autor">Autor: {answer.author}</span>
-                </div>
-                <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                  <button
-                    type="button"
-                    className="btn btn-rounded btn-secondary mt-3 col-xs-12 col-sm-10 col-md-9 col-lg-9"
-                    style={{ backgroundColor: "#4f4fc3" }}
-                  >
-                    Publicar
-                  </button>
                 </div>
               </div>
 
@@ -51,6 +42,31 @@ export const Answer = ({ title, listAnswers }) => {
             </div>
           );
         })}
+        <div className="card-body text-white">
+          <div className="row">
+            <div className="column">
+              <Editor
+                className="container-editor"
+                placeholder={text}
+                onChange={(value) => setText(value)}
+                readOnly={false}
+              />
+            </div>
+            <div className="column">
+              <button
+                onClick={handleClick}
+                type="button"
+                className="btn btn-rounded btn-secondary mt-3 col-xs-12 col-sm-10 col-md-9 col-lg-9"
+                style={{ backgroundColor: "#4f4fc3" }}
+              >
+                Publicar
+              </button>
+            </div>
+          </div>
+
+          <hr style={{ backgroundColor: "#545b62" }}></hr>
+        </div>
+        ;
       </div>
     </Fragment>
   );

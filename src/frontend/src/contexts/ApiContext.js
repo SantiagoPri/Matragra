@@ -10,6 +10,9 @@ import {
   saveFileInS3Bucket,
   getProjectMembers,
   foroList,
+  postCreateForum,
+  getTopic,
+  putForo,
 } from "../helpers/api/backend-api";
 
 export const ApiContext = createContext();
@@ -127,7 +130,7 @@ const ApiContextProvider = (props) => {
         file.name,
         projectName
       );
-      return url.data.url;
+      return { url: url.data.url, name: file.name };
     } catch (error) {
       if (error.response.status === 401) {
         handleUnAuthorizedError();
@@ -160,10 +163,11 @@ const ApiContextProvider = (props) => {
       const { projectName } = queryKey[1];
       let list = await foroList(jwt, projectName);
       list = list.data;
-      if (list.status !== "ok") {
+      if (!list.status || list.status !== "ok") {
+        console.error("error of list of topics: ", JSON.stringify(list));
         throw new Error("hubo un error");
       }
-      const { pk, sk, ...phasesList } = list;
+      const { pk, sk, ...phasesList } = list.foroList ? list.foroList : {};
       return Object.entries(phasesList).map((phase) => {
         const [title, items] = phase;
         return { title, items };
@@ -171,6 +175,69 @@ const ApiContextProvider = (props) => {
     } catch (error) {
       if (error.response.status === 401) {
         handleUnAuthorizedError();
+      } else {
+        throw console.error();
+      }
+    }
+  };
+
+  const createForum = async (forum) => {
+    try {
+      console.log(forum);
+      const updateResponse = await postCreateForum(jwt, forum);
+      if (updateResponse.data.status !== "ok") {
+        throw new Error("hubo un error");
+      }
+      return updateResponse.data;
+    } catch (error) {
+      if (error.response.status === 401) {
+        handleUnAuthorizedError();
+        return error;
+      } else {
+        throw console.error();
+      }
+    }
+  };
+
+  const mainTopic = async ({ queryKey }) => {
+    try {
+      const { projectName, currentForoName } = queryKey[1];
+      if (!(projectName && currentForoName)) {
+        return null;
+      }
+      let topic = await getTopic(jwt, projectName, currentForoName);
+      topic = topic.data;
+      if (!topic.status || topic.status !== "ok") {
+        console.error("error of topic : ", JSON.stringify(topic));
+        throw new Error("hubo un error");
+      }
+      const { pk, sk, ...phasesList } = topic.foro;
+      return { foroName: sk, ...phasesList };
+    } catch (error) {
+      if (error.response.status === 401) {
+        handleUnAuthorizedError();
+      } else {
+        throw console.error();
+      }
+    }
+  };
+
+  const newAnswer = async (answerInfo) => {
+    try {
+      const {
+        name: projectName,
+        currentForoName: foroName,
+        answer,
+      } = answerInfo;
+      const updateResponse = await putForo(jwt, projectName, foroName, answer);
+      if (updateResponse.data.status !== "ok") {
+        throw new Error("hubo un error");
+      }
+      return updateResponse.data;
+    } catch (error) {
+      if (error.response.status === 401) {
+        handleUnAuthorizedError();
+        return error;
       } else {
         throw console.error();
       }
@@ -195,6 +262,9 @@ const ApiContextProvider = (props) => {
     saveFile,
     getMembersByProject,
     getForoList,
+    createForum,
+    mainTopic,
+    newAnswer,
   };
   return (
     <ApiContext.Provider

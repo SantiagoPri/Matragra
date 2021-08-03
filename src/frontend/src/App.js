@@ -12,6 +12,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import ApiContextProvider from "./contexts/ApiContext";
 import ProjectContextProvider from "./contexts/ProjectContext";
 import GeneralContextProvider from "./contexts/GeneralContext";
+import ForumContextProvider from "./contexts/ForoContext";
 import Main from "./components/main/main";
 import ProjectRouter from "./components/ProjectRouter";
 import Footer from "./components/footer/footer";
@@ -28,20 +29,22 @@ function App() {
           <ApiContextProvider>
             <GeneralContextProvider>
               <ProjectContextProvider>
-                <Navbar />
-                <Switch>
-                  <Route exact path="/" component={Home} />
-                  <SignRoute path="/registrarme" component={Registrarme} />
-                  <SignRoute path="/ingresar" component={Ingresar} />
-                  <Route path="/documentacion" component={MatragraDoc} />
-                  <PrivateRoute path="/main" component={Main} />
-                  <PrivateRoute
-                    path="/project/:proyectName"
-                    component={ProjectRouter}
-                  />
-                  <Route path="/foro" component={CreateForum} />
-                </Switch>
-                <Footer />
+                <ForumContextProvider>
+                  <Navbar />
+                  <Switch>
+                    <Route exact path="/" component={Home} />
+                    <SignRoute path="/registrarme" component={Registrarme} />
+                    <SignRoute path="/ingresar" component={Ingresar} />
+                    <Route path="/documentacion" component={MatragraDoc} />
+                    <PrivateRoute path="/main" component={Main} />
+                    <PrivateRoute
+                      path="/project/:proyectName"
+                      component={ProjectRouter}
+                    />
+                    <Route path="/foro" component={CreateForum} />
+                  </Switch>
+                  <Footer />
+                </ForumContextProvider>
               </ProjectContextProvider>
             </GeneralContextProvider>
           </ApiContextProvider>
@@ -55,3 +58,4 @@ function App() {
 export default App;
 
 export { queryClient };
+
