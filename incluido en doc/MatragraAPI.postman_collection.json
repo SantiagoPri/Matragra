@@ -1,0 +1,870 @@
+{
+	"info": {
+		"_postman_id": "7860a5b9-0bed-49cd-8436-0e4c00a64c41",
+		"name": "MatragraAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "createUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"userName\": \"juan\",\r\n\t\"roleName\": \"estudiante\",\r\n\t\"password\": \"1234567\",\r\n\t\"email\": \"juanmcossio@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/users/",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "current",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/users/current",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"current"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "projects",
+			"item": [
+				{
+					"name": "createProject",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true,
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"projectName\": \"MatragraApp\",\r\n    \"index\": 1,\r\n    \"phase0\": {\"objectives\": [], \"scope\": \"asd\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/projects/",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "linkUser",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true,
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"projectName\": \"Matragra\",\r\n\t\"userName\": \"Juan\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/projects/linkUser",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								"linkUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unlinkUser",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true,
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"projectName\": \"MatragraApp1\",\r\n\t\"userName\": \"juan\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/projects/unlinkUser",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								"unlinkUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getProjects",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true,
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/projects",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getProject",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true,
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/project/MatragraApp",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"MatragraApp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getProjectDetail",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true,
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/projectDetail/MatragraApp/phase1",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projectDetail",
+								"MatragraApp",
+								"phase1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "putProjectDetail",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true,
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"task#1\":{\r\n            \"name\":\"nombre Tarea\",\r\n            \"description\":\"esta es una tarea\",\r\n            \"subTask\":[{ \"id\": 1, \"name\": \"subtask uno\", \"state\": 0 }]\r\n        },\r\n        \"task2\":{\r\n            \"name\":\"nombre Tarea\",\r\n            \"description\":\"esta es una tarea\",\r\n            \"subTask\":[{ \"id\": 1, \"name\": \"subtask uno\", \"state\": 0 },{ \"id\": 1, \"name\": \"subtask uno\", \"state\": 0 },{ \"id\": 1, \"name\": \"subtask uno\", \"state\": 0 }]\r\n        }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/projectDetail/MatragraApp/phase1",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projectDetail",
+								"MatragraApp",
+								"phase1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "putProject",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true,
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"index\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/projects/MatragraApp",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								"MatragraApp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUsersByProject",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true,
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/projects/users/test",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								"users",
+								"test"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "events",
+			"item": [
+				{
+					"name": "getEvents",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true,
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/events/MatragraApp",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"MatragraApp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createEvents",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true,
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"projectName\": \"test\",\r\n    \"eventName\": \"eventId\",\r\n    \"date\": \"12/07/2021\",\r\n    \"time\": \"17:00\",\r\n    \"duration\": \"60\",\r\n    \"subject\": \"subject description\",\r\n    \"detail\": {\r\n      \"description\": \"description xD\",\r\n      \"link\": \"https://...\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/events/",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "putEvents",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true,
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\": \"12/07/2021\",\r\n    \"time\": \"17:00\",\r\n    \"duration\": \"60\",\r\n    \"subject\": \"subject description\",\r\n    \"detail\": {\r\n      \"description\": \"description xD\",\r\n      \"link\": \"https://...\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/events/test/eventId",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"test",
+								"eventId"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "foros",
+			"item": [
+				{
+					"name": "uploadFile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"file\": \"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ooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoJwKKyNW1B4l8i3+aZ+AB2oAr31w+o34srdsoh/ekHpjtVyaVLREtLcDzCOAOwqnp1l/ZMEjk77q4O5z79Ku2NiVma5n+aZv09qAJbKxWDLkZkblmq7RRQAUUUUAFFFFABRRRQAUUUUAFFFFABTJG2rmn0xyMgE9aAK2nRvHbsHOSXY/hmrlIowKWgAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiikJAGTQBUv76KygZ3YZxwPWsDTJWMsl/cKWlmOUT+7Uup+ReXq/OZGX7qKf51o6bpzRIJZ8GQ9h0FAE1nBI7tNPyzH5R6Cr9IBiloAKKKKACiiigAooooAKKKKACiiigAooooAKjkiDurEn5TmpKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKADPGa5DxDrk73A07T0Z5WOGZe1ddjjFV47C3imMqxrvPcjmgCjo+kLY26mT55SMsx5rXoooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//2Q0KZW5kc3RyZWFtDQplbmRvYmoNCjEwIDAgb2JqDQo8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u78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz48eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSIzLjEtNzAxIj4KPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgIHhtbG5zOnBkZj0iaHR0cDovL25zLmFkb2JlLmNvbS9wZGYvMS4zLyI+CjxwZGY6UHJvZHVjZXI+TWljcm9zb2Z0wq4gV29yZCBwYXJhIE1pY3Jvc29mdCAzNjU8L3BkZjpQcm9kdWNlcj48L3JkZjpEZXNjcmlwdGlvbj4KPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyI+CjxkYzpjcmVhdG9yPjxyZGY6U2VxPjxyZGY6bGk+SWxkZWZvbnNvLVBDPC9yZGY6bGk+PC9yZGY6U2VxPjwvZGM6Y3JlYXRvcj48L3JkZjpEZXNjcmlwdGlvbj4KPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyI+Cjx4bXA6Q3JlYXRvclRvb2w+TWljcm9zb2Z0wq4gV29yZCBwYXJhIE1pY3Jvc29mdCAzNjU8L3htcDpDcmVhdG9yVG9vbD48eG1wOkNyZWF0ZURhdGU+MjAyMS0wNy0wOFQxOTozNzowNi0wNTowMDwveG1wOkNyZWF0ZURhdGU+PHhtcDpNb2RpZnlEYXRlPjIwMjEtMDctMDhUMTk6Mzc6MDYtMDU6MDA8L3htcDpNb2RpZnlEYXRlPjwvcmRmOkRlc2NyaXB0aW9uPgo8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiAgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iPgo8eG1wTU06RG9jdW1lbnRJRD51dWlkOkZDQkMwMDJBLUNCQkItNEYyQS05QUE3LTEwNzY0REJGQ0RBRDwveG1wTU06RG9jdW1lbnRJRD48eG1wTU06SW5zdGFuY2VJRD51dWlkOkZDQkMwMDJBLUNCQkItNEYyQS05QUE3LTEwNzY0REJGQ0RBRDwveG1wTU06SW5zdGFuY2VJRD48L3JkZjpEZXNjcmlwdGlvbj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCjwvcmRmOlJERj48L3g6eG1wbWV0YT48P3hwYWNrZXQgZW5kPSJ3Ij8+DQplbmRzdHJlYW0NCmVuZG9iag0KNTYgMCBvYmoNCjw8L0Rpc3BsYXlEb2NUaXRsZSB0cnVlPj4NCmVuZG9iag0KNTcgMCBvYmoNCjw8L1R5cGUvWFJlZi9TaXplIDU3L1dbIDEgNCAyXSAvUm9vdCAxIDAgUi9JbmZvIDEwIDAgUi9JRFs8MkEwMEJDRkNCQkNCMkE0RjlBQTcxMDc2NERCRkNEQUQ+PDJBMDBCQ0ZDQkJDQjJBNEY5QUE3MTA3NjREQkZDREFEPl0gL0ZpbHRlci9GbGF0ZURlY29kZS9MZW5ndGggMTU1Pj4NCnN0cmVhbQ0KeJw10LkNwlAMxnG/cJMESLjPcB8DIIFALEBBTcEOLAUVAzANc9A9Hv6DC/9kyV9hi7iy1rgeiXy5w0sxVvGfSnBWwh1c4aZs1iKey8UygzksYAlT+G2uXG57+k8GPEhBGjKQhRzkoQBF8CGAEEpQhgpEEEMValCHBjShBW3oQBd60IcBJDCEEYxh4m7fP/R1h7dyvIh8ANlfEaENCmVuZHN0cmVhbQ0KZW5kb2JqDQp4cmVmDQowIDU4DQowMDAwMDAwMDExIDY1NTM1IGYNCjAwMDAwMDAwMTcgMDAwMDAgbg0KMDAwMDAwMDE2NiAwMDAwMCBuDQowMDAwMDAwMjIyIDAwMDAwIG4NCjAwMDAwMDA1MTEgMDAwMDAgbg0KMDAwMDAwMzAwMCAwMDAwMCBuDQowMDAwMDAzMTYxIDAwMDAwIG4NCjAwMDAwMDMzODcgMDAwMDAgbg0KMDAwMDAwMzQ0MCAwMDAwMCBuDQowMDAwMDAzNDkzIDAwMDAwIG4NCjAwMDAwMTQzODkgMDAwMDAgbg0KMDAwMDAwMDAxMiA2NTUzNSBmDQowMDAwMDAwMDEzIDY1NTM1IGYNCjAwMDAwMDAwMTQgNjU1MzUgZg0KMDAwMDAwMDAxNSA2NTUzNSBmDQowMDAwMDAwMDE2IDY1NTM1IGYNCjAwMDAwMDAwMTcgNjU1MzUgZg0KMDAwMDAwMDAxOCA2NTUzNSBmDQowMDAwMDAwMDE5IDY1NTM1IGYNCjAwMDAwMDAwMjAgNjU1MzUgZg0KMDAwMDAwMDAyMSA2NTUzNSBmDQowMDAwMDAwMDIyIDY1NTM1IGYNCjAwMDAwMDAwMjMgNjU1MzUgZg0KMDAwMDAwMDAyNCA2NTUzNSBmDQowMDAwMDAwMDI1IDY1NTM1IGYNCjAwMDAwMDAwMjYgNjU1MzUgZg0KMDAwMDAwMDAyNyA2NTUzNSBmDQowMDAwMDAwMDI4IDY1NTM1IGYNCjAwMDAwMDAwMjkgNjU1MzUgZg0KMDAwMDAwMDAzMCA2NTUzNSBmDQowMDAwMDAwMDMxIDY1NTM1IGYNCjAwMDAwMDAwMzIgNjU1MzUgZg0KMDAwMDAwMDAzMyA2NTUzNSBmDQowMDAwMDAwMDM0IDY1NTM1IGYNCjAwMDAwMDAwMzUgNjU1MzUgZg0KMDAwMDAwMDAzNiA2NTUzNSBmDQowMDAwMDAwMDM3IDY1NTM1IGYNCjAwMDAwMDAwMzggNjU1MzUgZg0KMDAwMDAwMDAzOSA2NTUzNSBmDQowMDAwMDAwMDQwIDY1NTM1IGYNCjAwMDAwMDAwNDEgNjU1MzUgZg0KMDAwMDAwMDA0MiA2NTUzNSBmDQowMDAwMDAwMDQzIDY1NTM1IGYNCjAwMDAwMDAwNDQgNjU1MzUgZg0KMDAwMDAwMDA0NSA2NTUzNSBmDQowMDAwMDAwMDQ2IDY1NTM1IGYNCjAwMDAwMDAwNDcgNjU1MzUgZg0KMDAwMDAwMDA0OCA2NTUzNSBmDQowMDAwMDAwMDQ5IDY1NTM1IGYNCjAwMDAwMDAwNTAgNjU1MzUgZg0KMDAwMDAwMDA1MSA2NTUzNSBmDQowMDAwMDAwMDUyIDY1NTM1IGYNCjAwMDAwMDAwNTMgNjU1MzUgZg0KMDAwMDAwMDAwMCA2NTUzNSBmDQowMDAwMDE1NTMyIDAwMDAwIG4NCjAwMDAwMTYxMjAgMDAwMDAgbg0KMDAwMDAxOTI5MyAwMDAwMCBuDQowMDAwMDE5MzM4IDAwMDAwIG4NCnRyYWlsZXINCjw8L1NpemUgNTgvUm9vdCAxIDAgUi9JbmZvIDEwIDAgUi9JRFs8MkEwMEJDRkNCQkNCMkE0RjlBQTcxMDc2NERCRkNEQUQ+PDJBMDBCQ0ZDQkJDQjJBNEY5QUE3MTA3NjREQkZDREFEPl0gPj4NCnN0YXJ0eHJlZg0KMTk2OTQNCiUlRU9GDQp4cmVmDQowIDANCnRyYWlsZXINCjw8L1NpemUgNTgvUm9vdCAxIDAgUi9JbmZvIDEwIDAgUi9JRFs8MkEwMEJDRkNCQkNCMkE0RjlBQTcxMDc2NERCRkNEQUQ+PDJBMDBCQ0ZDQkJDQjJBNEY5QUE3MTA3NjREQkZDREFEPl0gL1ByZXYgMTk2OTQvWFJlZlN0bSAxOTMzOD4+DQpzdGFydHhyZWYNCjIxMDExDQolJUVPRg==\",\r\n  \"contentType\": \"binary/octet-stream\",\r\n  \"fileName\": \"pdf.pdf\",\r\n  \"projectName\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/file/",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"file",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createForo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"projectName\":\"test\",\r\n  \"phase\": \"phase0\",\r\n  \"foroName\": \"pregunta2\",\r\n  \"description\": \"Esta es la primera pregunta\",\r\n  \"files\":[{\"name\":\"archivo1\",\"url\":\"url\"}]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/foros/",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"foros",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "putForo",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"answers\": [{}]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/foros/test/pregunta1",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"foros",
+								"test",
+								"pregunta1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getForo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/foros/test/pregunta1",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"foros",
+								"test",
+								"pregunta1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getForosList",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/foros/test/",
+							"protocol": "https",
+							"host": [
+								"sia5q45ep9",
+								"execute-api",
+								"us-east-2",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"foros",
+								"test",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = JSON.parse(responseBody);\r",
+							"pm.environment.set(\"token\", data.message);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true,
+					"user-agent": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"userName\": \"juan\",\r\n\t\"password\": \"1234567\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://sia5q45ep9.execute-api.us-east-2.amazonaws.com/api/v1/login/",
+					"protocol": "https",
+					"host": [
+						"sia5q45ep9",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"login",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
