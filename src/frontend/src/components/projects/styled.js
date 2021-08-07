@@ -61,3 +61,16 @@ export const Text = styled.div`
   text-align: justify;
   text-justify: inter-word;
 `;
+
+export const TextAdjust = styled.div`
+  @media all and (max-width: 575px) {
+    width: 90%;
+  }
+`;
+
+export const IconoAdjust = styled.div`
+  @media all and (max-width: 575px) {
+    width: 10% !important;
+    text-align: center;
+  }
+`;

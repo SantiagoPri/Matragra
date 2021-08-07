@@ -3,7 +3,7 @@ import { Fragment } from "react";
 import Editor from "rich-markdown-editor";
 import { ForumContext } from "../../contexts/ForoContext";
 import { ProjectContext } from "../../contexts/ProjectContext";
-import "./Style.css";
+import "./Style-forum.css";
 
 export const Answer = ({ title }) => {
   const { answers, createAnswer, currentForoName } = useContext(ForumContext);

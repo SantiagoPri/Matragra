@@ -18,13 +18,24 @@ const ForumContextProvider = (props) => {
 
   const handleModalChange = (e) => {
     const { name, value } = e.target;
-    if (name === "pahse") {
-
+    console.log(name, ": ", value);
+    if (name === "files") {
+      newForo.files.push(value);
+      // const updateForo ={newForo}
+      // setNewForo((prevState) => {
+      //   prevState.files.push(value);
+      //   return prevState;
+      // });
+    } else {
+      setNewForo((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
     }
-    setNewForo({
-      ...newForo,
-      [name]: value,
-    });
+    console.log("newForo:", JSON.stringify(newForo));
+    if (newForo.files) {
+      console.log(newForo.files);
+    }
   };
 
   const startForum = (projectName) => {
@@ -34,15 +45,19 @@ const ForumContextProvider = (props) => {
       description: "",
       files: [],
     });
+    setIsCreating(false);
     setIsCreating(true);
   };
 
   const { mutate: createForum } = useMutation(apiCalls.createForum, {
     onSuccess: async (data, variables) => {
-      const { forum } = variables;
-      setCurrentForoName(forum.foroName);
+      if (data === "nothing to do here") {
+        return;
+      }
+      const { foroName } = variables;
+      setCurrentForoName(foroName);
       setIsCreating(false);
-      await queryClient.refetchQueries(["getForum"], {
+      await queryClient.refetchQueries(["getForumList"], {
         active: true,
       });
     },

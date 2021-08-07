@@ -52,7 +52,7 @@ export const Text = styled.p`
 
 export const Title = styled.p`
   font-size: 24px;
-  color:  #6666cc;
+  color: #6666cc;
   margin-bottom: 40px;
   font-weight: bold;
 `;

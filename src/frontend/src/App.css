@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+
+.father {
+  min-height: 70vh;
+  position: relative;
+  background: #282c34;
+}

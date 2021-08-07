@@ -31,18 +31,20 @@ function App() {
               <ProjectContextProvider>
                 <ForumContextProvider>
                   <Navbar />
-                  <Switch>
-                    <Route exact path="/" component={Home} />
-                    <SignRoute path="/registrarme" component={Registrarme} />
-                    <SignRoute path="/ingresar" component={Ingresar} />
-                    <Route path="/documentacion" component={MatragraDoc} />
-                    <PrivateRoute path="/main" component={Main} />
-                    <PrivateRoute
-                      path="/project/:proyectName"
-                      component={ProjectRouter}
-                    />
-                    <Route path="/foro" component={CreateForum} />
-                  </Switch>
+                  <div className="father">
+                    <Switch>
+                      <Route exact path="/" component={Home} />
+                      <SignRoute path="/registrarme" component={Registrarme} />
+                      <SignRoute path="/ingresar" component={Ingresar} />
+                      <Route path="/documentacion" component={MatragraDoc} />
+                      <PrivateRoute path="/main" component={Main} />
+                      <PrivateRoute
+                        path="/project/:proyectName"
+                        component={ProjectRouter}
+                      />
+                      <Route path="/foro" component={CreateForum} />
+                    </Switch>
+                  </div>
                   <Footer />
                 </ForumContextProvider>
               </ProjectContextProvider>
@@ -58,4 +60,3 @@ function App() {
 export default App;
 
 export { queryClient };
-

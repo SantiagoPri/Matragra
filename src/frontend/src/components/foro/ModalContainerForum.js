@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import ReactDOM from "react-dom";
 import { ForumContext } from "../../contexts/ForoContext";
 import { ProjectContext } from "../../contexts/ProjectContext";
-import "./Style.css";
+import "./Style-forum.css";
 
 const modalContainer = document.querySelector("#modalContainer");
 

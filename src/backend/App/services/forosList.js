@@ -38,9 +38,10 @@ async function getListByIdService(projectName, userName) {
 
 async function insertForoInListService(projectName, phase, foroName) {
   const listName = "ForoList";
-  let forosList = await getListById(projectName, listName);
-  forosList = cleaner(forosList);
-  forosList = forosList.Count ? forosList.Items[0] : {};
+  let response = await getListById(projectName, listName);
+  response = cleaner(response);
+  console.log("forlist1", response);
+  const { pk, sk, ...forosList } = response.Count ? response.Items[0] : {};
   let restParams = null;
   switch (phase) {
     case "phase0":
@@ -52,28 +53,31 @@ async function insertForoInListService(projectName, phase, foroName) {
       break;
     case "phase1":
       if (forosList.phase1) {
-        restParams = { ...forosList, phase1: [...forosList.phase1, foroName]};
+        restParams = { ...forosList, phase1: [...forosList.phase1, foroName] };
       } else {
         restParams = { ...forosList, phase1: [foroName] };
       }
       break;
     case "phase2":
       if (forosList.phase2) {
-        restParams = { ...forosList, phase2: [...forosList.phase2, foroName]};
+        restParams = { ...forosList, phase2: [...forosList.phase2, foroName] };
       } else {
         restParams = { ...forosList, phase2: [foroName] };
       }
       break;
     case "phase3":
       if (forosList.phase3) {
-        restParams = { ...forosList, phase3: [...forosList.phase3, foroName]};
+        restParams = { ...forosList, phase3: [...forosList.phase3, foroName] };
       } else {
         restParams = { ...forosList, phase3: [foroName] };
       }
       break;
     case "general":
       if (forosList.general) {
-        restParams = { ...forosList, general: [...forosList.general, foroName]};
+        restParams = {
+          ...forosList,
+          general: [...forosList.general, foroName],
+        };
       } else {
         restParams = { ...forosList, general: [foroName] };
       }
@@ -84,6 +88,7 @@ async function insertForoInListService(projectName, phase, foroName) {
         message: "No se especifico ninguna fase, o la fase no es valida",
       };
   }
+  console.log("restparams", restParams);
   try {
     await putList(projectName, listName, restParams);
   } catch (error) {

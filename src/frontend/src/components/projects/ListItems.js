@@ -2,6 +2,7 @@ import React, { Fragment, useContext, useState } from "react";
 import { useQuery } from "react-query";
 import { ApiContext } from "../../contexts/ApiContext";
 import { ImUserPlus, ImUserMinus } from "react-icons/im";
+import { IconoAdjust, TextAdjust } from "./styled";
 
 const ListItems = (props) => {
   const { projectName } = props;
@@ -26,25 +27,12 @@ const ListItems = (props) => {
         <div className="card bg-dark">
           <div className="card-header card-title text-light font-weight-bold">
             <div className="row">
-              <div
-                className="col-xs-2 col-sm-2 col-md-2 col-lg-2 icono-event"
-                style={{ width: "32px" }}
-              >
-                <ImUserMinus />
-              </div>
-              <div
-                className="col-xs-8 col-sm-8 col-md-8 col-lg-8 mt-1"
-                style={{ width: "116px" }}
-              >
+              <TextAdjust className="col-xs-10 col-sm-10 col-md-10 col-lg-10 mt-1 text-center">
                 Integrantes
-              </div>
-
-              <div
-                className="col-xs-2 col-sm-2 col-md-2 col-lg-2 icono-event"
-                style={{ width: "32px" }}
-              >
-                <ImUserPlus />
-              </div>
+              </TextAdjust>
+              <IconoAdjust className="col-xs-2 col-sm-2 col-md-2 col-lg-2 icono-event">
+                <ImUserPlus></ImUserPlus>
+              </IconoAdjust>
             </div>
           </div>
 
@@ -53,7 +41,17 @@ const ListItems = (props) => {
               {items.map((item) => {
                 return (
                   <li key={item} className="nav-link text-light">
-                    {item}
+                    <div className="row">
+                      <TextAdjust className="col-xs-10 col-sm-10 col-md-10 col-lg-10 text-left">
+                        {item}
+                      </TextAdjust>
+                      <IconoAdjust
+                        className="col-xs-2 col-sm-2 col-md-2 col-lg-2 icono-event text-right"
+                        style={{ width: "32px" }}
+                      >
+                        <ImUserMinus></ImUserMinus>
+                      </IconoAdjust>
+                    </div>
                   </li>
                 );
               })}

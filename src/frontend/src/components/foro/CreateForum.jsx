@@ -1,18 +1,17 @@
-import React, { useState, useContext, Fragment } from "react";
+import React, { useState, useContext, Fragment, useEffect } from "react";
 
 import { FaFileDownload, FaPlus } from "react-icons/fa";
 import { Answer } from "./Answer";
-import { FabOptionsAnswer } from "./FabOptionsAnswer";
-import "./Style.css";
+import "./Style-forum.css";
 import "./StyleEditor.css";
 import { Topics } from "./Topics";
-import Editor from "rich-markdown-editor";
 import { ModalContainerForum } from "./ModalContainerForum";
 import { ApiContext } from "../../contexts/ApiContext";
 import { ProjectContext } from "../../contexts/ProjectContext";
 import { ForumContext } from "../../contexts/ForoContext";
 import { useQuery } from "react-query";
 import { useHistory } from "react-router-dom";
+import { FixedEditor, NewEditor } from "./MarkdownEditor";
 
 export const CreateForum = () => {
   const historyHook = useHistory();
@@ -58,9 +57,9 @@ export const CreateForum = () => {
         return apiCalls.saveFile(fileList[index], name, "binary/octet-stream");
       })
     );
+    const [urls] = urlList.map((file) => file.url);
     handleModalChange({
-      target: [...newForo.files, ...urlList],
-      name: "files",
+      target: { name: "files", value: urls },
     });
   };
 
@@ -81,29 +80,18 @@ export const CreateForum = () => {
         {/* Lista de topicos */}
         <Topics isOpened={() => openModal()}></Topics>
 
-        {isCreating || forumData ? (
+        {!isOpened && (isCreating || forumData) ? (
           <div className="col-xs-12 col-sm-12 col-md col-lg">
             <div className="card" style={{ backgroundColor: "transparent" }}>
               <div className="card-body">
                 <h3 className="card-title text-white text-center">
                   {isCreating ? newForo.foroName : currentForo.foroName}
                 </h3>
-                <Editor
-                  className="container-editor"
-                  defaultValue={
-                    isCreating ? newForo.description : currentForo.description
-                  }
-                  onChange={(value) =>
-                    handleModalChange({
-                      target: { value: value(), name: "description" },
-                    })
-                  }
-                  readOnly={!isCreating}
-                  uploadImage={async (file) => {
-                    const fileUrl = await apiCalls.saveFile(file, name);
-                    return fileUrl.url;
-                  }}
-                />
+                {isCreating ? (
+                  <NewEditor description={newForo.description} />
+                ) : (
+                  <FixedEditor description={currentForo.description} />
+                )}
                 <div
                   className="card"
                   style={{ backgroundColor: "transparent" }}

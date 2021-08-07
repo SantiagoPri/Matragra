@@ -4,7 +4,7 @@ const awsConfig = {
   region: "us-east-2",
 };
 
-const s3 = new aws.S3();
+const s3 = new aws.S3(awsConfig);
 const { FILES_BUCKET, USER_ID, USER_SECRET } = process.env;
 
 async function generateFileUrl(file, contentType, fileName) {
@@ -32,6 +32,7 @@ async function generateFileUrl(file, contentType, fileName) {
   const params2 = {
     Bucket: FILES_BUCKET,
     Key: fileName,
+    Expires: 604800,
   };
   console.log(`Generating link for pdf for ${fileName}`);
 

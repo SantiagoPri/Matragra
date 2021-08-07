@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { FaEdit } from "react-icons/fa";
-import "./Style.css";
+import "./Style-forum.css";
 
 export const FabOptionsAnswer = () =>
 {

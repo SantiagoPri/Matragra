@@ -183,7 +183,9 @@ const ApiContextProvider = (props) => {
 
   const createForum = async (forum) => {
     try {
-      console.log(forum);
+      if (!forum.description || forum.description === "Escriba su entrada") {
+        return "nothing to do here";
+      }
       const updateResponse = await postCreateForum(jwt, forum);
       if (updateResponse.data.status !== "ok") {
         throw new Error("hubo un error");

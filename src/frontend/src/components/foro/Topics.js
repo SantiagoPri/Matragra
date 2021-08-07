@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect, useContext } from "react";
 import { ForumContext } from "../../contexts/ForoContext";
 import { FaPlus, FaList } from "react-icons/fa";
-import "./Style.css";
+import "./Style-forum.css";
 import { queryClient } from "../../App";
 
 export const Topics = ({ isOpened }) => {
@@ -23,7 +23,7 @@ export const Topics = ({ isOpened }) => {
           <input type="checkbox" id="btn-menu" />
           <FaList></FaList>
         </label>
-        <div className="nk-sidebar">
+        <div className="nk2-sidebar">
           <div className="row">
             <div className="col">
               <h5 className="text-center text-white font-weight-bold">Temas</h5>
@@ -33,11 +33,11 @@ export const Topics = ({ isOpened }) => {
             </div>
           </div>
           <nav className="nav-scroll">
-            <ul className="nk-sidebar-ul">
+            <ul className="nk2-sidebar-ul">
               {topics.map((topic, index) => {
                 return (
-                  <li key={index} className="nk-sidebar-li">
-                    <a className="nk-sidebar-title nk-sidebar-item">
+                  <li key={index} className="nk2-sidebar-li">
+                    <a className="nk2-sidebar-title nk2-sidebar-item">
                       <span className="nav-text">{topic.title}</span>
                     </a>
                     <ul>
@@ -45,10 +45,10 @@ export const Topics = ({ isOpened }) => {
                         return (
                           <li
                             key={`${item}${index}`}
-                            className="nk-sidebar-li-item"
+                            className="nk2-sidebar-li-item"
                           >
                             <a
-                              className="nk-sidebar-item"
+                              className="nk2-sidebar-item"
                               onClick={() => handleClick(item)}
                             >
                               {item}
