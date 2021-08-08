@@ -13,7 +13,7 @@ export const Answer = ({ title }) => {
 
   const handleClick = () => {
     if (text !== "Escribe un respuesta") {
-      createAnswer({name, currentForoName, answer:{ description: text }});
+      createAnswer({ name, currentForoName, answer: { description: text } });
     }
   };
 
@@ -52,21 +52,18 @@ export const Answer = ({ title }) => {
                 readOnly={false}
               />
             </div>
-            <div className="column">
-              <button
-                onClick={handleClick}
-                type="button"
-                className="btn btn-rounded btn-secondary mt-3 col-xs-12 col-sm-10 col-md-9 col-lg-9"
-                style={{ backgroundColor: "#4f4fc3" }}
-              >
-                Publicar
-              </button>
-            </div>
           </div>
 
           <hr style={{ backgroundColor: "#545b62" }}></hr>
         </div>
-        ;
+        <Fragment>
+          <div className="fab-content">
+            <div className="fab-container" onClick={handleClick}>
+              <div className="fab fab-icon-holder">Publicar</div>
+            </div>
+          </div>
+        </Fragment>
+        <br />
       </div>
     </Fragment>
   );

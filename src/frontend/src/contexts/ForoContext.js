@@ -18,24 +18,15 @@ const ForumContextProvider = (props) => {
 
   const handleModalChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, ": ", value);
+    let finalValue = value;
     if (name === "files") {
-      newForo.files.push(value);
-      // const updateForo ={newForo}
-      // setNewForo((prevState) => {
-      //   prevState.files.push(value);
-      //   return prevState;
-      // });
-    } else {
-      setNewForo((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
+      finalValue = newForo.files;
+      finalValue.push(value);
     }
-    console.log("newForo:", JSON.stringify(newForo));
-    if (newForo.files) {
-      console.log(newForo.files);
-    }
+    setNewForo((prevState) => ({
+      ...prevState,
+      [name]: finalValue,
+    }));
   };
 
   const startForum = (projectName) => {

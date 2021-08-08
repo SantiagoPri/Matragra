@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+  text-align: center;
   padding: 60px 60px;
   background: #000;
   @media (max-width: 1000px) {

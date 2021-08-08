@@ -14,7 +14,6 @@ import { useHistory } from "react-router-dom";
 import { FixedEditor, NewEditor } from "./MarkdownEditor";
 
 export const CreateForum = () => {
-  const historyHook = useHistory();
   const { apiCalls } = useContext(ApiContext);
   const { name } = useContext(ProjectContext);
   const {
@@ -57,9 +56,9 @@ export const CreateForum = () => {
         return apiCalls.saveFile(fileList[index], name, "binary/octet-stream");
       })
     );
-    const [urls] = urlList.map((file) => file.url);
+
     handleModalChange({
-      target: { name: "files", value: urls },
+      target: { name: "files", value: urlList[0] },
     });
   };
 
@@ -122,11 +121,11 @@ export const CreateForum = () => {
 
                     <div className="row">
                       {isCreating
-                        ? newForo.files.map((file) => {
-                            formatFile(file, historyHook);
+                        ? newForo.files.map((file, index) => {
+                            return <FormatFile key={index} file={file} />;
                           })
-                        : currentForo.files.map((file) => {
-                            formatFile(file, historyHook);
+                        : currentForo.files.map((file, index) => {
+                            return <FormatFile key={index} file={file} />;
                           })}
                     </div>
                   </div>
@@ -162,13 +161,14 @@ export const CreateForum = () => {
   );
 };
 
-function formatFile(file, historyHook) {
+function FormatFile({ file }) {
+  const historyHook = useHistory();
   return (
     <div
-      key={file.name}
       className="contenedor-icono-archivo"
       onClick={() => {
-        historyHook.push(file.url);
+        window.open(file.url);
+        //historyHook.push(file.url);
       }}
     >
       <FaFileDownload className="icono-archivo"></FaFileDownload>
