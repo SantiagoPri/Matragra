@@ -7,6 +7,8 @@ const {
   getUsersByProject
 } = require("@appModels/projectUsers");
 const cleaner = require("@appHelpers/cleanResponses");
+const { getUserById, getUserbyEmail } = require("@appModels/users");
+
 
 async function createProjectUserService(projectName, userName) {
   const { isValid, message } = await validateNewProjectUser(
@@ -16,8 +18,13 @@ async function createProjectUserService(projectName, userName) {
   if (!isValid) {
     return { status: "error", message };
   }
-
-  await insertNewProjectUser(projectName, userName);
+  if (userName.includes("@")) {
+    let userx = await getUserbyEmail(userName);
+    let userx = cleaner(userx);
+    await insertNewProjectUser(projectName, userx.Items[0].userName);
+  }else{
+    await insertNewProjectUser(projectName, userName);
+  }
   return { status: "ok", message: "Usuario asociado al proyecto" };
 }
 

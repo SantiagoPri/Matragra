@@ -8,7 +8,8 @@ function insertNewForo(
   phase,
   description,
   files,
-  answers
+  answers,
+  author
 ) {
   const Item = {
     pk: `PROJECT#${projectName}`,
@@ -16,7 +17,8 @@ function insertNewForo(
     phase: phase,
     description,
     files,
-    answers
+    answers,
+    author
   };
   const params = {
     TableName: MATRAGRA_FOROS_DYNAMODB,

@@ -29,7 +29,8 @@ async function createForoService(foro, userName) {
       phase,
       description,
       files,
-      answers
+      answers,
+      { author: userName }
     );
   } catch {
     return {

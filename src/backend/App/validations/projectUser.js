@@ -1,5 +1,6 @@
 const { getProjectById } = require("@appModels/projects");
-const { getUserById } = require("@appModels/users");
+const { getUserById, getUserbyEmail } = require("@appModels/users");
+const { validateProjectUserAuthService } = require("@appServices/projectUsers");
 
 async function validateNewProjectUser(projectName, userName) {
   if (!(projectName && userName)) {
@@ -12,7 +13,18 @@ async function validateNewProjectUser(projectName, userName) {
 
   let user = await getUserById(userName);
   if (!user.Count) {
-    return { isValid: false, message: "No existe el usuario" };
+    let user = await getUserbyEmail(userName);
+    if (!user.Count) {
+      return { isValid: false, message: "No existe el usuario" };
+    }
+  }
+
+  const auxAuth = await validateProjectUserAuthService(projectName, userName);
+  if (!auxAuth.isValid) {
+    return {
+      status: "error",
+      message: "Error, el usuario no pertenece al proyecto",
+    };
   }
 
   //Add more checks if needed
