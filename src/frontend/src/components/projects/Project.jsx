@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import Events from "./evento/Events";
 import ListItems from "./integrantes/ListItems";
 import ProgressBar from "./ProgressBar";
@@ -8,7 +8,24 @@ import { ProjectContext } from "../../contexts/ProjectContext";
 import Phases from "./Phases";
 
 function Project() {
-  const { name } = useContext(ProjectContext);
+  const { name, index, done } = useContext(ProjectContext);
+  const [porcentaje, setPorcentaje] = useState(0);
+
+  useEffect(() => {
+    if (done) {
+      setPorcentaje(100);
+      return;
+    }
+    if (index) {
+      const porcentajeMap = {
+        0: 0,
+        1: 20,
+        2: 50,
+        3: 80,
+      };
+      setPorcentaje(porcentajeMap[index]);
+    }
+  }, [index, done]);
 
   // Lista de eventos.
   const events = [
@@ -38,8 +55,7 @@ function Project() {
           className=""
           key={1}
           color="#4f4fc3"
-          totalEtapas={5}
-          etapaActual={3}
+          porcentaje={porcentaje}
         />
 
         <div className="row mt-3">

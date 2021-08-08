@@ -1,7 +1,7 @@
 import React from "react";
 
 const ProgressBar = (props) => {
-  const { color, totalEtapas, etapaActual } = props;
+  const { color, porcentaje } = props;
 
   const containerStyles = {
     //   height: 20,
@@ -15,7 +15,7 @@ const ProgressBar = (props) => {
 
   const StyleBar = {
     height: "100%",
-    width: `${(100 * etapaActual) / totalEtapas}%`,
+    width: `${porcentaje}%`,
     backgroundColor: color,
     borderRadius: "inherit",
     textAlign: "center",
@@ -30,9 +30,7 @@ const ProgressBar = (props) => {
   return (
     <div style={containerStyles}>
       <div style={StyleBar}>
-        <span style={labelStyles}>{`${
-          (100 * etapaActual) / totalEtapas
-        }%`}</span>
+        <span style={labelStyles}>{`${porcentaje}%`}</span>
       </div>
     </div>
   );

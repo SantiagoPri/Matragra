@@ -84,13 +84,19 @@ const ApiContextProvider = (props) => {
 
   const updatePhase = async (phaseInfo) => {
     try {
-      const { projectName, phaseNumber, params } = phaseInfo;
+      const { projectName, phaseNumber, params, next } = phaseInfo;
+      if (next && phaseNumber === 4) {
+        return "done";
+      }
       const updateResponse = await putProjectPhase(
         jwt,
         projectName,
         phaseNumber,
         params
       );
+      if (updateResponse.status === "error") {
+        throw new Error("Hubo un error");
+      }
       return updateResponse.data;
     } catch (error) {
       if (error.response.status === 401) {
@@ -102,9 +108,9 @@ const ApiContextProvider = (props) => {
     }
   };
 
-  const nextPhase = async (projectName, phaseNumber) => {
+  const nextPhase = async (projectName, phaseNumber, done) => {
     try {
-      await putProject(jwt, projectName, phaseNumber);
+      await putProject(jwt, projectName, phaseNumber, done);
     } catch (error) {
       if (error.response.status === 401) {
         handleUnAuthorizedError();

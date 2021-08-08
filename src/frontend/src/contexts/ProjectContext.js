@@ -11,23 +11,23 @@ const ProjectContextProvider = (props) => {
   const [index, setIndex] = useState(0);
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [visiblePhase, setVisiblePhase] = useState({});
+  const [done, setDone] = useState(false);
 
   const { mutate: mutatePhase } = useMutation(apiCalls.updatePhase, {
     onSuccess: async (data, variables) => {
-      if (data.status === "error") {
-        //setErrors({ userName: data.message });TODO: que es lo que recibe
-      }
-      if (data.status === "ok") {
-        const { projectName, phaseNumber, next } = variables;
-        if (next) {
-          await apiCalls.nextPhase(projectName, phaseNumber);
+      const { projectName, phaseNumber, next } = variables;
+      if (next) {
+        if (data === "done") {
+          await apiCalls.nextPhase(projectName, 3, true);
+        } else {
+          await apiCalls.nextPhase(projectName, phaseNumber, false);
           setIndex(phaseNumber);
           setVisibleIndex(phaseNumber);
         }
-        await queryClient.refetchQueries(["getProjectByPhase"], {
-          active: true,
-        });
       }
+      await queryClient.refetchQueries(["getProjectByPhase"], {
+        active: true,
+      });
     },
     onError: (error) => {
       console.error(error);
@@ -36,7 +36,7 @@ const ProjectContextProvider = (props) => {
 
   const nextPhase = () => {
     const phaseNumber = index + 1;
-    if (phaseNumber > 3 || phaseNumber < 0) {
+    if (phaseNumber > 4 || phaseNumber < 0) {
       return;
     }
     mutatePhase({ projectName: name, phaseNumber, params: {}, next: true });
@@ -75,6 +75,8 @@ const ProjectContextProvider = (props) => {
         nextPhase,
         updatePhase,
         deletePhase,
+        done,
+        setDone,
       }}
     >
       {props.children}

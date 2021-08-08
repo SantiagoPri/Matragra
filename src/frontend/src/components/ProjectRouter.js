@@ -15,17 +15,14 @@ import { CreateForum } from "./foro/CreateForum";
 
 const ProjectRouter = () => {
   const { apiCalls } = useContext(ApiContext);
-  const { setName, name, visibleIndex, setIndex, setVisiblePhase } =
+  const { setName, name, visibleIndex, setIndex, setVisiblePhase, setDone } =
     useContext(ProjectContext);
   const { proyectName } = useParams();
   const { url, path } = useRouteMatch();
   const historyHook = useHistory();
   const [isTheProject, setIsTheProject] = useState(false);
+
   useEffect(() => {
-    console.log("url", url);
-    console.log("path", path);
-    console.log("project name", proyectName);
-    console.log("name", name);
     setName(proyectName);
     setIsTheProject(true);
   }, []);
@@ -58,6 +55,7 @@ const ProjectRouter = () => {
           historyHook.push("/main");
           return;
         }
+        setDone(data.project.done);
         setIndex(data.project.index);
       },
       onError: (error) => {

@@ -5,7 +5,7 @@ import Waiting from "../waiting/waiting";
 import { Titulo, Lista, Text } from "./styled";
 
 const Phases = () => {
-  const { visibleIndex, visiblePhase } = useContext(ProjectContext);
+  const { visibleIndex } = useContext(ProjectContext);
   return visibleIndex === 0 ? <Phase0 /> : <Task />;
 };
 

@@ -66,12 +66,12 @@ export const newProject = (jwt, projectInfo) => {
   return axios.request(params);
 };
 
-export const putProject = (jwt, projectName, index) => {
+export const putProject = (jwt, projectName, index, done) => {
   const params = {
     url: `${BASE_URL}/v1/projects/${projectName}`,
     headers: { Authorization: jwt },
     method: "put",
-    data: { index },
+    data: { index, done },
   };
   return axios.request(params);
 };
