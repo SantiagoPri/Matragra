@@ -20,7 +20,7 @@ async function createProjectUserService(projectName, userName) {
   }
   if (userName.includes("@")) {
     let userx = await getUserbyEmail(userName);
-    let userx = cleaner(userx);
+    userx = cleaner(userx);
     await insertNewProjectUser(projectName, userx.Items[0].userName);
   }else{
     await insertNewProjectUser(projectName, userName);

@@ -4,32 +4,33 @@ import { FaPlus, FaList } from "react-icons/fa";
 import "./Style-forum.css";
 import { queryClient } from "../../App";
 
-export const Topics = ({ isOpened }) => {
+export const Topics = ({ isOpened, topics, status }) => {
   const [formatedTopics, setFormatedTopics] = useState([]);
 
-  const { topics, setCurrentForoName, setIsCreating } =
-    useContext(ForumContext);
+  const { setCurrentForoName, setIsCreating } = useContext(ForumContext);
 
   useEffect(() => {
-    const maptopics = {
-      phase0: "Etapa 0",
-      phase1: "Etapa 1",
-      phase2: "Etapa 2",
-      phase3: "Etapa 3",
-      general: "General",
-    };
-    const topics1 = topics.map((topic) => {
-      return { title: maptopics[topic.title], items: topic.items };
-    });
-    topics1.sort((a, b) => {
-      if (a.title < b.title) {
-        return -1;
-      } else {
-        return 1;
-      }
-    });
-    setFormatedTopics(topics1);
-  }, []);
+    if (status === "success") {
+      const maptopics = {
+        phase0: "Etapa 0",
+        phase1: "Etapa 1",
+        phase2: "Etapa 2",
+        phase3: "Etapa 3",
+        general: "General",
+      };
+      const topics1 = topics.map((topic) => {
+        return { title: maptopics[topic.title], items: topic.items };
+      });
+      topics1.sort((a, b) => {
+        if (a.title < b.title) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
+      setFormatedTopics(topics1);
+    }
+  }, [status]);
 
   const handleClick = async (foroName) => {
     setCurrentForoName(foroName);
@@ -57,32 +58,34 @@ export const Topics = ({ isOpened }) => {
           </div>
           <nav className="nav-scroll">
             <ul className="nk2-sidebar-ul">
-              {formatedTopics.map((topic, index) => {
-                return (
-                  <li key={index} className="nk2-sidebar-li">
-                    <div className="nk2-sidebar-title nk2-sidebar-item2">
-                      <span className="nav-text">{topic.title}</span>
-                    </div>
-                    <ul>
-                      {topic.items.map((item, index) => {
-                        return (
-                          <li
-                            key={`${item}${index}`}
-                            className="nk2-sidebar-li-item"
-                          >
-                            <a
-                              className="nk2-sidebar-item"
-                              onClick={() => handleClick(item)}
-                            >
-                              {item}
-                            </a>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </li>
-                );
-              })}
+              {status === "loading"
+                ? null
+                : formatedTopics.map((topic, index) => {
+                    return (
+                      <li key={index} className="nk2-sidebar-li">
+                        <div className="nk2-sidebar-title nk2-sidebar-item2">
+                          <span className="nav-text">{topic.title}</span>
+                        </div>
+                        <ul>
+                          {topic.items.map((item, index) => {
+                            return (
+                              <li
+                                key={`${item}${index}`}
+                                className="nk2-sidebar-li-item"
+                              >
+                                <a
+                                  className="nk2-sidebar-item"
+                                  onClick={() => handleClick(item)}
+                                >
+                                  {item}
+                                </a>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </li>
+                    );
+                  })}
             </ul>
           </nav>
         </div>

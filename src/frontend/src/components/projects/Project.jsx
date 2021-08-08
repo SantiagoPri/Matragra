@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import Events from "./evento/Events";
-import ListItems from "./ListItems";
+import ListItems from "./integrantes/ListItems";
 import ProgressBar from "./ProgressBar";
 import Stages from "./Stages";
 import { useContext } from "react";

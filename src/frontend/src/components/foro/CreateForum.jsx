@@ -17,7 +17,6 @@ export const CreateForum = () => {
   const { apiCalls } = useContext(ApiContext);
   const { name } = useContext(ProjectContext);
   const {
-    setTopics,
     handleModalChange,
     createForum,
     currentForoName,
@@ -28,11 +27,10 @@ export const CreateForum = () => {
     setAnswers,
   } = useContext(ForumContext);
 
-  useQuery(["getForumList", { projectName: name }], apiCalls.getForoList, {
-    onSuccess: (data) => {
-      setTopics(data);
-    },
-  });
+  const { data: topics, status } = useQuery(
+    ["getForumList", { projectName: name }],
+    apiCalls.getForoList
+  );
 
   const { data: forumData } = useQuery(
     ["getForum", { projectName: name, currentForoName }],
@@ -77,7 +75,11 @@ export const CreateForum = () => {
     <Fragment>
       <div className="row" style={{ backgroundColor: "#282c34" }}>
         {/* Lista de topicos */}
-        <Topics isOpened={() => openModal()}></Topics>
+        <Topics
+          isOpened={() => openModal()}
+          topics={topics}
+          status={status}
+        ></Topics>
 
         {!isOpened && (isCreating || forumData) ? (
           <div className="col-xs-12 col-sm-12 col-md col-lg">

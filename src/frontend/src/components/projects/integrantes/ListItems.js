@@ -1,8 +1,9 @@
 import React, { Fragment, useContext, useState } from "react";
 import { useQuery } from "react-query";
-import { ApiContext } from "../../contexts/ApiContext";
+import { ApiContext } from "../../../contexts/ApiContext";
 import { ImUserPlus, ImUserMinus } from "react-icons/im";
-import { IconoAdjust, TextAdjust } from "./styled";
+import { IconoAdjust, TextAdjust } from "../styled";
+import { ModalIntegrante } from "./ModalIntegrantes";
 
 const ListItems = (props) => {
   const { projectName } = props;
@@ -10,6 +11,16 @@ const ListItems = (props) => {
 
   // Lista de items.
   const [items, setItems] = useState([]);
+
+  const [isOpened, setIsOpened] = useState(false);
+
+  const openModal = () => {
+    setIsOpened(true);
+  };
+
+  const closeModal = () => {
+    setIsOpened(false);
+  };
 
   useQuery(
     ["getProjectMemebers", { projectName }],
@@ -30,7 +41,10 @@ const ListItems = (props) => {
               <TextAdjust className="col-xs-10 col-sm-10 col-md-10 col-lg-10 mt-1 text-center">
                 Integrantes
               </TextAdjust>
-              <IconoAdjust className="col-xs-2 col-sm-2 col-md-2 col-lg-2 icono-event">
+              <IconoAdjust
+                className="col-xs-2 col-sm-2 col-md-2 col-lg-2 icono-event"
+                onClick={openModal}
+              >
                 <ImUserPlus></ImUserPlus>
               </IconoAdjust>
             </div>
@@ -59,6 +73,13 @@ const ListItems = (props) => {
           </div>
         </div>
       </div>
+      <Fragment>
+        <ModalIntegrante
+          title="Nuevo"
+          isOpened={isOpened}
+          onClose={closeModal}
+        ></ModalIntegrante>
+      </Fragment>
     </Fragment>
   );
 };

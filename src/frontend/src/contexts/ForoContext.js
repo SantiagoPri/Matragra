@@ -8,8 +8,6 @@ export const ForumContext = createContext();
 const ForumContextProvider = (props) => {
   const { apiCalls } = useContext(ApiContext);
 
-  const [topics, setTopics] = useState([]);
-
   const [newForo, setNewForo] = useState({});
   const [currentForo, setCurrentForo] = useState({});
   const [currentForoName, setCurrentForoName] = useState("");
@@ -70,8 +68,6 @@ const ForumContextProvider = (props) => {
       value={{
         currentForoName,
         setCurrentForoName,
-        topics,
-        setTopics,
         handleModalChange,
         newForo,
         currentForo,
