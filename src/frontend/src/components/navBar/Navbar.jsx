@@ -8,8 +8,10 @@ import {
   StickyDiv,
 } from "./styled";
 import { FaBars } from "react-icons/fa";
-import MobileMenu from "./MobileMenu/MobileMenu";
+import { MobileMenu2, MobileMenu } from "./MobileMenu/MobileMenu";
 import { ApiContext } from "../../contexts/ApiContext";
+import { ProjectContext } from "../../contexts/ProjectContext";
+import { FaArrowLeft } from "react-icons/fa";
 
 const Navbar = () => {
   const { isLogged } = useContext(ApiContext);
@@ -21,13 +23,22 @@ const Navbar = () => {
   return (
     <StickyDiv>
       <Nav>
-        <NavLink to="/">
-          <img
-            src={`${process.env.PUBLIC_URL}/img/logo40x200.png`}
-            alt="logo"
-          />
-        </NavLink>
-        <MobileMenu isOpen={isOpen} toggle={toggle} />
+        <div className="row">
+          <NavLink className="text-center icono-modal ml-3" to="/">
+            <FaArrowLeft></FaArrowLeft>
+          </NavLink>
+          <NavLink to="/">
+            <img
+              src={`${process.env.PUBLIC_URL}/img/logo40x200.png`}
+              alt="logo"
+            />
+          </NavLink>
+        </div>
+        {isLogged ? (
+          <MobileMenu2 isOpen={isOpen} toggle={toggle} />
+        ) : (
+          <MobileMenu isOpen={isOpen} toggle={toggle} />
+        )}
         <MobileIcon onClick={toggle}>
           <FaBars />
         </MobileIcon>
@@ -51,6 +62,7 @@ const SignNavMenu = () => {
 
 const MainNavMenu = () => {
   const { setIsLogged, setJwt } = useContext(ApiContext);
+  const { name: projectName } = useContext(ProjectContext);
   const signOut = () => {
     localStorage.removeItem("jwt");
     setIsLogged(false);
@@ -60,6 +72,9 @@ const MainNavMenu = () => {
     <NavMenu>
       <NavLink to="/documentacion">Documentación</NavLink>
       <NavLink to="/main">Proyectos</NavLink>
+      {projectName ? (
+        <NavLink to={`/project/${projectName}`}>Proyecto actual</NavLink>
+      ) : null}
       <NavBtnLink to="/" onClick={signOut}>
         Cerrar Sesión
       </NavBtnLink>

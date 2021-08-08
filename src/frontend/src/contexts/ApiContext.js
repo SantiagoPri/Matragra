@@ -13,6 +13,8 @@ import {
   postCreateForum,
   getTopic,
   putForo,
+  postLinkUser,
+  postUnLinkUser,
 } from "../helpers/api/backend-api";
 
 export const ApiContext = createContext();
@@ -82,13 +84,19 @@ const ApiContextProvider = (props) => {
 
   const updatePhase = async (phaseInfo) => {
     try {
-      const { projectName, phaseNumber, params } = phaseInfo;
+      const { projectName, phaseNumber, params, next } = phaseInfo;
+      if (next && phaseNumber === 4) {
+        return "done";
+      }
       const updateResponse = await putProjectPhase(
         jwt,
         projectName,
         phaseNumber,
         params
       );
+      if (updateResponse.status === "error") {
+        throw new Error("Hubo un error");
+      }
       return updateResponse.data;
     } catch (error) {
       if (error.response.status === 401) {
@@ -100,9 +108,9 @@ const ApiContextProvider = (props) => {
     }
   };
 
-  const nextPhase = async (projectName, phaseNumber) => {
+  const nextPhase = async (projectName, phaseNumber, done) => {
     try {
-      await putProject(jwt, projectName, phaseNumber);
+      await putProject(jwt, projectName, phaseNumber, done);
     } catch (error) {
       if (error.response.status === 401) {
         handleUnAuthorizedError();
@@ -246,6 +254,43 @@ const ApiContextProvider = (props) => {
     }
   };
 
+  const linkUser = async ({ email, projectName }) => {
+    try {
+      if (!email) {
+        return;
+      }
+      const updateResponse = await postLinkUser(jwt, email, projectName);
+      if (updateResponse.data.status !== "ok") {
+        throw new Error("hubo un error");
+      }
+      return updateResponse.data;
+    } catch (error) {
+      if (error.response.status === 401) {
+        handleUnAuthorizedError();
+        return error;
+      } else {
+        throw console.error();
+      }
+    }
+  };
+
+  const unLinkUser = async ({ item: userName, projectName }) => {
+    try {
+      const updateResponse = await postUnLinkUser(jwt, userName, projectName);
+      if (updateResponse.data.status !== "ok") {
+        throw new Error("hubo un error");
+      }
+      return updateResponse.data;
+    } catch (error) {
+      if (error.response.status === 401) {
+        handleUnAuthorizedError();
+        return error;
+      } else {
+        throw console.error();
+      }
+    }
+  };
+
   const handleUnAuthorizedError = () => {
     localStorage.removeItem("jwt");
     setIsLogged(false);
@@ -267,6 +312,8 @@ const ApiContextProvider = (props) => {
     createForum,
     mainTopic,
     newAnswer,
+    linkUser,
+    unLinkUser,
   };
   return (
     <ApiContext.Provider

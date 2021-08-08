@@ -66,12 +66,12 @@ export const newProject = (jwt, projectInfo) => {
   return axios.request(params);
 };
 
-export const putProject = (jwt, projectName, index) => {
+export const putProject = (jwt, projectName, index, done) => {
   const params = {
     url: `${BASE_URL}/v1/projects/${projectName}`,
     headers: { Authorization: jwt },
     method: "put",
-    data: { index },
+    data: { index, done },
   };
   return axios.request(params);
 };
@@ -142,5 +142,25 @@ export const putForo = (jwt, projectName, foroName, answer) => {
     data: answer,
   };
   console.log(params);
+  return axios.request(params);
+};
+
+export const postLinkUser = (jwt, userName, projectName) => {
+  const params = {
+    url: `${BASE_URL}/v1/projects/linkUser`,
+    headers: { Authorization: jwt },
+    method: "post",
+    data: { userName, projectName },
+  };
+  return axios.request(params);
+};
+
+export const postUnLinkUser = (jwt, userName, projectName) => {
+  const params = {
+    url: `${BASE_URL}/v1/projects/unlinkUser`,
+    headers: { Authorization: jwt },
+    method: "post",
+    data: { userName, projectName },
+  };
   return axios.request(params);
 };
