@@ -38,6 +38,7 @@ export const MenuWrapper = styled.div`
 export const Menu = styled.ul`
   display: grid;
   grid-template-rows: repeat(6, 60px);
+  padding: 0;
 
   @media screen and (max-width: 480px) {
     grid-template-rows: repeat(6, 60px);

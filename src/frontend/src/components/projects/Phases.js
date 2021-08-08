@@ -16,14 +16,18 @@ const Phase0 = () => {
   //console.log(visiblePhase);
   return visiblePhase.objectives && visiblePhase.scope ? (
     <Fragment>
-      <Titulo>Objetivos</Titulo>
-      <Lista>
-        {visiblePhase.objectives.map((objetivo, index) => {
-          return <li key={index}>{objetivo}</li>;
-        })}
-      </Lista>
-      <Titulo>Alcance</Titulo>
-      <Text>{visiblePhase.scope}</Text>
+      <div className="card" style={{ backgroundColor: "#282c34" }}>
+        <div className="card-body">
+          <Titulo>Objetivos</Titulo>
+          <Lista>
+            {visiblePhase.objectives.map((objetivo, index) => {
+              return <li key={index}>{objetivo}</li>;
+            })}
+          </Lista>
+          <Titulo>Alcance</Titulo>
+          <Text>{visiblePhase.scope}</Text>
+        </div>
+      </div>
     </Fragment>
   ) : (
     <Waiting />
