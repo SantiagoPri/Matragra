@@ -76,9 +76,40 @@ async function getEventsByProjectService(projectName, userName) {
     };
   }
   const project = await getEventsByProject(projectName);
+  const today = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "America/Bogota" })
+  );
+  today.setHours(0, 0, 0, 0);
   if (project.Count) {
     const cProject = cleaner(project);
-    return { status: "ok", project: cProject.Items[0] };
+    const events = {
+      past: [],
+      present: [],
+      future: [],
+    };
+    cProject.Items.forEach((event) => {
+      const { pk, sk, date, ...restParams } = event;
+      const finalObject = {
+        projectName: pk,
+        eventName: sk,
+        date,
+        ...restParams,
+      };
+      const dateParts = date.split("/");
+      const dateObject = new Date(
+        +dateParts[2],
+        dateParts[1] - 1,
+        +dateParts[0]
+      );
+      if (dateObject.getTime() === today.getTime()) {
+        events.present.push(finalObject);
+      } else if (dateObject.getTime() > today.getTime()) {
+        events.future.push(finalObject);
+      } else {
+        events.past.push(finalObject);
+      }
+    });
+    return { status: "ok", events };
   }
   return { status: "error", project: null };
 }

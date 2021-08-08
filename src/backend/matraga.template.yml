@@ -13,14 +13,6 @@ Parameters:
   ProjectBucketName:
     Type: String
     Description: Globally bucket used for files
-  EmailServerName:
-    Type: String
-    Default: email-smtp.us-east-2.amazonaws.com
-    Description: This is the server Name of the AWS SES
-  EmailUserName:
-    Type: String
-    Default: AKIAYP7TDEV4AEKGVBWU
-    Description: This is the user Name of the email
   EmailPassword:
     Type: String
     Default: BBvPut3YJKsV6J4FvnyoxoANPTo5J908gi04VrS6y4cI
@@ -487,9 +479,7 @@ Resources:
       Environment:
         Variables:
           MATRAGRA_EMAIL: !Ref MatragraEmail
-          EMAIL_USERNAME: !Ref EmailUserName
           EMAIL_PASSWORD: !Ref EmailPassword
-          SERVER_NAME: !Ref EmailServerName
           MATRAGRA_DYNAMODB: !Ref MatragraDynamoDB
           MATRAGRA_PROJECTS_DYNAMODB: !Ref MatragraProjectsDynamoDB
           MATRAGRA_FOROS_DYNAMODB: !Ref MatragraForosDynamoDB
