@@ -19,16 +19,27 @@ async function validateNewProjectUser(projectName, userName) {
     }
   }
 
-  const auxAuth = await validateProjectUserAuthService(projectName, userName);
-  if (!auxAuth.isValid) {
-    return {
-      status: "error",
-      message: "Error, el usuario no pertenece al proyecto",
-    };
-  }
-
-  //Add more checks if needed
   return { isValid: true, message: "Este es un nuevo proyecto" };
 }
 
-module.exports = { validateNewProjectUser };
+async function validateOldProjectUser(projectName, userName) {
+  if (!(projectName && userName)) {
+    return { isValid: false, message: "Información incompleta" };
+  }
+  let project = await getProjectById(projectName);
+  if (!project.Count) {
+    return { isValid: false, message: "No existe el nombre de proyecto" };
+  }
+
+  let user = await getUserById(userName);
+  if (!user.Count) {
+    let user = await getUserbyEmail(userName);
+    if (!user.Count) {
+      return { isValid: false, message: "No existe el usuario" };
+    }
+  }
+
+  return { isValid: true, message: "Este es un nuevo proyecto" };
+}
+
+module.exports = { validateNewProjectUser, validateOldProjectUser };

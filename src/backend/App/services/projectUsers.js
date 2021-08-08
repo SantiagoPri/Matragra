@@ -1,4 +1,4 @@
-const { validateNewProjectUser } = require("@appValidations/projectUser");
+const { validateNewProjectUser, validateOldProjectUser } = require("@appValidations/projectUser");
 const {
   insertNewProjectUser,
   deleteProjectUserByProjectUser,
@@ -21,7 +21,7 @@ async function createProjectUserService(projectName, userName) {
   if (userName.includes("@")) {
     let userx = await getUserbyEmail(userName);
     userx = cleaner(userx);
-    await insertNewProjectUser(projectName, userx.Items[0].userName);
+    await insertNewProjectUser(projectName, userx.Items[0].pk);
   }else{
     await insertNewProjectUser(projectName, userName);
   }
@@ -29,11 +29,21 @@ async function createProjectUserService(projectName, userName) {
 }
 
 async function deleteProjectUserServiceByProjectUser(projectName, userName) {
+  if (userName.includes("@")) {
+    try {
+      let userx = await getUserbyEmail(userName);
+      userx = cleaner(userx);
+      userName = userx.Items[0].pk;
+    } catch (error) {
+      return { status: "error", message: "Error, no se encontro el usuario" };
+    }
+  }
+  
   const auxAuth = await validateProjectUserAuthService(projectName, userName);
   if (!auxAuth.isValid) {
     return { status: "error", message: "Error, el usuario no pertenece al proyecto" };
   }
-  const { isValid, message } = await validateNewProjectUser(
+  const { isValid, message } = await validateOldProjectUser(
     projectName,
     userName
   );
