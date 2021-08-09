@@ -1,13 +1,15 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useContext } from "react";
+import { useQuery } from "react-query";
+import { ApiContext } from "../../../contexts/ApiContext";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { ModalEvent } from "./ModalEvent";
 import "./styleEvent.css";
 
 const Events = (props) => {
-  const { title, eventsList } = props;
+  const { projectName } = props;
+  const { apiCalls } = useContext(ApiContext);
 
-  // Lista de eventos.
-  const [events, setEvents] = useState([]);
+  const [epoch, setEpoch] = useState("present");
 
   // Evento a mostrar en detalle
   const eventDetail = {
@@ -16,19 +18,10 @@ const Events = (props) => {
     description: "Trabajo finalizado",
   };
 
-  useEffect(() => {
-    if (eventsList !== undefined) {
-      setEvents(eventsList);
-    }
-  }, []);
-
-  // Funciones
-  const ButtonCalendar = (e) => {
-    setEvents([
-      ...events,
-      { date: "24-07-2021", time: "18:00", description: "Trabajo finalizado" },
-    ]); // funcion de prueba.... cambiar por la logica de vanzar etapa.
-  };
+  const { data: events } = useQuery(
+    ["getEvents", { projectName }],
+    apiCalls.getEvents
+  );
 
   // ModalContainer
   const [isOpened, setIsOpened] = useState(false);
@@ -50,42 +43,79 @@ const Events = (props) => {
     setIsOpenedDetail(false);
   };
 
+  const toFuture = () => {
+    if (epoch === "past") {
+      setEpoch("present");
+    }
+    if (epoch === "present") {
+      setEpoch("future");
+    }
+  };
+
+  const topast = () => {
+    if (epoch === "future") {
+      setEpoch("present");
+    }
+    if (epoch === "present") {
+      setEpoch("past");
+    }
+  };
+
+  const [title, setTitle] = useState({
+    past: "Pasados",
+    present: "Hoy",
+    future: "Proximos",
+  });
+
   return (
     <Fragment>
       <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
         <div className="card bg-dark">
           <div className="card-header card-title text-light font-weight-bold">
-            {title}
+            Eventos
           </div>
 
           <div className="card-body">
             <div className="row mb-3">
-              <div className="col-xs-4 col-sm-2 col-md-2 col-lg-4 icono-event">
+              <div
+                className="col-xs-3 col-sm-1 col-md-1 col-lg-3 icono-event"
+                onClick={topast}
+              >
                 <FaAngleLeft></FaAngleLeft>
               </div>
               <div className="col-xs col-sm col-md col-lg icono-event font-weight-bold">
-                Hoy
+                {title[epoch]}
               </div>
-              <div className="col-xs-4 col-sm-2 col-md-2 col-lg-4 icono-event">
+              <div
+                className="col-xs-3 col-sm-1 col-md-1 col-lg-3 icono-event"
+                onClick={toFuture}
+              >
                 <FaAngleRight></FaAngleRight>
               </div>
             </div>
 
-            {events.map((event, index) => {
-              return (
-                <div key={index} className="card-event border-success mb-3">
-                  <div className="event-body" onClick={() => openModalDetail()}>
-                    <div className="text-white">
-                      <span className="">{event.date}</span>
-                      <span> - </span>
-                      <span className="">{event.time}</span>
+            {!events
+              ? null
+              : events[epoch].map((event, index) => {
+                  return (
+                    <div key={index} className="card-event border-success mb-3">
+                      <div
+                        className="event-body"
+                        onClick={() => openModalDetail()}
+                      >
+                        <div className="text-white">
+                          {epoch === "present" ? (
+                            <span> {`${event.time}`} </span>
+                          ) : (
+                            <span> {`${event.date} - ${event.time}`} </span>
+                          )}
+                        </div>
+                        <hr className="card-division"></hr>
+                        <p className="card-text"> {event.eventName} </p>
+                      </div>
                     </div>
-                    <hr className="card-division"></hr>
-                    <p className="card-text"> {event.description} </p>
-                  </div>
-                </div>
-              );
-            })}
+                  );
+                })}
 
             <button
               onClick={() => openModal()}

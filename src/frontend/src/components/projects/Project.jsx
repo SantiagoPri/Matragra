@@ -27,15 +27,6 @@ function Project() {
     }
   }, [index, done]);
 
-  // Lista de eventos.
-  const events = [
-    { hour: "06:15 - 07:00", description: "Trabajo realizado numero 1" },
-    { hour: "07:00 - 08:00", description: "Trabajo realizado numero 2" },
-    { hour: "09:00 - 11:00", description: "Trabajo realizado numero 3" },
-    { hour: "12:00 - 14:00", description: "Trabajo realizado numero 4" },
-    { hour: "16:00 - 18:00", description: "Trabajo realizado numero 5" },
-  ];
-
   return (
     <Fragment>
       <div
@@ -73,7 +64,7 @@ function Project() {
           </div>
 
           {/* Eventos */}
-          <Events title="Eventos" eventsList={events}></Events>
+          {name ? <Events projectName={name}></Events> : null}
         </div>
       </div>
     </Fragment>

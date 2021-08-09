@@ -80,13 +80,13 @@ async function getEventsByProjectService(projectName, userName) {
     new Date().toLocaleString("en-US", { timeZone: "America/Bogota" })
   );
   today.setHours(0, 0, 0, 0);
+  const events = {
+    past: [],
+    present: [],
+    future: [],
+  };
   if (project.Count) {
     const cProject = cleaner(project);
-    const events = {
-      past: [],
-      present: [],
-      future: [],
-    };
     cProject.Items.forEach((event) => {
       const { pk, sk, date, ...restParams } = event;
       const finalObject = {
@@ -109,9 +109,8 @@ async function getEventsByProjectService(projectName, userName) {
         events.past.push(finalObject);
       }
     });
-    return { status: "ok", events };
   }
-  return { status: "error", project: null };
+  return { status: "ok", events };
 }
 
 async function putEventService(projectName, eventName, userName, restParams) {

@@ -15,6 +15,8 @@ import {
   putForo,
   postLinkUser,
   postUnLinkUser,
+  getEventsByProject,
+  postEvent,
 } from "../helpers/api/backend-api";
 
 export const ApiContext = createContext();
@@ -291,6 +293,49 @@ const ApiContextProvider = (props) => {
     }
   };
 
+  const getEvents = async ({ queryKey }) => {
+    try {
+      const { projectName } = queryKey[1];
+      if (!projectName) {
+        console.error("NO hay proyecto: ", projectName);
+        return null;
+      }
+      let eventAnswer = await getEventsByProject(jwt, projectName);
+      eventAnswer = eventAnswer.data;
+      if (!eventAnswer.status || eventAnswer.status !== "ok") {
+        console.error("error of topic : ", JSON.stringify(eventAnswer));
+        throw new Error("hubo un error");
+      }
+      return eventAnswer.events;
+    } catch (error) {
+      if (error.response.status === 401) {
+        handleUnAuthorizedError();
+      } else {
+        throw console.error();
+      }
+    }
+  };
+
+  const createEvent = async ({ event }) => {
+    try {
+      console.log(JSON.stringify(event));
+      const updateResponse = await postEvent(jwt, event);
+      if (updateResponse.data.status !== "ok") {
+        console.error(updateResponse);
+        throw new Error("hubo un error");
+      }
+      return updateResponse.data;
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        handleUnAuthorizedError();
+        return error;
+      } else {
+        console.error(error);
+        throw error;
+      }
+    }
+  };
+
   const handleUnAuthorizedError = () => {
     localStorage.removeItem("jwt");
     setIsLogged(false);
@@ -314,6 +359,8 @@ const ApiContextProvider = (props) => {
     newAnswer,
     linkUser,
     unLinkUser,
+    getEvents,
+    createEvent,
   };
   return (
     <ApiContext.Provider

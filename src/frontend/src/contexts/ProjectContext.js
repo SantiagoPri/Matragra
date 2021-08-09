@@ -19,6 +19,9 @@ const ProjectContextProvider = (props) => {
       if (next) {
         if (data === "done") {
           await apiCalls.nextPhase(projectName, 3, true);
+          await queryClient.refetchQueries(["getProjectInfo"], {
+            active: true,
+          });
         } else {
           await apiCalls.nextPhase(projectName, phaseNumber, false);
           setIndex(phaseNumber);

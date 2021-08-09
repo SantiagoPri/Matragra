@@ -164,3 +164,23 @@ export const postUnLinkUser = (jwt, userName, projectName) => {
   };
   return axios.request(params);
 };
+
+export const getEventsByProject = (jwt, projectName) => {
+  const params = {
+    url: `${BASE_URL}/v1/events/${projectName}`,
+    headers: { Authorization: jwt },
+    method: "get",
+  };
+  return axios.request(params);
+};
+
+export const postEvent = (jwt, event) => {
+  const params = {
+    url: `${BASE_URL}/v1/events`,
+    headers: { Authorization: jwt },
+    method: "post",
+    data: event,
+  };
+  console.log("final", JSON.stringify(params));
+  return axios.request(params);
+};
