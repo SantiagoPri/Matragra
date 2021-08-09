@@ -6,13 +6,14 @@ import { ProjectContext } from "../../contexts/ProjectContext";
 import "./Style-forum.css";
 
 export const Answer = ({ title }) => {
-  const { answers, createAnswer, currentForoName } = useContext(ForumContext);
+  const { answers, createAnswer, currentForoName, destroyAnswer } =
+    useContext(ForumContext);
   const { name } = useContext(ProjectContext);
 
-  const [text, setText] = useState("Escribe un respuesta");
+  const [text, setText] = useState("Escribe una respuesta");
 
   const handleClick = () => {
-    if (text !== "Escribe un respuesta") {
+    if (text !== "Escribe una respuesta") {
       createAnswer({ name, currentForoName, answer: { description: text } });
     }
   };
@@ -46,8 +47,9 @@ export const Answer = ({ title }) => {
           <div className="row">
             <div className="column">
               <Editor
+                key={destroyAnswer}
                 className="container-editor"
-                placeholder={text}
+                placeholder={"Escribe una respuesta"}
                 onChange={(value) => setText(value)}
                 readOnly={false}
               />

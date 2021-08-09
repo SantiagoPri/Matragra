@@ -158,7 +158,13 @@ const ApiContextProvider = (props) => {
       if (projectMembers.status !== "ok") {
         throw new Error("hubo un error");
       }
-      return projectMembers.users.map((user) => user.sk);
+      return projectMembers.users.map((user) => {
+        const userByParts = user.sk.trim().split(" ");
+        const nombre = userByParts
+          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(" ");
+        return nombre;
+      });
     } catch (error) {
       if (error.response.status === 401) {
         handleUnAuthorizedError();
@@ -318,7 +324,6 @@ const ApiContextProvider = (props) => {
 
   const createEvent = async ({ event }) => {
     try {
-      console.log(JSON.stringify(event));
       const updateResponse = await postEvent(jwt, event);
       if (updateResponse.data.status !== "ok") {
         console.error(updateResponse);

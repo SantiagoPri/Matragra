@@ -12,6 +12,7 @@ const ProjectContextProvider = (props) => {
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [visiblePhase, setVisiblePhase] = useState({});
   const [done, setDone] = useState(false);
+  const [eventIsOpend, setEventIsOpened] = useState(false);
 
   const { mutate: mutatePhase } = useMutation(apiCalls.updatePhase, {
     onSuccess: async (data, variables) => {
@@ -80,6 +81,8 @@ const ProjectContextProvider = (props) => {
         deletePhase,
         done,
         setDone,
+        eventIsOpend,
+        setEventIsOpened,
       }}
     >
       {props.children}

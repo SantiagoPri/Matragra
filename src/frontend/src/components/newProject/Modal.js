@@ -11,12 +11,7 @@ export const Modal = () => {
     alcance,
     setAlcance,
   } = useContext(GeneralContext);
-  const [btnAgregar, setBtnAgregar] = useState(false);
   const [objetive, setObjetive] = useState("");
-
-  const ChangeStatus = (condition) => {
-    setBtnAgregar(condition);
-  };
 
   const addObjetive = () => {
     if (objetive) {
@@ -48,52 +43,27 @@ export const Modal = () => {
 
       <div className="card" style={{ backgroundColor: "transparent" }}>
         <div className="card-body">
-          {!btnAgregar ? (
-            <div className="form-inline row">
-              <div className="form-group mb-2">
-                <label className="label font-weight-bold ml-3">
-                  {" "}
-                  Objetivos{" "}
-                </label>
+          <Fragment>
+            <div className="input-group">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Agregar objetivo"
+                onChange={(text) => setObjetive(text.target.value)}
+                value={objetive}
+              ></input>
+              <div className="input-group-append">
+                <Boton
+                  className="btn btn-outline-dark"
+                  type="button"
+                  onClick={() => addObjetive()}
+                >
+                  Agregar
+                </Boton>
               </div>
-              <Boton
-                type="button"
-                className="btn ml-auto"
-                onClick={() => ChangeStatus(true)}
-              >
-                Agregar objetivo
-              </Boton>
             </div>
-          ) : (
-            <Fragment>
-              <div className="input-group">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Agregar objetivo"
-                  onChange={(text) => setObjetive(text.target.value)}
-                  value={objetive}
-                ></input>
-                <div className="input-group-append">
-                  <Boton
-                    className="btn btn-outline-dark"
-                    type="button"
-                    onClick={() => addObjetive()}
-                  >
-                    Agregar
-                  </Boton>
-                  <button
-                    className="btn btn-outline-danger"
-                    type="button"
-                    onClick={() => ChangeStatus(false)}
-                  >
-                    Canelar
-                  </button>
-                </div>
-              </div>
-              <br></br>
-            </Fragment>
-          )}
+            <br></br>
+          </Fragment>
           <Lista className="list-group">
             {listObjectives.map((item) => {
               return (

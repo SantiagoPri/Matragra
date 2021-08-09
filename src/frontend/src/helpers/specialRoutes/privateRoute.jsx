@@ -27,7 +27,6 @@ const PrivateRoute = ({ component: Component, ...props }) => {
     }
     setIsLogged(true);
     setJwt(jwt);
-    console.log(jwt);
   }, []);
   return (
     <Fragment>

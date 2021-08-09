@@ -18,6 +18,7 @@ export const ModalIntegrante = ({ title, isOpened, onClose, projectName }) => {
         active: true,
       });
       onClose();
+      setEmail("");
     },
     onError: (error) => {
       console.error(error);

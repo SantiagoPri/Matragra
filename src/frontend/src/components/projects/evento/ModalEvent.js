@@ -8,8 +8,14 @@ import useEvent from "./useEvent";
 const modalContainer = document.querySelector("#modalContainer");
 
 export const ModalEvent = ({ title, isOpened, onClose, event }) => {
-  const { handleChange, handleSubmit, values, errors, validateErrors } =
-    useEvent();
+  const {
+    handleChange,
+    handleSubmit,
+    values,
+    errors,
+    validateErrors,
+    isLoading,
+  } = useEvent();
 
   return isOpened
     ? ReactDOM.createPortal(
@@ -130,6 +136,12 @@ export const ModalEvent = ({ title, isOpened, onClose, event }) => {
                     <div className="col"></div>
                     <button type="submit" className="btn  col-3 button-submit">
                       Guardar
+                      {isLoading && (
+                        <span
+                          style={{ marginLeft: "10px" }}
+                          className="spinner-border spinner-border-sm"
+                        />
+                      )}
                     </button>
                   </div>
                 </form>

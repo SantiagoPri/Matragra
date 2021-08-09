@@ -13,6 +13,7 @@ const ForumContextProvider = (props) => {
   const [currentForoName, setCurrentForoName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [answers, setAnswers] = useState([]);
+  const [destroyAnswer, setDestroyAnswer] = useState(1);
 
   const handleModalChange = (e) => {
     const { name, value } = e.target;
@@ -60,6 +61,7 @@ const ForumContextProvider = (props) => {
       await queryClient.refetchQueries(["getForum"], {
         active: true,
       });
+      setDestroyAnswer(destroyAnswer + 1);
     },
   });
 
@@ -79,6 +81,7 @@ const ForumContextProvider = (props) => {
         answers,
         setAnswers,
         createAnswer,
+        destroyAnswer,
       }}
     >
       {props.children}

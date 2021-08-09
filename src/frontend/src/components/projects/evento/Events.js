@@ -4,10 +4,12 @@ import { ApiContext } from "../../../contexts/ApiContext";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { ModalEvent } from "./ModalEvent";
 import "./styleEvent.css";
+import { ProjectContext } from "../../../contexts/ProjectContext";
 
 const Events = (props) => {
   const { projectName } = props;
   const { apiCalls } = useContext(ApiContext);
+  const { eventIsOpend, setEventIsOpened } = useContext(ProjectContext);
 
   const [epoch, setEpoch] = useState("present");
 
@@ -28,11 +30,11 @@ const Events = (props) => {
   const [isOpenedDetail, setIsOpenedDetail] = useState(false);
 
   const openModal = () => {
-    setIsOpened(true);
+    setEventIsOpened(true);
   };
 
   const closeModal = () => {
-    setIsOpened(false);
+    setEventIsOpened(false);
   };
 
   const openModalDetail = () => {
@@ -132,7 +134,7 @@ const Events = (props) => {
       <Fragment>
         <ModalEvent
           title="Nuevo Evento"
-          isOpened={isOpened}
+          isOpened={eventIsOpend}
           onClose={closeModal}
           event={null}
         ></ModalEvent>

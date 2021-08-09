@@ -13,7 +13,6 @@ export default Phases;
 
 const Phase0 = () => {
   const { visiblePhase } = useContext(ProjectContext);
-  //console.log(visiblePhase);
   return visiblePhase.objectives && visiblePhase.scope ? (
     <Fragment>
       <div className="card" style={{ backgroundColor: "#282c34" }}>

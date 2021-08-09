@@ -30,7 +30,7 @@ export const Topics = ({ isOpened, topics, status }) => {
       });
       setFormatedTopics(topics1);
     }
-  }, [status]);
+  }, [status, topics]);
 
   const handleClick = async (foroName) => {
     setCurrentForoName(foroName);

@@ -141,7 +141,6 @@ export const putForo = (jwt, projectName, foroName, answer) => {
     method: "put",
     data: answer,
   };
-  console.log(params);
   return axios.request(params);
 };
 
@@ -181,6 +180,5 @@ export const postEvent = (jwt, event) => {
     method: "post",
     data: event,
   };
-  console.log("final", JSON.stringify(params));
   return axios.request(params);
 };

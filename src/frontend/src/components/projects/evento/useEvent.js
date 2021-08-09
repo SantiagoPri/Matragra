@@ -5,14 +5,15 @@ import { ApiContext } from "../../../contexts/ApiContext";
 import { queryClient } from "../../../App";
 
 const useEvent = () => {
-  const { name } = useContext(ProjectContext);
+  const { name, setEventIsOpened } = useContext(ProjectContext);
   const { apiCalls } = useContext(ApiContext);
 
-  const { mutate: createEvent } = useMutation(apiCalls.createEvent, {
+  const { mutate: createEvent, isLoading } = useMutation(apiCalls.createEvent, {
     onSuccess: async () => {
       await queryClient.refetchQueries(["getEvents"], {
         active: true,
       });
+      setEventIsOpened(false);
     },
   });
 
@@ -38,7 +39,6 @@ const useEvent = () => {
     e.preventDefault();
     validateErrors();
     if (Object.entries(errors).length) {
-      console.log(errors);
       return;
     }
     createEvent({ event: formatEvent(values, name) });
@@ -49,7 +49,7 @@ const useEvent = () => {
     setErrors(errors);
   };
 
-  return { handleChange, handleSubmit, values, errors, validateErrors };
+  return { handleChange, handleSubmit, values, errors, validateErrors, isLoading };
 };
 
 export default useEvent;
