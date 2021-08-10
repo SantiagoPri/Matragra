@@ -1,17 +1,17 @@
 # Matragra
-===
+---
 # DEMO Script
 
 # Presentación del Proyecto y lectura del documento
 - ***JP*** -> Primer parte, hasta marco referencial
 - ***Santiago*** –> Hasta final
-===
+---
 # Arquitectura y Desarrollo de la APP
 - ***Santiago*** -> Como esta hecho el front.
 - ***Santiago*** -> Repositorio git, Usuarios cloud, Template, IAM ROLE, Dynamo, Dynamo stream y SES.
 - ***JP*** -> Buckets, API gate way, Lambda, CLOUD Watch
 - ***JP*** -> Como esta hecho el back include DDD
-===
+---
 # DEMO – LIVE DE LA APP
 - ***JP*** -> MUESTRA 
 1. Crear proyecto nuevo  
@@ -46,7 +46,7 @@
     return routes;
     };
     ```
-    1. ***Santiago*** responde foro  
+    ***Santiago*** responde foro  
     Falta el export  
     ``` javascript
         exports.default = createRouter();
@@ -63,7 +63,7 @@
 
 14. ***Santiago*** muestra script de despliegue front con cambios
 
-===
+---
 # Log History
 
 Fecha y hora | Temas
@@ -72,5 +72,5 @@ Fecha y hora | Temas
 05/02/2021 2:00pm | Avances anteproyecto
 17/02/2021 2:30pm | Revision final del anteproyecto
 07/04/2021 9:00am | Avances proyecto de grado
-===
+---
 Santiago Prieto & Juan P. Mosquera
