@@ -24,9 +24,9 @@ const Navbar = () => {
     <StickyDiv>
       <Nav>
         <div className="row">
-          <NavLink className="text-center icono-modal ml-3" to="/">
+          {/* <NavLink className="text-center icono-modal ml-3" to="/">
             <FaArrowLeft></FaArrowLeft>
-          </NavLink>
+          </NavLink> */}
           <NavLink to="/">
             <img
               src={`${process.env.PUBLIC_URL}/img/logo40x200.png`}

@@ -14,6 +14,14 @@ const useEvent = () => {
         active: true,
       });
       setEventIsOpened(false);
+      setValues({
+        asunto: "",
+        description: "",
+        link: "",
+        date: "",
+        time: "",
+        duration: "",
+      });
     },
   });
 
@@ -49,7 +57,14 @@ const useEvent = () => {
     setErrors(errors);
   };
 
-  return { handleChange, handleSubmit, values, errors, validateErrors, isLoading };
+  return {
+    handleChange,
+    handleSubmit,
+    values,
+    errors,
+    validateErrors,
+    isLoading,
+  };
 };
 
 export default useEvent;

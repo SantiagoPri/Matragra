@@ -284,7 +284,7 @@ const ApiContextProvider = (props) => {
 
   const unLinkUser = async ({ item: userName, projectName }) => {
     try {
-      const updateResponse = await postUnLinkUser(jwt, userName, projectName);
+      const updateResponse = await postUnLinkUser(jwt, userName.toLowerCase(), projectName);
       if (updateResponse.data.status !== "ok") {
         throw new Error("hubo un error");
       }
