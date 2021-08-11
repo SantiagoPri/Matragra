@@ -89,28 +89,41 @@ async function getEventsByProjectService(projectName, userName) {
     const cProject = cleaner(project);
     cProject.Items.forEach((event) => {
       const { pk, sk, date, ...restParams } = event;
-      const finalObject = {
-        projectName: pk,
-        eventName: sk,
-        date,
-        ...restParams,
-      };
       const dateParts = date.split("/");
       const dateObject = new Date(
         +dateParts[2],
         dateParts[1] - 1,
         +dateParts[0]
       );
+      const finalObject = {
+        projectName: pk,
+        eventName: sk,
+        date,
+        dateObject,
+        ...restParams,
+      };
+      const hours = finalObject.time.split(":");
       if (dateObject.getTime() === today.getTime()) {
+        finalObject.dateObject.setHours(hours[0], hours[1], 0, 0);
         events.present.push(finalObject);
       } else if (dateObject.getTime() > today.getTime()) {
+        finalObject.dateObject.setHours(hours[0], hours[1], 0, 0);
         events.future.push(finalObject);
       } else {
+        finalObject.dateObject.setHours(hours[0], hours[1], 0, 0);
         events.past.push(finalObject);
       }
+
+      events.past = sortDates(events.past);
+      events.present = sortDates(events.present);
+      events.future = sortDates(events.future);
     });
   }
   return { status: "ok", events };
+}
+
+function sortDates(datesArray) {
+  return datesArray.sort((a, b) => a.dateObject - b.dateObject);
 }
 
 async function putEventService(projectName, eventName, userName, restParams) {

@@ -12,7 +12,15 @@ exports.handler = async (event) => {
     console.log("clean record: ", JSON.stringify(record));
     const emails = await getProjectEmails(record.projectName);
     console.log("email list: ", JSON.stringify(emails));
-    // await sendEmail(emails, record.subject, record.detail.description);
+    await sendEmail(
+      emails,
+      record.subject,
+      record.detail,
+      record.date,
+      record.time,
+      record.duration,
+      record.projectName
+    );
   } catch (error) {
     console.error(error);
   }
